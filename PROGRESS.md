@@ -80,3 +80,47 @@
 - Also: 🔁 toast on every change, banner shows validity changes, stale Gate 2 approvals invalidated, Gate 2 price follows the recommendation, exclusions saved, "not priced" for junk pastes, no-welding RFQs, tube assemblies on A500, labor lines 0.5-correlated in the Monte Carlo (A band 7.8% -> 11.3%), release-size table + setup/tooling block on the quote, jargon cleanup.
 - `docs/screens/` captured (13 PNGs of the demo beats) for slides and the fallback. Full suite green.
 
+---
+
+# FINAL SUMMARY (v1-demo)
+
+**Status:** every phase's acceptance checks pass in the cloud build (mock provider + offline mode). Full test suite
+green (~290 tests incl. headless AppTest of the whole demo path, offline/unreachable-Ollama runs, and a fresh-clone
+install check). Tagged `v1-demo` on branch `claude/determined-hawking-hdkb0z`.
+
+**What works**
+- 7-stage flow with 2 human gates: intake (copy-only LLM + verbatim-quote check) → gaps/conflicts with ask/assume +
+  contingency + one clarification email → triage S/M/L → closest past job + difference table → Gate 1 (edit/remove
+  lines, reason required, saved to memory) → evidence-weighted ledger (Section 7.4 exactly; drawer shows every source,
+  its similarity × authority × recency and the original record) → patterns P1-P4 (+P5 steel trend) → Monte Carlo
+  P10/P50/P90 → win-probability curve, capacity, expedite → Gate 2 (reason if out of range) → quote preview
+  (release-size prices, setup & tooling, assumptions, validity) with Markdown/HTML download.
+- Chain reaction: every change shows a "What just changed" banner + toast (P50, band, price, validity, lines that
+  changed confidence, and why). Memory loop: A's fixture override appears as 🧠 evidence on B.
+- Local-first: Ollama qwen3:8b (`think:false`), local embeddings (Chroma MiniLM, TF-IDF fallback), every call cached,
+  `DEMO_MODE=offline` never calls a model.
+
+**Launch (Quentin's PC)**: see `docs/LOCAL_RUN.md`
+```
+git checkout claude/determined-hawking-hdkb0z && git pull
+python -m venv .venv && (activate) && pip install -r requirements.txt
+copy .env.example .env   # MODEL_PROVIDER=ollama, OLLAMA_MODEL=qwen3:8b, DEMO_MODE=live
+ollama pull qwen3:8b
+python -m qm.pipeline --check-ollama
+python -m qm.pipeline --warm demo/rfqs
+streamlit run app.py
+```
+No model? `MODEL_PROVIDER=mock` (default) runs the identical demo with hand-checked extractions.
+
+**Known limitations** (all stated in `docs/qa.md` / `docs/assumptions.md`): synthetic data; weights and correlations are
+tunable priors, not fitted; win model trained on synthetic quotes; no CAD/drawing parsing; single-user prototype UI;
+live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence the `--check-ollama` step).
+
+**What Quentin (and teammate) still must do by hand**
+1. **By ~12:30 PM CT Thu:** run `docs/LOCAL_RUN.md` steps 1-7 on the demo PC; send Claude the `--check-ollama` output.
+   Decide live vs offline for the presentation (Section 2.3 go/no-go is yours).
+2. Write the Twisted Traction hook story (slide 1 placeholder `[QUENTIN: ...]` in `docs/deck_outline.md`).
+3. Build the slides from `docs/deck_outline.md` (use `docs/screens/` for demo stills; process maps in `docs/process_*.md`).
+4. Record the backup screen recording of `demo/demo_script.md`.
+5. Rehearse the demo 3× with a timer (Reset → F5 check before each run), and read `docs/qa.md`.
+6. Submit before 2:50 PM CT Thu.
