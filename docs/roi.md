@@ -4,7 +4,7 @@
 
 ## Quote Memory: ROI and Adoption One-Pager
 
-**What a shop gets:** a quoting assistant that runs on one PC in the building (Streamlit app + local qwen3:8b model via Ollama + local embeddings), reads CSV exports of past jobs, and shows every cost line with its sources, a confidence level, and a range. No ERP swap. Customer data never leaves the building.
+**What a shop gets:** a quoting assistant that runs on one PC in the building (Streamlit app + local qwen3:8b model via Ollama in the shop configuration + local embeddings), reads CSV exports of past jobs, and shows every cost line with its sources, a confidence level, and a range. No ERP swap. Customer data never leaves the building.
 
 ---
 

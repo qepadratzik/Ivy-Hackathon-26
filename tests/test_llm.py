@@ -169,28 +169,47 @@ def test_offline_uses_cache_warmed_by_another_provider(monkeypatch):
     assert out == {"part": "W", "qty": 3} and meta["source"] == "cache"
 
 
+class FakeSDK:
+    """Stands in for anthropic.Anthropic().messages.create (no network)."""
+    def __init__(self, text):
+        self.text, self.kwargs = text, None
+        outer = self
+
+        class _M:
+            def create(self, **kw):
+                outer.kwargs = kw
+                blk = type("B", (), {"type": "text", "text": outer.text})()
+                return type("Msg", (), {"content": [blk]})()
+        self.messages = _M()
+
+
 def test_anthropic_payload_and_parse(monkeypatch):
     monkeypatch.setenv("MODEL_PROVIDER", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "dummy-not-a-key")
-    seen = {}
-
-    def fake_post(url, headers=None, json=None, timeout=None, **kw):
-        seen.update(url=url, headers=headers, json=json)
-        return FakeResp(body={"content": [{"type": "text", "text": '{"part": "A", "qty": 2}'}]})
-
-    monkeypatch.setattr(llm.requests, "post", fake_post)
+    monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+    fake = FakeSDK('{"part": "A", "qty": 2}')
+    monkeypatch.setattr(llm, "_anthropic_client", lambda timeout: fake)
     out, meta = llm.call_model_meta("intake_extract", "RFQ A", Tiny)
-    assert out == {"part": "A", "qty": 2} and meta["source"] == "live"
-    assert seen["url"].endswith("/v1/messages") and "JSON schema" in seen["json"]["messages"][0]["content"]
+    assert out == {"part": "A", "qty": 2} and meta["source"] == "live" and meta["model"] == "claude-haiku-4-5"
+    kw = fake.kwargs
+    assert "JSON schema" in kw["messages"][0]["content"] and kw["max_tokens"] >= 1024
+    assert "temperature" not in kw and "top_p" not in kw          # Sonnet/Opus 5.5 reject non-default sampling
+
+
+def test_anthropic_without_key_degrades_to_fixture(monkeypatch):
+    monkeypatch.setenv("MODEL_PROVIDER", "anthropic")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    out, meta = llm.call_model_meta("intake_extract", "RFQ for HB-12", Tiny)
+    assert meta["source"] == "fixture" and "ANTHROPIC_API_KEY" in meta["error"] and out["part"] == "HB-12"
 
 
 def test_cache_files_never_contain_env_secrets(monkeypatch, tmp_path):
     monkeypatch.setenv("MODEL_PROVIDER", "anthropic")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "dummy-secret-value-123")
-    monkeypatch.setattr(llm.requests, "post",
-                        lambda *a, **k: FakeResp(body={"content": [{"type": "text", "text": '{"part": "S"}'}]}))
+    monkeypatch.setattr(llm, "_anthropic_client", lambda timeout: FakeSDK('{"part": "S"}'))
     llm.call_model_meta("intake_extract", "RFQ S", Tiny)
-    for f in (tmp_path / "cache").glob("*.json"):
+    files = list((tmp_path / "cache").glob("*.json"))
+    assert files
+    for f in files:
         assert "dummy-secret-value-123" not in f.read_text()
 
 

@@ -267,6 +267,8 @@ def _ollama_raw(task: str, prompt: str, schema, model: str, timeout: float) -> s
 
 
 def build_anthropic_payload(task: str, prompt: str, schema: type[BaseModel] | None, model: str) -> dict:
+    """kwargs for anthropic messages.create. No temperature/top_p: newer models (Sonnet 5.5, Opus 5.5)
+    reject non-default sampling, and Haiku 4.5 is fine at its default for extraction."""
     user = prompt
     if schema is not None:
         user += (
@@ -276,25 +278,22 @@ def build_anthropic_payload(task: str, prompt: str, schema: type[BaseModel] | No
     return {
         "model": model,
         "max_tokens": 2048,
-        "temperature": config.LLM_TEMPERATURE,
         "system": SYSTEM_PROMPTS.get(task, "Be concise."),
         "messages": [{"role": "user", "content": user}],
     }
 
 
-def _anthropic_raw(task: str, prompt: str, schema, model: str, timeout: float) -> str:
+def _anthropic_client(timeout: float):
+    import anthropic  # official SDK (optional dependency: only needed for this provider)
     key = os.getenv("ANTHROPIC_API_KEY", "").strip()
     if not key:
         raise RuntimeError("ANTHROPIC_API_KEY not set")
-    r = requests.post(
-        "https://api.anthropic.com/v1/messages",
-        headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-        json=build_anthropic_payload(task, prompt, schema, model),
-        timeout=timeout,
-    )
-    r.raise_for_status()
-    body = r.json()
-    return "".join(b.get("text", "") for b in body.get("content", []) if b.get("type") == "text")
+    return anthropic.Anthropic(api_key=key, timeout=timeout, max_retries=0)
+
+
+def _anthropic_raw(task: str, prompt: str, schema, model: str, timeout: float) -> str:
+    msg = _anthropic_client(timeout).messages.create(**build_anthropic_payload(task, prompt, schema, model))
+    return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text")
 
 
 def _live_call(provider: str, model: str, task: str, prompt: str, schema, timeout: float) -> Any:
@@ -312,7 +311,11 @@ def _live_call(provider: str, model: str, task: str, prompt: str, schema, timeou
                 prompt + f"\n\nYour previous reply was invalid: {str(e)[:400]}\n"
                 "Reply again with valid JSON only."
             )
-        except requests.RequestException as e:
+        except (requests.RequestException, RuntimeError) as e:
+            last_err = e
+        except Exception as e:  # anthropic.APIError and friends (SDK imported lazily)
+            if type(e).__module__.split(".")[0] != "anthropic":
+                raise
             last_err = e
         log.warning("llm %s attempt %d failed: %s", task, attempt + 1, type(last_err).__name__)
     raise RuntimeError(f"{type(last_err).__name__}: {str(last_err)[:200]}")
@@ -398,6 +401,8 @@ class _PingSchema(BaseModel):
 
 def check_ollama(extra_prompt: str | None = None) -> bool:
     """Connectivity + JSON smoke test for Quentin's PC. Prints a short report, returns ok."""
+    if current_provider() == "anthropic":
+        return _check_anthropic(extra_prompt)
     host, model = ollama_host(), current_model("ollama")
     print(f"Ollama host: {host}   model: {model}")
     try:
@@ -426,6 +431,30 @@ def check_ollama(extra_prompt: str | None = None) -> bool:
             if name == "ping":
                 print(f"      -> {out}")
             ok = ok and dt < 60
+        except Exception as e:
+            print(f"FAIL: {name}: {str(e)[:200]}")
+            ok = False
+    return ok
+
+
+def _check_anthropic(extra_prompt: str | None = None) -> bool:
+    model = current_model("anthropic")
+    print(f"Provider: anthropic   model: {model}   key set: {'yes' if config.anthropic_key_present() else 'NO'}")
+    if not config.anthropic_key_present():
+        print("FAIL: set ANTHROPIC_API_KEY in your .env (never commit it).")
+        return False
+    tests = [("ping", "Extract: 'Need 250 pcs of hitch bracket HB-12 in 3/8 A36 plate.'", _PingSchema)]
+    if extra_prompt:
+        from qm.intake import RFQSpec
+        tests.append(("intake_extract", extra_prompt, RFQSpec))
+    ok = True
+    for name, prompt, schema in tests:
+        t0 = time.time()
+        try:
+            out = _live_call("anthropic", model, "intake_extract", prompt, schema, config.LLM_TIMEOUT_S)
+            print(f"OK: {name} returned valid JSON in {time.time() - t0:.1f}s")
+            if name == "ping":
+                print(f"      -> {out}")
         except Exception as e:
             print(f"FAIL: {name}: {str(e)[:200]}")
             ok = False

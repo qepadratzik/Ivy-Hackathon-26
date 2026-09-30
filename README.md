@@ -12,7 +12,7 @@ Built for the 2026 Ivy AI Case Competition (Iowa State): *"AI for Iowa: Improvin
 One RFQ flows through the case's seven stages. AI reads, searches, weights and simulates; people decide at the gates.
 
 1. **Customer Request**: an RFQ email plus the customer's spec sheet (pick demo RFQ A/B/C or paste your own).
-2. **Understand Requirements**: the local model copies each field with a verbatim quote; Python verifies it, flags gaps
+2. **Understand Requirements**: the model copies each field with a verbatim quote; Python verifies it, flags gaps
    and conflicts (qty 250 vs 200, missing color), triages S/M/L. *Human:* ask the customer, or assume + contingency.
 3. **Determine Manufacturing Approach**: finds the closest past job, proposes its BOM + routing rescaled for this
    order, and lists what's different. *Human: Gate 1*, the estimator approves or edits the BOM + routing.
@@ -33,8 +33,10 @@ confidence and price downstream.
 - **The LLM never produces a cost or price number.** It does exactly three things: copy RFQ text into fields (each
   with a verbatim quote that Python checks), draft one clarification email, and write one-line pattern sentences.
   All math is deterministic Python; numbers come from structured tables, vector search is used only for text.
-- **Runs locally.** Ollama `qwen3:8b` (thinking disabled) plus local embeddings (Chroma's all-MiniLM-L6-v2, TF-IDF
-  fallback). Customer data never leaves the machine.
+- **Local-first by design.** The shop deployment runs Ollama `qwen3:8b` (thinking disabled) plus local embeddings
+  (Chroma's all-MiniLM-L6-v2, TF-IDF fallback), so customer data never leaves the machine. The model provider is one
+  config line: the competition demo used the hosted `anthropic` provider (Claude Haiku 4.5) because the local GPU box
+  was not available. The local path is implemented and unit-tested with mocked HTTP but was not run on real hardware.
 - **Every model call is cached** (`cache/llm/`, sha256 key). `DEMO_MODE=offline` never calls a model (cache, then
   hand-checked fixtures, then templates); any model failure degrades the same way and the UI says so.
 - **Evidence weighting** (details and every constant in [docs/assumptions.md](docs/assumptions.md)):

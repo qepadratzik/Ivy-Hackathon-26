@@ -127,3 +127,7 @@ live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence
 4. Record the backup screen recording of `demo/demo_script.md`.
 5. Rehearse the demo 3× with a timer (Reset → F5 check before each run), and read `docs/qa.md`.
 6. Create the `v1-demo` tag (command above), then submit before 2:50 PM CT Thu.
+## [Wed 09:38 CT] Model plan change: hosted Anthropic (Claude Haiku 4.5)
+- GPU box unavailable -> demo model is the hosted `anthropic` provider (allowed fallback; locked decisions unchanged). Provider now uses the official SDK, default `claude-haiku-4-5`, no temperature (Sonnet/Opus 5.5 reject it). `python -m qm.pipeline --check-model` works for any provider. Docs reworded so nothing claims the demo ran locally. Tests green.
+- **Quentin next:** get a dedicated API key (low spend limit) -> put it in `.env` (or the cloud env var `ANTHROPIC_API_KEY`, then a new session) -> `docs/LOCAL_RUN.md` "Hosted model" steps -> commit warmed `cache/llm` -> demo with `DEMO_MODE=offline`.
+

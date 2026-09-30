@@ -7,7 +7,7 @@
    *Age our newest material quote* 0, section **1 · Requirements**, both gap cards on **Ask the customer**,
    *Memory: 0 saved override(s)*. (If anything looks off, press F5 once.)
 3. Check the small print says what you'll say: with Ollama the Requirements header reads "extracted by
-   ollama:qwen3:8b (cached model output)". In mock mode it says "hand-checked extraction (mock mode)"; then say
+   anthropic:claude-haiku-4-5 (cached model output)" (or ollama:qwen3:8b). In mock mode it says "hand-checked extraction (mock mode)"; then say
    "hand-checked extraction of what the model returns".
 
 Numbers below are what the synthetic data produces (mock, warmed cache or offline). The model never produces a cost
@@ -29,7 +29,7 @@ even when you've scrolled down.
 
 **Click:** on the color card, **Assume & quote**.
 
-**Say:** "An RFQ lands. Our local model reads the email and the customer's spec sheet, but it only *copies* text:
+**Say:** "An RFQ lands. Our model reads the email and the customer's spec sheet, but it only *copies* text:
 every field has to quote the email, and Python does the conversions. It caught a real conflict, 250 in the email vs.
 200 on the spec sheet. For the color we don't need to wait: we assume black, print that on the quote, and carry a 3%
 contingency on the coating line."
@@ -142,7 +142,7 @@ screenshots in `docs/screens/` in order (01 → 12).
 
 ## Talking points to have ready
 - "The LLM never produces a cost or a price." Extraction, one email, one-line explanations. All math is Python.
-- "Runs on one PC." Local model (qwen3:8b via Ollama), local embeddings; customer prints and emails never leave the building.
+- "Local-first by design." The shop version runs on one PC (qwen3:8b via Ollama, local embeddings), so prints and emails never leave the building. Tonight's demo used a hosted model (Claude Haiku 4.5) because our GPU box fell through; one config line switches it, and the numbers don't change because the model never touches the math.
 - "Works from what the shop already has": past jobs, BOM/routing with estimated vs actual hours, debrief notes,
   supplier quotes, exported to CSV. No ERP replacement.
 - "Humans at two gates" (approach, price), and every override needs a reason that becomes memory.

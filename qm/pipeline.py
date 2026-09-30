@@ -338,7 +338,8 @@ def warm(folder: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m qm.pipeline")
-    ap.add_argument("--check-ollama", action="store_true", help="smoke-test the local Ollama model")
+    ap.add_argument("--check-ollama", "--check-model", dest="check_ollama", action="store_true",
+                    help="smoke-test the configured model provider (ollama or anthropic)")
     ap.add_argument("--warm", metavar="RFQ_DIR", help="warm the LLM cache for all RFQs in a folder")
     args = ap.parse_args(argv)
     if args.check_ollama:
@@ -347,7 +348,7 @@ def main(argv: list[str] | None = None) -> int:
                                              email=rfq["email_text"].strip()) if rfq else None
         if not llm.check_ollama(prompt):
             return 1
-        if rfq and llm.current_provider() == "ollama":
+        if rfq and llm.current_provider() in ("ollama", "anthropic"):
             x = intake.extract(rfq)
             s = x["spec"]
             found = sorted(g["id"] for g in gaps.find_gaps(x))

@@ -1,4 +1,23 @@
-# LOCAL_RUN: running Quote Memory on Quentin's PC (live model via Ollama)
+# LOCAL_RUN: running Quote Memory on Quentin's PC
+
+> **Current plan: hosted model (Anthropic Claude Haiku 4.5).** The GPU box fell through, so use the
+> "Hosted model" section right below. The Ollama steps further down are kept for a future local run.
+
+## Hosted model (Anthropic) - do this
+
+1. `git pull`, create the venv, `pip install -r requirements.txt` (steps 1-2 below).
+2. `.env` (never committed): `MODEL_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=<your key>`, `ANTHROPIC_MODEL=claude-haiku-4-5`,
+   `DEMO_MODE=live`. Use a dedicated key with a low monthly spend limit; delete it after Thursday.
+3. `python -m qm.pipeline --check-model` - expect OK lines and `RFQ A as read by the model ... OK: gaps ['finish_color', 'qty_conflict']`.
+   If it misreads RFQ A, set `ANTHROPIC_MODEL=claude-sonnet-5-5` and rerun.
+4. `python -m qm.pipeline --warm demo/rfqs` (fills `cache/llm/`; run twice, the second run should say `cache`).
+5. Commit the cache: `git add cache/llm && python scripts/secret_scan.py --staged && git commit -m "cache: warmed model outputs" && git push`.
+6. **Presentation mode:** `DEMO_MODE=offline` in `.env`, then `streamlit run app.py`. No key or wifi needed on stage;
+   the screen says "cached model output".
+
+---
+
+# Ollama (local GPU) steps, optional
 
 **Do this by ~12:30 PM CT Thursday** so problems surface before the 1:30 PM code freeze.
 Total time: ~15 minutes (plus the model download if `qwen3:8b` isn't pulled yet, ~5 GB).

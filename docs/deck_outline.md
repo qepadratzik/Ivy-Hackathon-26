@@ -102,8 +102,8 @@ Two things matter most. First, **the language model never produces a cost or pri
 ## Slide 7: Why a shop would adopt it (0:40)
 
 **On screen:**
-- **Runs on a shop PC:** local model (qwen3:8b via Ollama) + local embeddings
-- **Customer prints and RFQs never leave the building**, which suits CUI/ITAR-sensitive work
+- **Designed to run on a shop PC:** local model (qwen3:8b via Ollama) + local embeddings; the model is a config switch (today's demo used a hosted model)
+- **In the local configuration, customer prints and RFQs never leave the building**, which suits CUI/ITAR-sensitive work
 - **Starts from past-job CSV exports**, no ERP swap
 - **Low cost:** an existing PC + open models
 - **Illustrative ROI** box: headline from `docs/roi.md`, labeled **ILLUSTRATIVE, NOT BENCHMARKS**
