@@ -18,7 +18,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from qm import config, intake, llm, memory, pipeline, plain, pricing, store
+from qm import config, intake, llm, memory, pipeline, plain, pricing, quote_html, store
 from qm.data_gen import frac
 
 st.set_page_config(page_title="Quote Memory", layout="wide", initial_sidebar_state="expanded")
@@ -821,10 +821,7 @@ def sec_quote():
     c1, c2 = st.columns(2)
     c1.download_button("Download quote (Markdown)", md, file_name=f"{rid}_quote.md", mime="text/markdown",
                        key=K(f"dl_md_{rid}"))
-    page = (f"<!doctype html><html><head><meta charset='utf-8'><title>{rid} quote</title>"
-            f"<style>body{{font-family:Arial,sans-serif;max-width:760px;margin:40px auto;color:#111}}</style></head>"
-            f"<body><pre style='white-space:pre-wrap;font-family:inherit'>{html.escape(md)}</pre></body></html>")
-    c2.download_button("Download quote (HTML)", page, file_name=f"{rid}_quote.html", mime="text/html",
+    c2.download_button("Download quote (HTML)", quote_html.render(res), file_name=f"{rid}_quote.html", mime="text/html",
                        key=K(f"dl_html_{rid}"))
 
 
