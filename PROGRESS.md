@@ -67,3 +67,9 @@
 - Also: Gate 2 "Use recommended" fixed (callback), past Gate 2 decisions surface on similar quotes, Ollama schema now requires every field, plain-English pattern sentences for mock/offline mode.
 - Next: Phase 10 red-team review (running), fresh-clone check (running), final screenshots, tag v1-demo.
 
+## [Wed 01:37 CT] Phase 10: Final verification: IN PROGRESS
+- Done: fresh clone from GitHub + `pip install -r requirements.txt` + full suite = green (exit 0). Thin/nonsense pasted RFQs now produce sane numbers (missing essentials assumed from the closest past job, each flagged as a gap). SQLite mirror built from CSVs on first load. `scripts/screenshots.py` ready for `docs/screens/`.
+- Running: independent red-team review (browser walk of the demo script + break-it tests) -> `docs/review.md`.
+- Next: fix/accept review items, capture `docs/screens/`, final summary, tag `v1-demo`.
+- Timeline: ~36 h ahead of the Thu 2:50 PM CT deadline; no cuts beyond `evidence_explain`.
+
