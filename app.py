@@ -487,8 +487,11 @@ def sec_ledger():
                        f"⚠ warning · P# pattern"))
     with right:
         default = next((l["key"] for l in order if l["patterns"]), None) or min(order, key=lambda l: l["confidence"])["key"]
-        dk = st.selectbox("Where this number came from", keys, key=f"drawer_{rid}",
-                          index=keys.index(default), format_func=lambda kk: next(l["label"] for l in order if l["key"] == kk))
+        dkey = f"drawer_{rid}"
+        if st.session_state.get(dkey) not in keys:
+            st.session_state[dkey] = default
+        dk = st.selectbox("Where this number came from", keys, key=dkey,
+                          format_func=lambda kk: next(l["label"] for l in order if l["key"] == kk))
         l = next(x for x in order if x["key"] == dk)
         with st.container(border=True):
             sure = f"How sure: {l['confidence']:.2f}"
@@ -612,6 +615,11 @@ def sec_price():
     for p in res["patterns"]:
         if p["id"] == "P4":
             st.warning(esc(f"**{p['title']}**: {p['narration']}"))
+    mem = memory.list_memory()
+    if not mem.empty and "kind" in mem.columns:
+        past = mem[(mem.kind == "gate2_price") & (mem.part_family == spec.get("part_family")) & (mem.rfq_id != rid)]
+        for r in past.itertuples(index=False):
+            st.info(esc(f"🧠 **Past pricing decision on a similar quote** ({r.rfq_id}): {r.text}"))
     st.markdown("#### Gate 2 · Manager picks the price")
     if ps["gate2_approved"]:
         st.success(esc(f"✓ Gate 2 approved at {money(res['chosen_price'])}/unit"
@@ -625,9 +633,8 @@ def sec_price():
         st.session_state[kp] = round(pr["recommended"], 2)
     c1, c2, c3 = st.columns([2, 2, 2])
     price = c1.number_input("Unit price ($)", min_value=0.0, step=1.0, key=kp)
-    if c2.button(esc(f"Use recommended ({money(pr['recommended'])})"), key=f"g2_userec_{rid}"):
-        st.session_state[kp] = round(pr["recommended"], 2)
-        st.rerun()
+    c2.button(esc(f"Use recommended ({money(pr['recommended'])})"), key=f"g2_userec_{rid}",
+              on_click=lambda: st.session_state.update({kp: round(pr["recommended"], 2)}))
     exp_on = c3.toggle("Expedite (+12%, −7 days)", key=f"g2_exp_{rid}")
     final = price * (1 + config.EXPEDITE_PRICE_PCT) if exp_on else price
     inside = pr["range"][0] - 0.005 <= price <= pr["range"][1] + 0.005

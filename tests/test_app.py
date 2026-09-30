@@ -156,3 +156,30 @@ def test_demo_runs_with_ollama_configured_but_unreachable(monkeypatch, mode):
     if mode == "offline":
         assert not calls
     pipeline.clear_caches()
+
+
+def test_gate2_use_recommended_and_out_of_range_reason():
+    at = ok(AppTest.from_file(APP, default_timeout=180).run())
+    at.radio(key="section").set_value(S[4])
+    ok(at.run())
+    rec = at.number_input(key="g2_price_RFQ-A").value
+    at.number_input(key="g2_price_RFQ-A").set_value(round(rec * 1.4, 2))
+    ok(at.run())
+    at.button(key="g2_approve_RFQ-A").click()
+    ok(at.run())
+    assert any("reason" in str(e.value).lower() for e in at.error)
+    at.button(key="g2_userec_RFQ-A").click()
+    ok(at.run())
+    assert at.number_input(key="g2_price_RFQ-A").value == rec
+    at.number_input(key="g2_price_RFQ-A").set_value(round(rec * 1.4, 2))
+    ok(at.run())
+    at.text_input(key="g2_reason_RFQ-A").set_value("strategic account, backlog is full")
+    at.button(key="g2_approve_RFQ-A").click()
+    ok(at.run())
+    mem = memory.list_memory()
+    assert len(mem) == 1 and mem.iloc[0].kind == "gate2_price" and "strategic account" in mem.iloc[0].text
+    at.radio(key="section").set_value(S[2])      # drawer picks a default line after a selection exists
+    ok(at.run())
+    at.selectbox(key="drawer_RFQ-A").set_value("mat.A36")
+    ok(at.run())
+    assert not at.warning or all("created with a default value" not in str(w.value) for w in at.warning)
