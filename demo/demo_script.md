@@ -15,7 +15,7 @@ Read `docs/PLAIN_ENGLISH.md` first (10 minutes). It has the glossary and the fiv
 | Why a shop would adopt it, positioning, limits, close (slides 7 to 9) | B then A | 2:00 |
 | Buffer and questions | both | 3:30 or more |
 
-**If you only have 15 minutes:** skip Job 3, skip "Show the details", shorten the steel what-if. The demo drops to about 7:30.
+**If you only have 15 minutes:** skip Job 3, skip "Show the details" and the on-the-spot request, shorten the steel what-if. The demo drops to about 7:30.
 
 ---
 
@@ -195,6 +195,27 @@ profit curve.
 
 **Say (A):** "For anyone who wants to check our work, the math is all here. Everyone else can leave it switched off."
 Switch it off before you continue.
+
+---
+
+## Optional: "Try one of yours", an on-the-spot request (1:00 to 1:30)
+Use this when a judge says "what about a different job?" or when you have time to spare. It needs no typing of emails.
+
+**Click (A):** sidebar **Quick demo · fill in a request**. A short form opens. Pick anything the judge likes, for
+example **Customer** Raccoon River Attachments, **What are we making?** Guard, **Material** 5052 aluminum sheet,
+**Thickness** 1/8", **How many?** 60, **Batch size** 20, **Welding** Standard weld, **Finish** Powder, **Color** Not
+stated. Click **Build this request**. (Leave **Part number** empty: that means a part we have never built.)
+
+**Point at:** step 1 fills in at once: the customer's email and spec sheet were written from the form, the system read
+them back, and because the color was "Not stated" it lists **Powder coat color not specified** as a question. Two
+quick extras: tick **Make the spec sheet disagree on the quantity** before building to show the conflict catch, or type
+`CVE-HB-4410 Rev D` as the part number to show "it is a new revision of a part we have built" from our history.
+
+**Say (B):** "That's a job we made up thirty seconds ago. The same five steps run on it. Aluminum is rare in our history,
+so watch step 3: it says it is less sure, which is the honest answer."
+
+**Then:** walk the steps quickly (step 2 approve, step 3 click the aluminum line, step 4 approve). Each build gets its own
+number, so if you build a second similar request it can learn from the note you saved on the first.
 
 ---
 

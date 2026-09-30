@@ -18,7 +18,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from qm import config, intake, llm, memory, pipeline, plain, pricing, quote_html, store
+from qm import config, intake, llm, memory, pipeline, plain, pricing, quick, quote_html, store
 from qm.data_gen import frac
 
 st.set_page_config(page_title="Quote Memory", layout="wide", initial_sidebar_state="expanded")
@@ -31,7 +31,8 @@ FIX_YES, FIX_NO = "Yes, the old fixture still fits", "No, we need to build a new
 STEPS = ["1 · Read the request", "2 · Plan the work", "3 · Cost it", "4 · Set the price", "5 · Send the quote"]
 JOB_LABELS = {"RFQ-A": "Job 1 · New bracket order (Cedar Valley)",
               "RFQ-B": "Job 2 · Similar bracket, first time built (Hawkeye)",
-              "RFQ-C": "Job 3 · Repeat order (Loess Hills)", "PASTE": "Try your own request"}
+              "RFQ-C": "Job 3 · Repeat order (Loess Hills)", "QUICK": "Quick demo · fill in a request",
+              "PASTE": "Paste a customer email"}
 CAT_ORDER = {"material": 0, "purchased": 1, "outside": 2, "labor": 3}
 CAT_LABEL = {"material": "Material", "purchased": "Bought-in parts", "outside": "Outside work", "labor": "Shop time"}
 SRC_PLURAL = {"actual": ("past job", "past jobs"), "past_quote": ("past quote", "past quotes"),
@@ -157,7 +158,7 @@ def reset_demo() -> None:
 def S() -> dict:
     if "qm" not in st.session_state:
         st.session_state.qm = {"rfq_states": {}, "last": {}, "banner": {}, "g1_ver": {}, "ledger_sel": {},
-                               "paste": None}
+                               "paste": None, "quick": None, "quick_n": 0}
     return st.session_state.qm
 
 
@@ -201,10 +202,46 @@ with st.sidebar:
     st.markdown("## Quote Memory")
     st.caption("Helps **Boone Creek Fabrication** (a made-up shop) quote faster and more accurately by "
                "remembering what past jobs really took.")
-    pick = st.radio("Which job are we quoting?", list(RFQS) + ["PASTE"], format_func=lambda k: JOB_LABELS.get(k, k),
-                    key=K("rfq_pick"))
+    pick = st.radio("Which job are we quoting?", list(RFQS) + ["QUICK", "PASTE"],
+                    format_func=lambda k: JOB_LABELS.get(k, k), key=K("rfq_pick"))
     rfq = None
-    if pick == "PASTE":
+    if pick == "QUICK":
+        with st.form(K("qd_form")):
+            st.caption("Type in any job and we build the customer's email and spec sheet for you.")
+            qd_customer = st.selectbox("Customer", list(store.base_tables()["customers"].name), key=K("qd_customer"))
+            qd_family = st.selectbox("What are we making?", list(quick.FAMILY_PHRASE), format_func=plain.FAMILY.get,
+                                     key=K("qd_family"))
+            qd_material = st.selectbox("Material", list(quick.MATERIAL_TEXT), format_func=plain.MATERIAL.get,
+                                       key=K("qd_material"))
+            a_, b_ = st.columns(2)
+            qd_thick = a_.selectbox("Thickness", list(quick.THICKNESS), index=3, format_func=lambda t: f'{t}"',
+                                    key=K("qd_thick"))
+            qd_qty = b_.number_input("How many?", 1, 5000, 120, step=10, key=K("qd_qty"))
+            a_, b_ = st.columns(2)
+            qd_batch = a_.number_input("Batch size", 1, 5000, 40, step=10, key=K("qd_batch"),
+                                       help="How many we make at once. Setup is spread over a batch.")
+            qd_due = b_.date_input("Needed by", quick.default_due(), key=K("qd_due"))
+            qd_weld = st.selectbox("Welding", list(quick.WELD), format_func=quick.WELD.get, key=K("qd_weld"))
+            a_, b_ = st.columns(2)
+            qd_finish = a_.selectbox("Finish", list(quick.FINISH), format_func=quick.FINISH.get, key=K("qd_finish"))
+            qd_color = b_.selectbox("Color", quick.COLORS, format_func=str.capitalize, key=K("qd_color"),
+                                    help="Only used for powder coat. 'Not stated' makes the system ask.")
+            qd_tol = st.selectbox("Tolerance", list(quick.TOLERANCE), format_func=quick.TOLERANCE.get, key=K("qd_tol"))
+            qd_pn = st.text_input("Part number (optional)", key=K("qd_pn"),
+                                  help="Leave empty for a part we have never built. Try " + quick.EXAMPLE_PARTS + ".")
+            qd_conflict = st.checkbox("Make the spec sheet disagree on the quantity", key=K("qd_conflict"),
+                                      help="Shows the system catching a conflict.")
+            qd_go = st.form_submit_button("Build this request", key=K("qd_go"), type="primary")
+        if qd_go:
+            st_["quick_n"] += 1
+            st_["quick"] = quick.quick_rfq(qd_customer, qd_family, qd_material, qd_thick, qd_qty, qd_batch, qd_weld,
+                                           qd_finish, qd_color, qd_tol, qd_due, qd_pn, qd_conflict,
+                                           rfq_id=f"{quick.ID_PREFIX}{st_['quick_n']}")
+            st.session_state[K("step")] = STEPS[0]          # a new request starts at step 1
+        if st_["quick"]:
+            rfq = st_["quick"]
+            st.caption("Loaded: " + quick.summary(rfq))
+    elif pick == "PASTE":
         txt = st.text_area("Paste a customer email", key=K("paste_text"), height=180,
                            placeholder="From: buyer@customer.example\nSubject: RFQ ...\n\nPlease quote 100 pcs ...")
         if st.button("Read this email", key=K("paste_go")):
@@ -239,7 +276,8 @@ with st.sidebar:
     st.caption("All data is synthetic. The company and its customers are made up. Rates and prices are illustrative.")
 
 if rfq is None:
-    st.info("Paste a customer email in the sidebar and click **Read this email**.")
+    st.info("Fill in the request in the sidebar and click **Build this request**." if pick == "QUICK"
+            else "Paste a customer email in the sidebar and click **Read this email**.")
     st.stop()
 
 rid = rfq["rfq_id"]

@@ -296,10 +296,13 @@ def rule_extract(email: str) -> dict:
         if value and quote and out[name]["value"] is None:
             out[name] = {"value": str(value), "confidence": conf, "source_quote": quote.strip()}
 
-    for name in store.customers_by_name():
-        m = re.search(re.escape(name.split()[0]) + r"[^\n]*", email, re.I)
-        if m and name.split()[0].lower() in m.group(0).lower():
-            put("customer_name", m.group(0).strip(), m.group(0))
+    for text in (body, email):       # the signature before the header: "From: x@cedarvalley.example" is not the name
+        for name in store.customers_by_name():
+            m = re.search(r"\b" + re.escape(name.split()[0]) + r"\b[^\n]*", text, re.I)
+            if m:
+                put("customer_name", m.group(0).strip(), m.group(0))
+                break
+        if out["customer_name"]["value"]:
             break
     m = re.search(r"\b([A-Z]{2,4}-[A-Z]{2}-\d{2,5}(?:\s+Rev\s+[A-Z0-9])?)", email)
     if m:

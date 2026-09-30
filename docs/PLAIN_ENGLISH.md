@@ -147,6 +147,12 @@ The app walks through five steps. The picker above the content shows each step a
 | **Job 2 · Hawkeye** (bracket, first time built) | **It learned:** the note from Job 1 shows up as evidence, with its reason | Typical cost $133.16. The weld setup is flagged as the line to check. |
 | **Job 3 · Loess Hills** (repeat mounting plate) | **Fast track:** a clean repeat is all green | Typical cost $42.62, suggested price $56.26, 8 of 8 lines solid. |
 
+**Want a different job on the spot?** In the sidebar, choose **Quick demo · fill in a request**, pick a customer, what we are
+making, material, thickness, quantity, batch size, welding, finish and color, and click **Build this request**. The app writes the
+customer's email and spec sheet from your choices and runs the same five steps. Two extras: leave the color on "Not stated"
+to see a question get raised, or tick "Make the spec sheet disagree on the quantity" to see a conflict caught. **Paste a
+customer email** still works if you would rather type a whole email.
+
 ---
 
 ## 7. Who says what (two presenters, about 16:30 plus questions)

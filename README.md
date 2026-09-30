@@ -109,6 +109,10 @@ streamlit run app.py
 - **Job 2 (it learned):** Hawkeye, a bracket we have never built. The estimator's note from Job 1 shows up as evidence.
 - **Job 3 (fast track):** Loess Hills, a repeat mounting plate. Fast track, no questions, all lines solid.
 
+- **On the spot:** sidebar **Quick demo · fill in a request** is a short form (customer, job type, material, thickness, quantity,
+  batch size, welding, finish and color, tolerance, due date, optional part number, optional quantity conflict). It writes the
+  customer's email and spec sheet and runs the same five steps. **Paste a customer email** takes a whole pasted email instead.
+
 Click-by-click script for two presenters (about 10 minutes of demo inside a 15-20 minute pitch, plus a 60 second
 fallback): [demo/demo_script.md](demo/demo_script.md). Click **Start over** in the sidebar before each run. Screenshots
 of every beat are in `docs/screens/`.
@@ -131,6 +135,8 @@ qm/
   gaps.py           gaps & conflicts, ask/assume, clarification email
   triage.py         Fast track / Standard / Full review, with a plain reason
   plain.py          plain-language names (High/Medium/Low, 'about 8 in 10', line labels)
+  quick.py          quick demo form -> customer email + spec sheet
+  quote_html.py     customer-facing HTML quote (download)
   store.py          tables + vector store (Chroma, TF-IDF fallback); retrieval.py: similar jobs and notes
   proposal.py       analog -> proposed BOM + routing, difference table
   evidence.py       evidence weighting (the core)

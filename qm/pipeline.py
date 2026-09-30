@@ -134,7 +134,8 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
     due_gap, due_info = gaps.due_date_check(spec, first_release_hours(ledger, spec), has_outside)
     if due_gap:
         gap_list += gaps.apply_actions([due_gap], st["gap_actions"])
-    use_llm = st["email_llm"] if st["email_llm"] is not None else rfq.get("rfq_id") != "RFQ-PASTE"
+    rid_ = str(rfq.get("rfq_id"))
+    use_llm = st["email_llm"] if st["email_llm"] is not None else not (rid_ == "RFQ-PASTE" or rid_.startswith("RFQ-Q"))
     email, email_meta = gaps.clarification_email(gap_list, spec, rfq.get("email_text", ""), use_llm=use_llm)
 
     cont = uncertainty.contingencies(ledger, gap_list, meta["material"])
