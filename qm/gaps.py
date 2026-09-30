@@ -140,7 +140,7 @@ Sign it: Estimating, Boone Creek Fabrication"""
 
 
 def contact_first_name(email_text: str) -> str:
-    m = re.search(r"^From:\s*([A-Za-z]+)", email_text or "", re.M)
+    m = re.search(r"^From:[ \t]*([A-Za-z]+)", email_text or "", re.M)
     return m.group(1) if m else "there"
 
 

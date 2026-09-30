@@ -123,3 +123,36 @@ def test_paste_box_and_every_section_for_each_rfq():
     for sec in S:
         at.radio(key="section").set_value(sec)
         ok(at.run())
+
+
+@pytest.mark.parametrize("mode", ["offline", "live"])
+def test_demo_runs_with_ollama_configured_but_unreachable(monkeypatch, mode):
+    """Quentin's PC with Ollama stopped: offline mode never touches the network; live mode degrades to
+    fixtures/templates. Either way the demo path renders with no exceptions."""
+    import requests
+
+    from qm import llm, pipeline
+
+    calls = []
+
+    def down(*a, **k):
+        calls.append(1)
+        raise requests.ConnectionError("ollama not running")
+
+    monkeypatch.setenv("MODEL_PROVIDER", "ollama")
+    monkeypatch.setenv("DEMO_MODE", mode)
+    monkeypatch.setattr(llm.requests, "post", down)
+    monkeypatch.setattr(llm.requests, "get", down)
+    pipeline.clear_caches()
+    at = ok(AppTest.from_file(APP, default_timeout=180).run())
+    assert "offline" in text_of(at) if mode == "offline" else True
+    at.radio(key="gap_RFQ-A_finish_color").set_value("Assume & quote")
+    ok(at.run())
+    for rid in ["RFQ-A", "RFQ-B", "RFQ-C"]:
+        at.radio(key="rfq_pick").set_value(rid)
+        for sec in S:
+            at.radio(key="section").set_value(sec)
+            ok(at.run())
+    if mode == "offline":
+        assert not calls
+    pipeline.clear_caches()

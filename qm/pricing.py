@@ -81,14 +81,15 @@ def price_curve(spec: dict, risk: dict, load: float = 0.5) -> dict:
     labor = float(risk.get("by_category", {}).get("labor", 0.0))
     cap_cost = labor * capacity_premium(load)
     decision_cost = rac + cap_cost
+    floor_pct = min_margin(load)
+    floor_price = rac * (1 + floor_pct)
     lo, hi, n = config.PRICE_GRID
+    hi = max(hi, 1.10 * floor_price / p50) if p50 > 0 else hi   # keep the floor on the grid (extreme risk/load)
     mult = np.linspace(lo, hi, int(n))
     prices = p50 * mult
     pw = win_prob(mult, spec)
     em = pw * (prices - decision_cost)
-    floor_pct = min_margin(load)
-    floor_price = rac * (1 + floor_pct)
-    ok = prices >= floor_price
+    ok = prices >= floor_price - 1e-9
     if ok.any() and em[ok].max() > 0:
         i = int(np.argmax(np.where(ok, em, -np.inf)))
         floor_binding = False
@@ -100,6 +101,8 @@ def price_curve(spec: dict, risk: dict, load: float = 0.5) -> dict:
         floor_binding = True
     in_range = ok & (em >= config.REC_BAND * peak) if peak > 0 else (np.arange(len(prices)) == i)
     idx = np.where(in_range)[0]
+    if len(idx) == 0:
+        idx = np.array([i])
     rng_lo, rng_hi = float(prices[idx.min()]), float(prices[idx.max()])
     rec = float(prices[i])
     return {
