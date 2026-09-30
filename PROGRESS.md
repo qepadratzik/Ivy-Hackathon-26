@@ -133,3 +133,15 @@ live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence
 
 ## [Wed 11:23 CT] Emoji purge
 - Removed every emoji and pictographic symbol (including check marks) from the UI (`app.py`), scripts, docs and the regenerated `docs/screens/`. Confidence chips are now text ("green 0.97"), flags are EDIT / LEARNED / WARN, buttons are plain ("Approve Gate 1", "Reset demo state"). Arrows and math symbols kept. Tests green.
+
+## [Wed 12:05 CT] Phase S1: Simplify the shop: DONE
+- Built: a deliberately small fictional shop so the demo and the story are easy. 5 job types (hitch bracket, guard, frame, mounting plate, tube assembly), 3 materials (A36 plate, A500 tube, 5052 aluminum sheet), 5 shop steps (Cut, Bend, Fit and weld, Drill and tap, Inspect and pack) plus outside powder coat and a one-time fixture line. Removed: laser/saw, grind, fit-tack, 1018, 304 stainless, zinc. Data regenerated (158 jobs, seed 42); patterns P1-P5 still verified (P1 1.35x n=20, P2 1.90x n=21, P3 30%, P4 100% vs 0%, P5 +14%).
+- Verified: full pytest green; RFQ A/B/C still pick J-1042 / J-1103 / J-1118 with Chroma and TF-IDF.
+- Cuts/decisions: purchased and outside half-lives 180 -> 365 days and TOP_K_JOBS 5 -> 6 (merging processes had left too many yellow lines); aluminum is rare in the history (1 job) so aluminum requests show low confidence on purpose; the rule-based email reader now also finds "material, then thickness" phrasing.
+- Next: S2.
+
+## [Wed 12:05 CT] Phase S2: Guided plain-language UI: DONE
+- Built: `app.py` rewritten as 5 steps (Read the request, Plan the work, Cost it, Set the price, Send the quote). Checkpoint 1 (estimator approves the plan, with a "does the old fixture still fit?" question) and Checkpoint 2 (manager approves the price from three choices: Lower / Recommended / Higher with chance of winning and profit). Confidence is High / Medium / Low, ranges read "very likely between $A and $B", "Memory" is the "Shop notebook", and a sidebar "Show the details" switch reveals evidence scores, the simulation and the profit curve. Shop-load and expedite controls are gone from the UI (still in the engine). New `qm/plain.py`, `pricing.price_options`, plain `triage["plain"]` reasons.
+- Verified: pytest green (app tests rewritten: full demo path, paste box, details switch, offline/unreachable-model modes, price choices, price-needs-plan-first); real-browser walk with screenshots (`docs/screens/01..13`).
+- Cuts/decisions: price approval is blocked until the plan is approved; re-opening the plan keeps the estimator's answer and reason.
+- Next: S3 docs, S4 final checks.

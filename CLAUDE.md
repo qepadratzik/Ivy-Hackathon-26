@@ -63,5 +63,5 @@ Commit at the end of every phase: `phase N: <summary>`. Chat status updates 3-5 
 
 ## Locked decisions (do not change without asking)
 Boone Creek Fabrication (fictional ~40-person Iowa fab shop); no CAD parsing; cost = BOM + routing x burdened rates;
-S/M/L is an output; numbers from tables, vectors only for text; evidence-weighted ledger; Gate 1 (estimator BOM/routing)
-+ Gate 2 (manager price), overrides need reasons and are saved to memory; local-first (Ollama); synthetic data labeled; Streamlit UI.
+S/M/L is an output; numbers from tables, vectors only for text; evidence-weighted ledger; Gate 1 (estimator BOM/routing; shown as "Checkpoint 1" in the UI)
++ Gate 2 (manager price; "Checkpoint 2"), overrides need reasons and are saved to memory; local-first (Ollama); synthetic data labeled; Streamlit UI.

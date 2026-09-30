@@ -1,5 +1,13 @@
 # QUOTE MEMORY: Claude Code Handoff & Build Directive
 
+> **Update (final week): the build was simplified for a 15-20 minute demo with a non-technical co-presenter.** This
+> file is the original brief and is kept as written. Where it differs from the code, the code and these docs win:
+> `docs/PLAIN_ENGLISH.md` (story, glossary, five steps), `docs/assumptions.md` (current constants) and `PROGRESS.md`
+> (phases S1 to S4). What changed: a smaller shop (5 job types, 3 materials, 5 shop steps), a guided 5-step UI, "Gate 1 / Gate 2"
+> shown as "Checkpoint 1 / 2", "Memory" shown as "Shop notebook", confidence shown as High / Medium / Low, three price
+> choices instead of the shop-load and expedite controls (still in the engine), and a hosted model (Claude Haiku 4.5)
+> for the demo. **The Locked Decisions in Section 3 are unchanged.**
+
 > **To Claude Code:** You own this project end to end. Read this whole file before doing anything. Then follow **Section 2 (Operating Rules)** and work through **Section 10 (Phases)** in order until every acceptance check passes. Quentin is monitoring remotely and can step in, but you make most of the judgment calls. Escalate only what Section 2.3 lists.
 
 ---

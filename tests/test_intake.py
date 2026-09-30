@@ -155,3 +155,12 @@ def test_paraphrased_quote_is_accepted_at_medium():
     out = intake.verify_quotes(fake, RFQS["RFQ-A"]["email_text"])
     assert out["finish"]["verified"] and out["finish"]["confidence"] == "medium"
     assert out["qty"]["verified"] and out["qty"]["confidence"] == "high"      # exact after trimming the period
+
+
+def test_rule_extract_finds_thickness_after_the_material_words_but_not_a_tolerance():
+    e = ("From: a@b.example\nSubject: RFQ\n\nPlease quote 80 pcs of a guard, 5052 aluminum sheet 0.125 in, "
+         "powder coat black, standard tolerance +/-0.030 in.")
+    out = intake.rule_extract(e)
+    assert intake.parse_thickness(out["thickness_in"]["value"]) == 0.125
+    e2 = "From: a@b.example\nSubject: RFQ\n\nPlease quote 10 pcs of a guard. Tolerance +/-0.030 in."
+    assert intake.rule_extract(e2)["thickness_in"]["value"] is None

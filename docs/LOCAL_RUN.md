@@ -105,9 +105,9 @@ python -m qm.pipeline --warm demo/rfqs
 This also downloads the small local embedding model (~80 MB, once). Expected:
 ```
 Provider: ollama:qwen3:8b  mode: live
-  RFQ-A: gaps=['qty_conflict', 'finish_color'] analog=J-1042 P50=$156.12 rec=$209.20 llm=['live', ...]
-  RFQ-B: gaps=[] analog=J-1103 ...
-  RFQ-C: gaps=[] analog=J-1118 ...
+  RFQ-A: gaps=['qty_conflict', 'finish_color'] analog=J-1042 P50=$151.48 rec=$198.44 llm=['live', ...]
+  RFQ-B: gaps=[] analog=J-1103 P50=$133.21 rec=$175.17 ...
+  RFQ-C: gaps=[] analog=J-1118 P50=$42.62 rec=$56.26 ...
 ```
 Run it a second time: every `llm=` entry should now say `cache` and it should take a few seconds.
 
@@ -118,7 +118,7 @@ streamlit run app.py
 Your browser opens http://localhost:8501. The sidebar should say **Model: `qwen3:8b`**, **Mode: `live`**.
 
 ## 8. Walk through the demo
-Follow `demo/demo_script.md` once end to end (about 3.5 minutes). Click **Reset demo state** in the
+Follow `demo/demo_script.md` once end to end (about 10 minutes). Click **Start over** in the
 sidebar before each rehearsal and before the real presentation.
 
 ## 9. (Optional) Commit the warmed cache so offline mode has real model output
@@ -163,6 +163,6 @@ extracts text, drafts the clarification email and writes the one-line pattern se
   `pip install streamlit pandas numpy scikit-learn plotly requests pydantic python-dotenv pytest`
 - **First app start is slow**: it's building the local vector index and (once) downloading the embedding
   model. Run step 6 on venue Wi-Fi beforehand, or before you leave home.
-- **Something looks stuck in the demo**: sidebar **Reset demo state**, or stop Streamlit (Ctrl+C) and
+- **Something looks stuck in the demo**: sidebar **Start over**, or stop Streamlit (Ctrl+C) and
   delete the `data/memory` folder.
 - **Run the tests**: `python -m pytest -q` (about a minute; no model needed).

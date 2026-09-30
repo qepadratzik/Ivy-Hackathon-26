@@ -321,6 +321,11 @@ def rule_extract(email: str) -> dict:
                       body, re.I)
         if m:
             put("material", m.group(0), m.group(0))
+    if out["thickness_in"]["value"] is None:     # "5052 aluminum sheet 0.125 in": thickness after the material words
+        for m in re.finditer(r"(\d+\s*/\s*\d+\s*(?:\"|in\b|inch)|\d*\.\d+\s*(?:\"|in\b|inch)|\d+\s*(?:ga|gauge)\b)", body, re.I):
+            if "+/-" not in body[max(0, m.start() - 4):m.start()]:     # not a tolerance like +/-0.030 in
+                put("thickness_in", m.group(1), m.group(1))
+                break
     m = re.search(r"[^\n.]*(no cosmetic|not cosmetic|structural weld|standard weld|no welding)[^\n.]*", body, re.I)
     if m:
         put("cosmetic_weld", "no", m.group(0))
