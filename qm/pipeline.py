@@ -277,7 +277,21 @@ def main(argv: list[str] | None = None) -> int:
         rfq = intake.load_demo_rfqs().get("RFQ-A")
         prompt = intake.INTAKE_PROMPT.format(received=rfq["received_date"].isoformat(),
                                              email=rfq["email_text"].strip()) if rfq else None
-        return 0 if llm.check_ollama(prompt) else 1
+        if not llm.check_ollama(prompt):
+            return 1
+        if rfq and llm.current_provider() == "ollama":
+            x = intake.extract(rfq)
+            s = x["spec"]
+            found = sorted(g["id"] for g in gaps.find_gaps(x))
+            want = sorted(rfq["expected"]["gaps"])
+            print(f"RFQ A as read by the model: qty={s['qty']} lot={s['lot_qty']} material={s['material']} "
+                  f"thickness={s['thickness_in']} cosmetic={s['cosmetic_weld']} finish={s['finish']} "
+                  f"color={s['finish_color']} due={s['due_date']}")
+            print(f"{'OK' if found == want else 'CHECK'}: gaps {found} (demo expects {want})")
+            if found != want:
+                print("      The live model read RFQ A differently. For the presentation use MODEL_PROVIDER=mock "
+                      "(hand-checked extractions) or tell Claude what it printed.")
+        return 0
     if args.warm:
         return warm(args.warm)
     ap.print_help()

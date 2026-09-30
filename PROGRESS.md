@@ -54,3 +54,10 @@
 - **Quentin: please do the local Ollama run (docs/LOCAL_RUN.md, coming in Phase 8) by ~12:30 PM CT Thu.**
 - Next: Phase 8 demo hardening (offline mode test, LOCAL_RUN.md, demo script).
 
+## [Wed 01:28 CT] Phase 8: Demo hardening: DONE (pending Quentin's local run)
+- Built: `docs/LOCAL_RUN.md` (Windows + macOS steps, .env, ollama pull, `--check-ollama` now also prints how the live model read RFQ A and whether the demo's 2 gaps match, `--warm`, run, commit cache after secret scan, presentation-day mode table, troubleshooting incl. chromadb-install fallback), `demo/demo_script.md` (7 beats with exact clicks, on-screen numbers, talking points, 60-second fallback, recovery moves), `docs/assumptions.md` (every constant + modeling decision). Relaxed quote verification for paraphrased quotes (verified-approx -> medium) so a live small model doesn't create spurious gaps. Git hooks now find python/py on Windows.
+- Verified: AppTest with `MODEL_PROVIDER=ollama` and Ollama unreachable in both `DEMO_MODE=offline` (zero network calls) and `live` (degrades to fixtures/templates): full path, no exceptions. `--warm` and `--check-ollama` (clean FAIL when Ollama is down) run. Reset button tested. Full suite green (~280 tests).
+- Cuts/decisions: `evidence_explain` LLM one-liner cut (Cut Order #6); the drawer uses a deterministic explanation sentence. Nothing else cut.
+- **Quentin: run docs/LOCAL_RUN.md on your PC (steps 1-7, ~15 min) by ~12:30 PM CT Thu and tell me what `--check-ollama` prints.**
+- Next: README (subagent), business-doc review (Phase 9), red-team + fresh-clone check (Phase 10).
+

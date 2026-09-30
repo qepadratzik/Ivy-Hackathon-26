@@ -1,16 +1,20 @@
 #!/bin/sh
 # Secret guard on outgoing commits. Install: cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
 top="$(git rev-parse --show-toplevel)"
+PY=""
+for py in python3 python py; do
+  if command -v "$py" >/dev/null 2>&1; then PY="$py"; break; fi
+done
+[ -z "$PY" ] && { echo "SECRET GUARD: no python found; refusing to push unscanned." >&2; exit 1; }
 z40=0000000000000000000000000000000000000000
 status=0
 while read local_ref local_sha remote_ref remote_sha; do
   [ "$local_sha" = "$z40" ] && continue
   if [ "$remote_sha" = "$z40" ]; then
-    base="$(git hash-object -t tree /dev/null)"
-    range="$base..$local_sha"
+    range="$(git hash-object -t tree /dev/null)..$local_sha"
   else
     range="$remote_sha..$local_sha"
   fi
-  python3 "$top/scripts/secret_scan.py" --range "$range" || status=1
+  "$PY" "$top/scripts/secret_scan.py" --range "$range" || status=1
 done
 exit $status

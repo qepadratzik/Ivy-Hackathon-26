@@ -1,3 +1,8 @@
 #!/bin/sh
 # Secret guard (PUBLIC repo). Install: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
-exec python3 "$(git rev-parse --show-toplevel)/scripts/secret_scan.py" --staged
+top="$(git rev-parse --show-toplevel)"
+for py in python3 python py; do
+  if command -v "$py" >/dev/null 2>&1; then exec "$py" "$top/scripts/secret_scan.py" --staged; fi
+done
+echo "SECRET GUARD: no python found; refusing to commit unscanned." >&2
+exit 1

@@ -255,21 +255,35 @@ def _norm_ws(s: str) -> str:
     return re.sub(r"\s+", " ", s.replace("”", '"').replace("’", "'")).strip().lower()
 
 
+_WORD_RE = re.compile(r"[a-z0-9]+(?:[/.\-][a-z0-9]+)*")
+
+
 def verify_quotes(extracted: dict, email: str) -> dict:
-    """Anti-hallucination guard: a value whose source quote is not in the email gets downgraded."""
+    """Anti-hallucination guard. Each value must cite the email:
+    exact (whitespace/quote-normalized) quote -> verified;
+    every word of the quote appears in the email (small models paraphrase punctuation) -> verified,
+      confidence capped at medium;
+    otherwise -> unverified, confidence low (becomes a gap if the field is required).
+    Quantities must also appear as a number inside their quote."""
     body = _norm_ws(email)
+    body_tokens = set(_WORD_RE.findall(body))
     for name, f in extracted.items():
         if f.get("value") in (None, ""):
             f.update(confidence="low", source_quote=None, verified=None)
             continue
-        q = f.get("source_quote")
-        ok = bool(q) and _norm_ws(q) in body
+        q = _norm_ws(f.get("source_quote") or "").strip(" .,;:\"'")
+        exact = bool(q) and q in body
+        toks = _WORD_RE.findall(q)
+        approx = (not exact) and bool(toks) and all(t in body_tokens for t in toks)
+        ok = exact or approx
         if ok and name in ("qty", "release_qty"):
             n = parse_int(f["value"])
-            ok = n is not None and str(n) in _norm_ws(q).replace(",", "")
+            ok = n is not None and str(n) in q.replace(",", "")
         f["verified"] = ok
         if not ok:
             f["confidence"] = "low"
+        elif approx and f.get("confidence") == "high":
+            f["confidence"] = "medium"
     return extracted
 
 

@@ -146,3 +146,12 @@ def test_intake_live_result_is_cached(monkeypatch, tmp_path):
     b = intake.extract(RFQS["RFQ-C"])
     assert a["llm"]["source"] == "live" and b["llm"]["source"] == "cache" and len(calls) == 1
     assert len(list(tmp_path.glob("*.json"))) == 1
+
+
+def test_paraphrased_quote_is_accepted_at_medium():
+    fake = {k: {"value": None, "confidence": "low", "source_quote": None} for k in intake.RFQSpec.model_fields}
+    fake["finish"] = {"value": "powder coat", "confidence": "high", "source_quote": "finish is powder coat, per our usual"}
+    fake["qty"] = {"value": "250", "confidence": "high", "source_quote": "quantity is 250 pcs total."}
+    out = intake.verify_quotes(fake, RFQS["RFQ-A"]["email_text"])
+    assert out["finish"]["verified"] and out["finish"]["confidence"] == "medium"
+    assert out["qty"]["verified"] and out["qty"]["confidence"] == "high"      # exact after trimming the period
