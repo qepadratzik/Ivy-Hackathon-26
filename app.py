@@ -157,6 +157,8 @@ with st.sidebar:
                            placeholder="From: buyer@customer.example\nSubject: RFQ ...\n\nPlease quote 100 pcs ...")
         if st.button("Read this RFQ", key="paste_go"):
             st_["paste"] = txt
+            for d in (st_["rfq_states"], st_["last"], st_["banner"], st_["g1_pending"]):
+                d.pop("RFQ-PASTE", None)
         if st_["paste"]:
             rfq = intake.pasted_rfq(st_["paste"])
     else:
@@ -355,6 +357,9 @@ def sec_requirements():
         if spec.get("first_run"):
             facts.append("**first run** (part number not in our history)")
         facts.append(f"customer segment: {spec.get('segment')}" + (" (new customer)" if spec.get("is_new_customer") else ""))
+        if spec.get("assumed_from_analog"):
+            facts.append("**working assumptions from the closest past job:** "
+                         + ", ".join(f"{f.replace('_', ' ')} = {field_text(f, spec[f])}" for f in spec["assumed_from_analog"]))
         st.markdown("From our history: " + "; ".join(facts))
 
 

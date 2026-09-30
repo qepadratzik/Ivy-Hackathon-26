@@ -190,3 +190,16 @@ def test_remove_for_rfq_replaces_previous_gate1_rows():
     memory.record_decision("RFQ-A", a["spec"], "gate2_price", "Manager priced above range: strategic account")
     assert memory.remove_for_rfq("RFQ-A") == 1
     assert len(memory.list_memory()) == 1
+
+
+@pytest.mark.parametrize("text", ["", "asdf qwerty", "Please quote a guard in aluminum, 60 pcs, powder coat red. "
+                                                   "Need by Nov 20.\nThanks, Pat\nBig Sioux Trailer"])
+def test_thin_or_nonsense_pastes_still_give_sane_numbers(text):
+    res = pipeline.run_pipeline(intake.pasted_rfq(text), {})
+    s = res["spec"]
+    assert s["qty"] and s["lot_qty"] and s["material"] and s["part_family"]
+    assert 5 < res["risk"]["p50"] < 2000 and res["pricing"]["recommended"] > res["risk"]["p50"]
+    for f in s["assumed_from_analog"]:
+        assert f"missing_{f}" in [g["id"] for g in res["gaps"]]
+    if "aluminum" in text:
+        assert s["material"] == "5052AL" and s["part_family"] == "guard" and s["qty"] == 60

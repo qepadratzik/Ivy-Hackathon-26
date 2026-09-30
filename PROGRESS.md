@@ -61,3 +61,9 @@
 - **Quentin: run docs/LOCAL_RUN.md on your PC (steps 1-7, ~15 min) by ~12:30 PM CT Thu and tell me what `--check-ollama` prints.**
 - Next: README (subagent), business-doc review (Phase 9), red-team + fresh-clone check (Phase 10).
 
+## [Wed 01:33 CT] Phase 9: Business package: DONE
+- Built (subagents, reviewed + corrected by me): `docs/process_current.md` (8 red bottlenecks + table), `docs/process_future.md` (7 stages, AI roles, gates, memory loop + stage table), `docs/deck_outline.md` (9 slides, 4:20 talk + 3:30 demo, speaker notes, `[QUENTIN: ...]` hook placeholder), `docs/qa.md` (24 judge questions + honest limits + constants), `docs/roi.md` (ILLUSTRATIVE; editable inputs, formulas, worked example, sensitivity, adoption path), `README.md`.
+- Verified: numbers/features match the build (P1 1.38x, P2 1.94x, P5 +15%, expedite +12%/-7 d, authorities/half-lives, gates); fixed statements that drifted (steel lines are correlated in the Monte Carlo, capacity adds an opportunity cost, win model includes customer history, offline fallback is a rule-based extractor). Only placeholder: the hook story.
+- Also: Gate 2 "Use recommended" fixed (callback), past Gate 2 decisions surface on similar quotes, Ollama schema now requires every field, plain-English pattern sentences for mock/offline mode.
+- Next: Phase 10 red-team review (running), fresh-clone check (running), final screenshots, tag v1-demo.
+

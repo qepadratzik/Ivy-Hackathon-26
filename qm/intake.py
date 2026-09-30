@@ -318,6 +318,11 @@ def rule_extract(email: str) -> dict:
     if m:
         put("material", m.group(0), m.group(0))
         put("thickness_in", m.group(1), m.group(1))
+    else:
+        m = re.search(r"\b(a-?36|a-?500|1018|304 ?(?:ss|stainless)?|stainless(?: steel)?|5052|alumin(?:um|ium))\b[^\n,.;]*",
+                      body, re.I)
+        if m:
+            put("material", m.group(0), m.group(0))
     m = re.search(r"[^\n.]*(no cosmetic|not cosmetic|structural weld|standard weld|no welding)[^\n.]*", body, re.I)
     if m:
         put("cosmetic_weld", "no", m.group(0))

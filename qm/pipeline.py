@@ -72,6 +72,28 @@ def apply_gate1(lines: list[dict], edits: dict, excluded: list[str]) -> tuple[li
     return out, overrides, bom_edits
 
 
+def fill_from_analog(spec: dict, analog) -> dict:
+    """Missing essentials are taken from the closest past job (the 'assume' default of the matching gap),
+    so a thin or partial RFQ still produces sane numbers. Listed in spec['assumed_from_analog']."""
+    spec = dict(spec)
+    filled = []
+    for field, val in (("part_family", analog.part_family), ("material", analog.material),
+                       ("thickness_in", float(analog.thickness_in)), ("qty", int(analog.qty))):
+        if spec.get(field) in (None, ""):
+            spec[field] = val
+            filled.append(field)
+    if spec.get("finish") in (None, ""):
+        f = (analog.finish or "").lower()
+        spec["finish"] = "powder_coat" if "powder" in f else "zinc" if "zinc" in f else "none"
+        filled.append("finish")
+    if not spec.get("lot_qty"):
+        spec["lot_qty"] = spec.get("release_qty") or spec.get("qty")
+    if "part_family" in filled:
+        spec["weldment"] = spec["part_family"] in ("hitch_bracket", "frame", "tube_assembly", "guard")
+    spec["assumed_from_analog"] = filled
+    return spec
+
+
 def first_release_hours(ledger: list[dict], spec: dict) -> float:
     lot = max(1, int(spec.get("lot_qty") or spec.get("qty") or 1))
     h = 0.0
@@ -94,6 +116,8 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
 
     sims = retrieval.similar_jobs(spec, t)
     analog = retrieval.pick_analog(sims)
+    if analog is not None:
+        spec = fill_from_analog(spec, analog)
     tri = triage.triage(spec, float(analog.sim) if analog is not None else None)
     prop = proposal.build_proposal(spec, analog, t)
     lines, overrides, bom_edits = apply_gate1(prop["lines"], st["gate1_edits"], st["gate1_excluded"])
