@@ -50,6 +50,12 @@ def base_tables() -> dict[str, pd.DataFrame]:
     d = out["docs"]
     for c in ["work_center", "line_key"]:
         d[c] = d[c].where(d[c].notna(), None)
+    if not config.SQLITE_PATH.exists():   # one SQLite DB mirrors the CSVs (the shop's "system of record")
+        try:
+            from qm import data_gen
+            data_gen.build_sqlite(out)
+        except Exception as e:
+            log.warning("could not build SQLite mirror: %s", e)
     return out
 
 
