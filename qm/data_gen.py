@@ -334,14 +334,14 @@ def hero_specs() -> list[dict]:
              desc="Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, tube, bushings; cosmetic welds visible "
                   "side; powder coat red",
              debrief=None),
-        dict(job_id="J-1103", cust="C04", fam="hitch_bracket", pn="NSA-HB-118", mat="A36", t=0.375, qty=100,
+        dict(job_id="J-1103", cust="C04", fam="hitch_bracket", pn="NSA-HB-118", mat="A36", t=0.375, qty=150,
              cosmetic=False, finish="powder coat black", first_run=True, fixture=False, d=date(2026, 7, 8),
              won=True, ratio=1.29, lead=30, bom=hb_bom,
              ops=[("laser", 0.5, 0.075, 0.5, 0.077), ("press_brake", 0.7, 0.05, 0.75, 0.051), ("saw", 0.25, 0.03, 0.25, 0.03),
                   ("fit_tack", 2.0, 0.20, 4.4, 0.21), ("weld", 0.5, 0.42, 0.5, 0.43), ("grind", 0.25, 0.10, 0.25, 0.1),
                   ("inspect_pack", 0.25, 0.05, 0.3, 0.05)],
-             desc="Hitch bracket weldment, 3/8 A36 plate, laser cut + formed parts, 2x2x3/16 A500 tube, bushings & "
-                  "bolt kit; standard structural welds; powder coat black; new design, first production run",
+             desc="Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & "
+                  "bolt kit; standard structural welds; powder coat black; new part, first run",
              debrief="First run on this bracket and nobody quoted a fixture. Spent most of the morning building one "
                      "out of drop, fit/tack setup ran more than double. Quote a new fixture on first-run weldments."),
         dict(job_id="J-0842", cust="C07", fam="mounting_plate", pn="LHM-MP-0620", mat="A36", t=0.5, qty=50,

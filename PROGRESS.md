@@ -24,3 +24,9 @@
 - Cuts/decisions: added a `fixture` routing op (one-time, fit_tack rate) and `line_key/old_value/new_value` columns on `docs` (needed for override memory). Data CSVs are committed; SQLite + Chroma are rebuilt locally (gitignored).
 - Next: Phase 2 store + retrieval.
 
+## [Wed 00:50 CT] Phase 2: Store & retrieval: DONE
+- Built: `qm/store.py` (CSV tables + demo-session memory overlay; Chroma persistent store with local MiniLM embeddings, auto-rebuilt when data changes; TF-IDF fallback if Chroma/model unavailable, forced via `QM_EMBEDDINGS=tfidf`), `qm/retrieval.py` (similar jobs, analog pick, related notes, "why matched" strings).
+- Verified: `tests/test_retrieval.py` (both backends): A->J-1042, B->J-1103, C->J-1118; A's weld-line notes are cosmetic-weld debriefs; B's setup notes lead with J-1103's fixture debrief. Full suite green.
+- Cuts/decisions: structured similarity gets a weld-class term (0.32 family, 0.16 material, 0.16 thickness, 0.16 qty bucket, 0.20 weld class; HANDOFF weights x0.8), because cosmetic vs standard weld is the biggest labor driver (P1). Analog pick uses recency as a soft tiebreaker (15% weight). Hero J-1103 qty set to 150.
+- Next: Phase 3 intake, gaps, triage.
+
