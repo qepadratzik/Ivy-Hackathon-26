@@ -106,7 +106,7 @@ streamlit run app.py
 - **RFQ C (fast-track):** Loess Hills mounting plate, repeat order. Triaged S, no gaps, all lines green.
 
 Click-by-click script (~3.5 min, plus a 60 s fallback): [demo/demo_script.md](demo/demo_script.md). Use the sidebar's
-**↺ Reset demo state** before each run.
+**Reset demo state** before each run.
 
 ## Tests
 

@@ -48,7 +48,7 @@
 - Next: Phase 7 Streamlit UI.
 
 ## [Wed 01:21 CT] Phase 7: Streamlit UI: DONE
-- Built: `app.py` per Section 8: sidebar (RFQ picker A/B/C + paste box, shop-load slider, "age newest material quote" slider, model/mode indicator, memory panel, Reset), header (triage badge + reason, 7-stage stepper, KPI strip), change banner with cause ("what just changed ... because ..."), sections 1-6 (gaps with Ask/Assume + contingency, fields with confidence chips + verbatim source quotes, clarification email; analog card + diff table + editable BOM/routing + quick-adjust + required reason + Gate 1; ledger table + evidence drawer with score = sim x authority x recency and original text, pattern callouts, 🧠 "learned from an earlier quote" callout; Monte Carlo histogram + uncertainty drivers + contingencies + material freshness; expected-margin/win-chance curve with range, floor, decision-cost breakdown, standard vs expedite, Gate 2 with out-of-range reason; quote preview + Markdown/HTML download). `.streamlit/config.toml` (light theme, minimal toolbar).
+- Built: `app.py` per Section 8: sidebar (RFQ picker A/B/C + paste box, shop-load slider, "age newest material quote" slider, model/mode indicator, memory panel, Reset), header (triage badge + reason, 7-stage stepper, KPI strip), change banner with cause ("what just changed ... because ..."), sections 1-6 (gaps with Ask/Assume + contingency, fields with confidence chips + verbatim source quotes, clarification email; analog card + diff table + editable BOM/routing + quick-adjust + required reason + Gate 1; ledger table + evidence drawer with score = sim x authority x recency and original text, pattern callouts, "learned from an earlier quote" callout; Monte Carlo histogram + uncertainty drivers + contingencies + material freshness; expected-margin/win-chance curve with range, floor, decision-cost breakdown, standard vs expedite, Gate 2 with out-of-range reason; quote preview + Markdown/HTML download). `.streamlit/config.toml` (light theme, minimal toolbar).
 - Verified: `tests/test_app.py` AppTest runs the full A -> Gate 1 override -> weld drawer/P1 -> age 90 d -> Gate 2 -> quote -> B (sees A's override as evidence) -> C (fast-track) -> reset path, plus every section for every RFQ and a pasted RFQ, no exceptions. Real-browser walk-through (Playwright + Chromium) screenshots reviewed; fixed $-as-LaTeX rendering, clipped header, cramped tables, chart label overlap.
 - Fix: an RFQ's own saved override is no longer re-counted as "memory" evidence on itself. Tests now isolate memory via `tests/conftest.py`.
 - **Quentin: please do the local Ollama run (docs/LOCAL_RUN.md, coming in Phase 8) by ~12:30 PM CT Thu.**
@@ -76,8 +76,8 @@
 ## [Wed 02:18 CT] Phase 10: Red-team review addressed
 - Review (`docs/review.md`, 22 findings: 1 blocker, 3 high) with a resolution table at the end. All fixed except #10 (mitigated) and two conscious "accepts" (stepper shows process progress; "three gates" = Gate 1, Gate 2, the human who sends).
 - **Blocker fixed:** Reset now regenerates every widget (generation-suffixed keys + on_click reset). Verified in real Chromium and in AppTest.
-- **Demo change (Beat 2):** on a revision change the system adds a red 0-hr *Fixture build (one-time)* line ("confirm the old fixture still fits"); the estimator sets 6 hr with the reason -> charged once (80 over 250 pcs, listed as tooling on the quote), line turns green. B learns on its own one-time fixture line (🧠 callout). Before, the +6 hr sat on per-release setup (charged 5x) and double-counted on B. `demo/demo_script.md` rewritten with the new on-screen numbers.
-- Also: 🔁 toast on every change, banner shows validity changes, stale Gate 2 approvals invalidated, Gate 2 price follows the recommendation, exclusions saved, "not priced" for junk pastes, no-welding RFQs, tube assemblies on A500, labor lines 0.5-correlated in the Monte Carlo (A band 7.8% -> 11.3%), release-size table + setup/tooling block on the quote, jargon cleanup.
+- **Demo change (Beat 2):** on a revision change the system adds a red 0-hr *Fixture build (one-time)* line ("confirm the old fixture still fits"); the estimator sets 6 hr with the reason -> charged once (80 over 250 pcs, listed as tooling on the quote), line turns green. B learns on its own one-time fixture line (callout). Before, the +6 hr sat on per-release setup (charged 5x) and double-counted on B. `demo/demo_script.md` rewritten with the new on-screen numbers.
+- Also: toast on every change, banner shows validity changes, stale Gate 2 approvals invalidated, Gate 2 price follows the recommendation, exclusions saved, "not priced" for junk pastes, no-welding RFQs, tube assemblies on A500, labor lines 0.5-correlated in the Monte Carlo (A band 7.8% -> 11.3%), release-size table + setup/tooling block on the quote, jargon cleanup.
 - `docs/screens/` captured (13 PNGs of the demo beats) for slides and the fallback. Full suite green.
 
 ---
@@ -99,7 +99,7 @@ rejects tag pushes (HTTP 403, policy), so please create it from your PC:**
   P10/P50/P90 → win-probability curve, capacity, expedite → Gate 2 (reason if out of range) → quote preview
   (release-size prices, setup & tooling, assumptions, validity) with Markdown/HTML download.
 - Chain reaction: every change shows a "What just changed" banner + toast (P50, band, price, validity, lines that
-  changed confidence, and why). Memory loop: A's fixture override appears as 🧠 evidence on B.
+  changed confidence, and why). Memory loop: A's fixture override appears as learned evidence on B.
 - Local-first: Ollama qwen3:8b (`think:false`), local embeddings (Chroma MiniLM, TF-IDF fallback), every call cached,
   `DEMO_MODE=offline` never calls a model.
 
@@ -131,3 +131,5 @@ live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence
 - GPU box unavailable -> demo model is the hosted `anthropic` provider (allowed fallback; locked decisions unchanged). Provider now uses the official SDK, default `claude-haiku-4-5`, no temperature (Sonnet/Opus 5.5 reject it). `python -m qm.pipeline --check-model` works for any provider. Docs reworded so nothing claims the demo ran locally. Tests green.
 - **Quentin next:** get a dedicated API key (low spend limit) -> put it in `.env` (or the cloud env var `ANTHROPIC_API_KEY`, then a new session) -> `docs/LOCAL_RUN.md` "Hosted model" steps -> commit warmed `cache/llm` -> demo with `DEMO_MODE=offline`.
 
+## [Wed 11:23 CT] Emoji purge
+- Removed every emoji and pictographic symbol (including check marks) from the UI (`app.py`), scripts, docs and the regenerated `docs/screens/`. Confidence chips are now text ("green 0.97"), flags are EDIT / LEARNED / WARN, buttons are plain ("Approve Gate 1", "Reset demo state"). Arrows and math symbols kept. Tests green.

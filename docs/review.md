@@ -8,10 +8,10 @@ tested). Screenshots are in my scratch dir, not the repo. I did not test Ollama 
 ## Summary
 
 - **The scripted path is solid.** Every number in `demo/demo_script.md` beats 1-7 matched to the cent: $156.35 →
-  $156.62 → $166.01 → $166.85, rec $208.73 → $209.08 → $221.62 → $222.74, 🟢0.94→🔴0.36, A36 0.97→0.21, B
-  $138.16 → $138.99, C $43.31 → $56.30, 🟢8. No exceptions on any path I tried. Every click finished in under 1.2 s.
+  $156.62 → $166.01 → $166.85, rec $208.73 → $209.08 → $221.62 → $222.74, green 0.94→red 0.36, A36 0.97→0.21, B
+  $138.16 → $138.99, C $43.31 → $56.30, green 8. No exceptions on any path I tried. Every click finished in under 1.2 s.
   A cold start takes 6-16 s.
-- **One blocker:** the **↺ Reset demo state** button leaves the browser widgets showing their old values. After a
+- **One blocker:** the **Reset demo state** button leaves the browser widgets showing their old values. After a
   rehearsal, the first click of the real demo can jump to RFQ C or do nothing at all. This also breaks the script's own
   recovery move. Workaround: **Reset, then F5**.
 - **Biggest credibility risk for an industry panel:** the hero override puts a **one-time fixture on the per-release
@@ -74,7 +74,7 @@ tested). Screenshots are in my scratch dir, not the repo. I did not test Ollama 
     After approving, the banner is at y=-235 (off-screen). At 1280x800 it is y=-503.
   - At 1280x800 the Beat 1 color card sits at the fold. After clicking it the banner is at y=-95.
   - In Beat 4, if the drawer was scrolled in Beat 3, the banner is also out of view.
-  - At 1280x800, the Beat 6 "🧠 Learned from an earlier quote" callout is below the fold (y≈977).
+  - At 1280x800, the Beat 6 "Learned from an earlier quote" callout is below the fold (y≈977).
 - *Why it matters:* "Watch the banner" is the chain-reaction moment, which is design goal #1. The presenter will be
   scrolling while talking.
 - *Fix:*
@@ -100,7 +100,7 @@ tested). Screenshots are in my scratch dir, not the repo. I did not test Ollama 
 ### MEDIUM
 
 **5. Approved gates are not invalidated when upstream inputs change.**
-- *Repro:* assume both gaps, approve Gate 1 and Gate 2 at $209.64 ("✓ Ready to send"). Then set load to 100% and age to
+- *Repro:* assume both gaps, approve Gate 1 and Gate 2 at $209.64 ("Ready to send"). Then set load to 100% and age to
   180, and re-open Gate 1 with +6.
 - *What happens:*
   - The quote still says **"Ready to send"** at $209.64, while P50 is now $168.59, rec $235.19 and **floor $233.48**.
@@ -123,7 +123,7 @@ tested). Screenshots are in my scratch dir, not the repo. I did not test Ollama 
 **7. Script and screen mismatches.**
 - Beat 4 says the banner shows "quote validity 30 → 15 days". It doesn't: `app.py` renders only P50/band/rec/lines, and
   `diff()["text"]` is unused.
-- Beat 4 says "the steel lines show ⚠ *Newest A36 quote is 95 days old…*". The ledger shows only a ⚠ icon. The text
+- Beat 4 says "the steel lines show a warning: *Newest A36 quote is 95 days old…*". The ledger shows only a WARN flag. The text
   appears only in the drawer after selecting **A36 plate**, or in section 4.
 - Beat 1 "tight but feasible" isn't on screen (it shows "slack +3").
 - Beat 2's key sentence "New revision of a part we built: check that the fixture and programs still fit" is truncated
@@ -192,7 +192,7 @@ records "Manager priced $0.00". *Fix:* use `is not None`, and set a sane `min_va
 - The banner cause uses internal keys: "Gate 1 edits: **fit_tack.setup** → 8.10", "**mat.A36** → 2.00".
 - "P50" appears in the KPIs and banner. The drawer says "CV 0.20" and "weight **4.9 of 3**". The evidence table header
   is "= sim × auth × recen…" (truncated).
-- The stepper shows "▶ Determine Manufacturing Approach" while section 1 is displayed.
+- The stepper shows "> Determine Manufacturing Approach" while section 1 is displayed.
 
 *Fix:* map keys to labels in `cause_of_change`. Use "typical cost (P50)", "sources disagree by ±20%", and "evidence
 weight 4.9 (3+ = full)".
@@ -202,8 +202,8 @@ weight 4.9 (3+ = full)".
 default the delta to 0 except for RFQ-A, and reset `qa_delta` after Apply.
 
 **16. Wild BOM edits aren't sanity-checked.** Setting the A36 plate from 19.8 to 2.0 lb/unit is accepted silently. The
-line stays 🟢0.97 (confidence is on $/lb, not quantity) with no ✎ flag in the ledger. It is also written to memory, but
-BOM overrides are never used as evidence. *Fix:* warn when an edit is more than 2× or less than 0.5× the analog, show ✎
+line stays green 0.97 (confidence is on $/lb, not quantity) with no EDIT flag in the ledger. It is also written to memory, but
+BOM overrides are never used as evidence. *Fix:* warn when an edit is more than 2× or less than 0.5× the analog, show EDIT
 on BOM lines, and don't claim "saved so the next quote learns" for BOM edits.
 
 **17. The docs don't fully match the app:**
@@ -244,7 +244,7 @@ news.
 - It degrades cleanly with Ollama unreachable, or offline with an empty cache: fixture/template fallback, same numbers,
   honest labels.
 - The provenance drawer is strong. For J-1042 it shows "Quoted 0.46 hr/unit, actual 0.62", the date, and the
-  half-life. P1 is shown with n=16. The override honestly turns red (🟢0.94→🔴0.36). The learning loop shows up on B with
+  half-life. P1 is shown with n=16. The override honestly turns red (green 0.94→red 0.36). The learning loop shows up on B with
   its reason.
 - Gate 1 refuses an edit without a reason. Stale steel lowers confidence, widens the band, and switches validity to 15
   days.
@@ -255,7 +255,7 @@ news.
 2. Warm the cache with Ollama, then run `DEMO_MODE=offline`. Confirm the labels don't say `mock` (#4).
 3. **Reset, then F5.** Verify: A is selected, 50%, 0 days, section 1, **both gap cards on "Ask"**, Memory 0 (#1).
 4. After every Approve or card click, scroll to the top before saying "watch the banner". Present at 80-90% zoom (#3).
-5. Beat 4: select **A36 plate** in the drawer to show the ⚠ text. Say "15-day validity" on the Quote tab, not the
+5. Beat 4: select **A36 plate** in the drawer to show the warning text. Say "15-day validity" on the Quote tab, not the
    banner (#7).
 6. Skip the optional shop-load drag. If you do it, click **Use recommended** and drag back to 50% before Beat 6 (#6).
 7. Rehearse the answer to "fixture every release / fixture twice on B", or change the Beat 2 reason (#2).
@@ -270,20 +270,20 @@ news.
 |---|---|---|---|
 | 1 | Reset leaves widgets stale | **Fixed** | Every widget key carries a generation suffix; Reset is an `on_click` callback that clears state and bumps the generation, so the browser draws fresh widgets. Verified in Chromium: after rehearsing to C with 90% load, Reset shows A / 50% / 0 / section 1 / both gaps "Ask", and the first Assume click produces the banner. AppTest asserts the same. |
 | 2 | Fixture charged every release; double count on B | **Fixed** | Revision change adds a red 0-hr *Fixture build (one-time)* line; Beat 2 sets it to 6 hr (charged once: $480 over 250 pcs). B learns on its own one-time fixture line (absolute 6 hr from memory). P2 explains the fixture line instead of inflating setup, and "no fixture quoted" debriefs don't count when a fixture line exists. Quote lists setup per release and one-time tooling separately. |
-| 3 | Banner off-screen after clicks | **Fixed** | Every change also fires a 🔁 toast (visible at any scroll position) with P50, price and the first changed line. Gate 1 editor height capped so Approve sits closer. |
+| 3 | Banner off-screen after clicks | **Fixed** | Every change also fires a toast (visible at any scroll position) with P50, price and the first changed line. Gate 1 editor height capped so Approve sits closer. |
 | 4 | Mock labels contradict the talk track | **Fixed / process** | Labels now say "hand-checked extraction (mock mode …)" instead of `mock:mock`; LOCAL_RUN + demo script tell the presenter to warm with Ollama and check the label before presenting. |
 | 5 | Approved gates not invalidated | **Fixed** | Gate 2 stores the P50 at approval; a >0.5% P50 move, a price below the new floor, or re-opening Gate 1 marks the approval stale (quote back to draft, "please re-approve"). |
 | 6 | Price box keeps the old value | **Fixed** | The Gate 2 price box follows the recommendation whenever inputs change (until approved). |
 | 7 | Script/screen mismatches | **Fixed** | Banner shows "Quote validity 30 → 15 days"; ledger warnings listed under the table; "tight but feasible" wording; difference table rendered as a full-width table (no truncation); script updated. |
 | 8 | Exclusions fragile / not saved | **Fixed** | Exclusions persist through Quick adjust, appear in "Pending changes" and the banner cause, are saved to memory, and removing the coating line drops the color question. |
 | 9 | Confident price from junk pastes | **Fixed** | "Not enough information to price" when the analog is below the 0.35 bar or 3+ essentials were assumed: KPIs show "not priced", Gate 2 blocked, quote says NOT PRICED, never prints "None". "No welding" drops weld ops; tube assemblies priced on A500; bare/none finish read; descriptions no longer cut at decimals; difference table lists purchased items carried over from the analog that the RFQ never mentions. |
-| 10 | Live latency on pasted RFQs | **Mitigated** | Pasted RFQs use the template email instantly; the model drafts it only on "✍️ Draft it with the local model". Intake still calls the model once per paste (timed on the demo PC per LOCAL_RUN). |
+| 10 | Live latency on pasted RFQs | **Mitigated** | Pasted RFQs use the template email instantly; the model drafts it only on "Draft it with the model". Intake still calls the model once per paste (timed on the demo PC per LOCAL_RUN). |
 | 11 | Release-size table mixes totals | **Fixed** | "Unit price if released in lots of …" (release, 2× release, order total) + a separate "If the total is 200 pcs" line. |
 | 12 | $0 price approved as recommendation | **Fixed** | `is not None` check; prices under half of P50 are refused. |
 | 13 | Cost mix renders as LaTeX | **Fixed** | Escaped. |
 | 14 | Jargon | **Fixed (mostly)** | Banner cause uses line labels; "Typical cost (P50)"; drawer says "weight 4.9; 3 or more counts as full" and "typical spread ±20%". Stepper kept as process progress (accepted). |
 | 15 | Visible rigging / double apply | **Fixed** | Quick adjust pre-fills only the 6.0 hr *shop default* on an empty fixture line (0 elsewhere) and resets after Apply. |
-| 16 | Wild BOM edits | **Fixed** | Warning when an edit is > 2× off the analog; ✎ shown on edited BOM lines; BOM edits logged as decisions (not claimed as evidence). |
+| 16 | Wild BOM edits | **Fixed** | Warning when an edit is > 2× off the analog; EDIT shown on edited BOM lines; BOM edits logged as decisions (not claimed as evidence). |
 | 17 | Docs don't match the app | **Fixed** | process_future stage 4/7, deck beats 2/6, memory docstring, LOCAL_RUN numbers; `docs/screens/` captured. "Three gates" kept: Gate 1, Gate 2 and the human who sends the quote (as in the brief). |
 | 18 | Credibility answers | **Fixed** | Labor lines now 0.5-correlated (band on A 7.8% → 11.3%); qa.md Q5 and new Q25-Q28 cover the band, the 83% win chance, the two A36 prices and junk pastes. |
 | 19 | Email formatting | **Fixed** | Text boxes render newlines as `<br>` inside one HTML block. |

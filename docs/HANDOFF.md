@@ -405,48 +405,48 @@ Also include a 60-second fallback version and talking points for each beat.
 - You're in the cloud: build `qm/llm.py` with the `mock`, `anthropic`, and `ollama` providers per Section 4.0. Check for `ANTHROPIC_API_KEY` in the environment (presence only, never print it). Don't attempt to reach Quentin's Ollama.
 - Write `python -m qm.pipeline --check-ollama` now so Quentin can verify his local model early. Ask him to run it once the scaffold is pushed (target: valid JSON, < 20s per call; if too slow, `qwen3:4b`).
 - Complete Section 2.6 (gitignore, `.env.example`, pre-commit hook) **before the first commit**.
-- ✅ Accept: `call_model` returns valid structured JSON with `MODEL_PROVIDER=mock` (and `anthropic` if a key is present); Ollama provider unit tests pass with mocked HTTP.
+- Accept: `call_model` returns valid structured JSON with `MODEL_PROVIDER=mock` (and `anthropic` if a key is present); Ollama provider unit tests pass with mocked HTTP.
 
 **Phase 1: Data (~1.5 h)**
 - Implement `data_gen.py` (+ subagent text/notes), hero jobs, messiness.
 - Implement the pattern tests P1–P5 and noise sanity checks. Iterate until they pass.
-- ✅ Accept: `pytest tests/test_data.py` passes; `data/` populated; hero jobs present.
+- Accept: `pytest tests/test_data.py` passes; `data/` populated; hero jobs present.
 
 **Phase 2: Store & retrieval (~1 h)**
 - SQLite/CSV loaders, Chroma ingest of docs, similarity function, note retrieval.
-- ✅ Accept: for RFQ A's spec, the top analog is the intended hero job; the top notes include a relevant debrief. Test covers it.
+- Accept: for RFQ A's spec, the top analog is the intended hero job; the top notes include a relevant debrief. Test covers it.
 
 **Phase 3: Intake, gaps, triage (~1.5 h)**
 - Pydantic schemas, prompts, alias normalization, gap rules, clarification email, triage rules.
-- ✅ Accept: RFQ A yields exactly the expected gaps/conflict; RFQ C triages to S; outputs cached.
+- Accept: RFQ A yields exactly the expected gaps/conflict; RFQ C triages to S; outputs cached.
 
 **Phase 4: Proposal, evidence, patterns (~2 h)**
 - Analog → proposal + difference table. Evidence engine per 7.4 with the worked-example test. Patterns P1–P4.
-- ✅ Accept: the ledger for RFQ A has every line with a value/range/confidence/evidence; the weld line shows P1; aging the material to 90 days drops material confidence to red/yellow and raises the flag.
+- Accept: the ledger for RFQ A has every line with a value/range/confidence/evidence; the weld line shows P1; aging the material to 90 days drops material confidence to red/yellow and raises the flag.
 
 **Phase 5: Uncertainty & pricing (~1.5 h)**
 - Monte Carlo, win model, margin curve, recommendation, expedite option, capacity effect.
-- ✅ Accept: sensible P10 < P50 < P90; Prairie Implement's recommended markup is lower than others'; the capacity slider moves the recommendation.
+- Accept: sensible P10 < P50 < P90; Prairie Implement's recommended markup is lower than others'; the capacity slider moves the recommendation.
 
 **Phase 6: Memory write-back (~45 min)**
-- ✅ Accept: an override on A's fit_tack setup appears as evidence on RFQ B's setup line (automated test); reset removes it.
+- Accept: an override on A's fit_tack setup appears as evidence on RFQ B's setup line (automated test); reset removes it.
 
 **Phase 7: Streamlit UI (~2.5 h)**
 - Build per Section 8. Use `st.session_state` with one state dict. Build the change banner.
-- ✅ Accept: an `AppTest` smoke test runs the full RFQ A → B → C path without exceptions; manual run looks clean.
+- Accept: an `AppTest` smoke test runs the full RFQ A → B → C path without exceptions; manual run looks clean.
 
 **Phase 8: Demo hardening (~1 h)**
 - Warm the cache; test `DEMO_MODE=offline` end to end with Ollama stopped; reset button; demo script written and executed step by step; timing checked.
-- ✅ Accept: the full demo path works offline and with `mock`; `docs/LOCAL_RUN.md` exists; Quentin has confirmed (or been asked to confirm) the demo runs on his PC with `qwen3:8b`; a run-through fits in 3.5 min of clicks.
+- Accept: the full demo path works offline and with `mock`; `docs/LOCAL_RUN.md` exists; Quentin has confirmed (or been asked to confirm) the demo runs on his PC with `qwen3:8b`; a run-through fits in 3.5 min of clicks.
 
 **Phase 9: Business package (parallel subagents from Phase 1 onward; you review)**
 - Process maps, deck outline, Q&A, ROI, README, assumptions doc.
-- ✅ Accept: every doc exists, is consistent with the build (names, numbers, features), and has `[QUENTIN: ...]` placeholders only where personal input is needed.
+- Accept: every doc exists, is consistent with the build (names, numbers, features), and has `[QUENTIN: ...]` placeholders only where personal input is needed.
 
 **Phase 10: Final verification & handoff (~45 min)**
 - Red-team review subagent → fix or accept items. Run all tests. Fresh-clone install check from the README.
 - Write a final `PROGRESS.md` summary: what works, known limitations, exact demo launch commands, what Quentin must still do (record the backup video, hook story, rehearse).
-- ✅ Accept: all tests green; demo works live and offline; docs complete; secret scan clean; git tagged `v1-demo` and pushed **before 2:50 PM CT**.
+- Accept: all tests green; demo works live and offline; docs complete; secret scan clean; git tagged `v1-demo` and pushed **before 2:50 PM CT**.
 
 ---
 

@@ -118,7 +118,7 @@ streamlit run app.py
 Your browser opens http://localhost:8501. The sidebar should say **Model: `qwen3:8b`**, **Mode: `live`**.
 
 ## 8. Walk through the demo
-Follow `demo/demo_script.md` once end to end (about 3.5 minutes). Click **↺ Reset demo state** in the
+Follow `demo/demo_script.md` once end to end (about 3.5 minutes). Click **Reset demo state** in the
 sidebar before each rehearsal and before the real presentation.
 
 ## 9. (Optional) Commit the warmed cache so offline mode has real model output
@@ -163,6 +163,6 @@ extracts text, drafts the clarification email and writes the one-line pattern se
   `pip install streamlit pandas numpy scikit-learn plotly requests pydantic python-dotenv pytest`
 - **First app start is slow**: it's building the local vector index and (once) downloading the embedding
   model. Run step 6 on venue Wi-Fi beforehand, or before you leave home.
-- **Something looks stuck in the demo**: sidebar **↺ Reset demo state**, or stop Streamlit (Ctrl+C) and
+- **Something looks stuck in the demo**: sidebar **Reset demo state**, or stop Streamlit (Ctrl+C) and
   delete the `data/memory` folder.
 - **Run the tests**: `python -m pytest -q` (about a minute; no model needed).
