@@ -1,0 +1,27 @@
+{
+  "rfq_id": "RFQ-A",
+  "label": "Cedar Valley hitch bracket Rev C (cosmetic weld)",
+  "received_date": "2026-09-29",
+  "email_file": "RFQ_A.md",
+  "customer_spec": {
+    "customer": "Cedar Valley Equipment",
+    "part_number": "CVE-HB-4410 Rev C",
+    "description": "Hitch bracket weldment: 4 laser-cut plate parts, 2 formed parts, 1 tube 2x2x3/16 A500; purchased bushings (2 per assy) and bolt kit",
+    "material": "0.375 A-36 HR",
+    "thickness_in": 0.375,
+    "qty": 200,
+    "release_qty": 50,
+    "tolerance": "+/-0.030 unless noted",
+    "weld": "Cosmetic - visible side",
+    "finish": "Powder coat",
+    "finish_color": null,
+    "due_date": "2026-11-06",
+    "notes": "Rev C adds a gusset and moves the hole pattern vs Rev B. Due date is for the first release of 50."
+  },
+  "expected": {
+    "gaps": ["finish_color", "qty_conflict"],
+    "triage": "L",
+    "analog_job": "J-1042",
+    "patterns": ["P1"]
+  }
+}

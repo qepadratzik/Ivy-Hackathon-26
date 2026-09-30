@@ -1,0 +1,27 @@
+{
+  "rfq_id": "RFQ-C",
+  "label": "Loess Hills mounting plate (repeat order)",
+  "received_date": "2026-09-30",
+  "email_file": "RFQ_C.md",
+  "customer_spec": {
+    "customer": "Loess Hills Machinery",
+    "part_number": "LHM-MP-0620",
+    "description": "Mounting plate: laser cut 1/2 A36 plate, drilled and tapped 4x 1/2-13, no welding. Repeat of last order.",
+    "material": "1/2 A36 plate",
+    "thickness_in": 0.5,
+    "qty": 40,
+    "release_qty": null,
+    "tolerance": "+/-0.030 unless noted",
+    "weld": "None",
+    "finish": "Powder coat",
+    "finish_color": "Black",
+    "due_date": "2026-10-28",
+    "notes": "Repeat order, same as last order. Powder coat black same as last time."
+  },
+  "expected": {
+    "gaps": [],
+    "triage": "S",
+    "analog_job": "J-1118",
+    "patterns": []
+  }
+}

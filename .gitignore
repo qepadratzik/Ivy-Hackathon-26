@@ -1,0 +1,26 @@
+# --- secrets (NEVER commit) ---
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*.key
+*.pem
+
+# --- python ---
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# --- runtime state (rebuilt locally) ---
+data/chroma/
+data/*.sqlite
+data/memory/
+cache/llm/_tmp*
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,27 @@
+{
+  "rfq_id": "RFQ-B",
+  "label": "Hawkeye hitch bracket (new design, first run)",
+  "received_date": "2026-09-30",
+  "email_file": "RFQ_B.md",
+  "customer_spec": {
+    "customer": "Hawkeye Loader Works",
+    "part_number": "HLW-HB-3300",
+    "description": "Hitch bracket weldment: 4 laser-cut plate parts, 2 formed parts, 1 tube 2x2x3/16 A500; purchased bushings (2 per assy) and bolt kit",
+    "material": "3/8 A36 plate",
+    "thickness_in": 0.375,
+    "qty": 150,
+    "release_qty": 50,
+    "tolerance": "+/-0.030 unless noted",
+    "weld": "Standard structural",
+    "finish": "Powder coat",
+    "finish_color": "Gloss black",
+    "due_date": "2026-11-20",
+    "notes": "New design, first production run. First article inspection report required with the first release. Due date is for the first release of 50."
+  },
+  "expected": {
+    "gaps": [],
+    "triage": "L",
+    "analog_job": "J-1103",
+    "patterns": ["P2"]
+  }
+}
