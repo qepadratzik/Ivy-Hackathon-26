@@ -59,7 +59,7 @@ def test_summarize_edge_cases():
 def test_rfq_a_ledger_complete_and_p1_on_weld():
     res = pipeline.run_pipeline(R["RFQ-A"], {})
     assert res["analog"]["job_id"] == "J-1042"
-    assert len(res["ledger"]) >= 15
+    assert 10 <= len(res["ledger"]) <= 16
     for l in res["ledger"]:
         assert l["value"] is not None and l["low"] <= l["value"] <= l["high"]
         assert 0 <= l["confidence"] <= 1 and l["chip"] in ("green", "yellow", "red")
@@ -91,12 +91,12 @@ def test_rfq_b_first_run_fixture_and_p2():
     fx = line(res, "fixture.setup")
     assert "P2" in fx["patterns"] and fx["chip"] == "green" and 5 < fx["value"] < 8
     # P2 explains the fixture line instead of inflating setup (no double count) ...
-    assert not any(e["source_type"] == "pattern" for e in line(res, "fit_tack.setup")["evidence"])
+    assert not any(e["source_type"] == "pattern" for e in line(res, "weld.setup")["evidence"])
     # ... but if the estimator removes the fixture line, P2 goes back onto fit/tack setup as a number
     res2 = pipeline.run_pipeline(R["RFQ-B"], {"gate1_excluded": ["fixture.setup"]})
-    ft = line(res2, "fit_tack.setup")
+    ft = line(res2, "weld.setup")
     assert "P2" in ft["patterns"] and any(e["source_type"] == "pattern" for e in ft["evidence"])
-    assert ft["value"] > line(res, "fit_tack.setup")["value"]
+    assert ft["value"] > line(res, "weld.setup")["value"]
 
 
 def test_rfq_a_revision_change_adds_red_fixture_check_line():
@@ -120,7 +120,7 @@ def test_no_welding_rfq_drops_weld_ops():
            "Due Nov 30.\nRaccoon River Attachments")
     res = pipeline.run_pipeline(intake.pasted_rfq(txt), {})
     keys = {l["key"] for l in res["ledger"]}
-    assert not keys & {"weld.run", "weld.setup", "grind.run", "fit_tack.setup"}
+    assert not keys & {"weld.run", "weld.setup"}
     assert res["spec"]["material"] == "5052AL" and res["spec"]["finish"] == "none"
     assert "weldment" not in res["triage"]["reason"]   # still L: first run of a new part number
 
@@ -178,9 +178,9 @@ def test_gate2_out_of_range_needs_reason_and_expedite():
 
 def test_gate1_override_is_locked_and_flows_to_price():
     base = pipeline.run_pipeline(R["RFQ-A"], {})
-    old = line(base, "fit_tack.setup")["proposed"]
-    res = pipeline.run_pipeline(R["RFQ-A"], {"gate1_edits": {"fit_tack.setup": {"value": old + 6, "reason": "new fixture needed"}}})
-    ft = line(res, "fit_tack.setup")
+    old = line(base, "weld.setup")["proposed"]
+    res = pipeline.run_pipeline(R["RFQ-A"], {"gate1_edits": {"weld.setup": {"value": old + 6, "reason": "new fixture needed"}}})
+    ft = line(res, "weld.setup")
     assert ft["overridden"] and ft["value"] == pytest.approx(old + 6)
     assert ft["evidence"][0]["ref"] == "This quote (Gate 1)"
     assert res["risk"]["p50"] > base["risk"]["p50"] and res["pricing"]["recommended"] > base["pricing"]["recommended"]
@@ -201,20 +201,20 @@ def test_quote_breaks_and_draft_state():
 
 # ---------------------------------------------------------------- Phase 6
 def test_override_on_a_surfaces_on_b_and_reset_removes_it():
-    before = line(pipeline.run_pipeline(R["RFQ-B"], {}), "fit_tack.setup")
+    before = line(pipeline.run_pipeline(R["RFQ-B"], {}), "weld.setup")
     assert not any(e["source_type"] == "override" for e in before["evidence"])
     a = pipeline.run_pipeline(R["RFQ-A"], {})
-    old = line(a, "fit_tack.setup")["proposed"]
-    memory.record_line_override("RFQ-A", a["spec"], "fit_tack.setup", "Fit & tack: setup (hr/lot)", "fit_tack",
+    old = line(a, "weld.setup")["proposed"]
+    memory.record_line_override("RFQ-A", a["spec"], "weld.setup", "Fit & weld: setup (hr/lot)", "weld",
                                 old, old + 6, "new fixture needed")
-    after = line(pipeline.run_pipeline(R["RFQ-B"], {}), "fit_tack.setup")
+    after = line(pipeline.run_pipeline(R["RFQ-B"], {}), "weld.setup")
     ov = [e for e in after["evidence"] if e["source_type"] == "override"]
     assert ov and ov[0]["counted"] and "new fixture needed" in ov[0]["text"] and ov[0]["authority"] == 0.8
     assert after["value"] > before["value"]
     c = line(pipeline.run_pipeline(R["RFQ-C"], {}), "inspect_pack.setup")   # unrelated line/RFQ unaffected
     assert not any(e["source_type"] == "override" for e in c["evidence"])
     assert memory.reset_memory() == 1
-    again = line(pipeline.run_pipeline(R["RFQ-B"], {}), "fit_tack.setup")
+    again = line(pipeline.run_pipeline(R["RFQ-B"], {}), "weld.setup")
     assert not any(e["source_type"] == "override" for e in again["evidence"])
     assert again["value"] == pytest.approx(before["value"])
 
@@ -251,7 +251,7 @@ def test_fixture_override_on_a_is_learned_on_b_fixture_line():
     fx = line(b, "fixture.setup")
     ov = [e for e in fx["evidence"] if e["source_type"] == "override"]
     assert ov and ov[0]["counted"] and ov[0]["value"] == pytest.approx(6.0) and "Rev C" in ov[0]["text"]
-    ft = line(b, "fit_tack.setup")                       # the per-release setup line is not touched
+    ft = line(b, "weld.setup")                       # the per-release setup line is not touched
     assert not any(e["source_type"] == "override" for e in ft["evidence"])
     a2 = pipeline.run_pipeline(R["RFQ-A"], {})           # A never counts its own saved override
     assert not any(e["source_type"] == "override" for e in line(a2, "fixture.setup")["evidence"])
@@ -272,7 +272,7 @@ def test_stale_gate2_approval_is_flagged():
 def test_labor_lines_partially_correlated():
     from qm import uncertainty
     res = pipeline.run_pipeline(R["RFQ-A"], {})
-    w, f = line(res, "weld.run"), line(res, "fit_tack.run")
+    w, f = line(res, "weld.run"), line(res, "cut.run")
     sw, sf = uncertainty.line_samples(w, 3000, 42), uncertainty.line_samples(f, 3000, 42)
     r = np.corrcoef(np.argsort(np.argsort(sw)), np.argsort(np.argsort(sf)))[0, 1]
     assert 0.3 < r < 0.7

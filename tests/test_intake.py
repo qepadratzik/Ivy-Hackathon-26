@@ -82,8 +82,8 @@ def test_rule_extract_fallback_reads_rfq_a():
 
 @pytest.mark.parametrize("raw,code", [("A36", "A36"), ("A-36 HR", "A36"), ("HR A36", "A36"), ("ASTM A36 plate", "A36"),
                                       ("0.375 A-36 HR", "A36"), ('3/8" A36 plate', "A36"), ("A500 Gr B", "A500"),
-                                      ("HSS A500", "A500"), ("304 stainless", "304SS"), ("5052-H32", "5052AL"),
-                                      ("C1018 CF bar", "1018"), ("unobtainium", None)])
+                                      ("HSS A500", "A500"), ("5052-H32", "5052AL"),
+                                      ("304 stainless", None), ("C1018 CF bar", None), ("unobtainium", None)])
 def test_material_aliases(raw, code):
     assert intake.normalize_material(raw) == code
 

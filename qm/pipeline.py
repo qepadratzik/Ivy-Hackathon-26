@@ -15,7 +15,8 @@ import sys
 import time
 from datetime import date, timedelta
 
-from qm import config, evidence, gaps, intake, llm, patterns, pricing, proposal, retrieval, store, triage, uncertainty
+from qm import (config, evidence, gaps, intake, llm, patterns, plain, pricing, proposal, retrieval, store, triage,
+                uncertainty)
 
 STAGES = ["Customer Request", "Understand Requirements", "Determine Manufacturing Approach", "Estimate Cost",
           "Assess Risk & Uncertainty", "Determine Price", "Review & Submit Quote"]
@@ -164,7 +165,7 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
         elif float(chosen) < curve["floor_price"] - 0.005 and not st["expedite"]:
             g2_stale = "the approved price is now below the minimum-margin floor"
     if not st.get("gate1_approved") and st.get("gate2_approved"):
-        g2_stale = "the approach (Gate 1) was re-opened after the price was approved"
+        g2_stale = "the plan was re-opened after the price was approved"
     chosen_pwin = pricing.pwin_at(float(chosen) / (1 + exp["pct"]) if st["expedite"] else float(chosen),
                                   risk["p50"], spec)
 
@@ -199,8 +200,8 @@ def current_stage(st: dict, gap_list: list[dict]) -> int:
 # ---------------------------------------------------------------- change banner
 def summary(res: dict) -> dict:
     return {"p50": res["risk"]["p50"], "band": res["risk"]["band_pct"], "rec": res["pricing"]["recommended"],
-            "p90": res["risk"]["p90"],
-            "lines": {l["key"]: (l["label"], l["confidence"], l["chip"]) for l in res["ledger"]},
+            "p10": res["risk"]["p10"], "p90": res["risk"]["p90"],
+            "lines": {l["key"]: (plain.line_label(l), l["confidence"], l["chip"]) for l in res["ledger"]},
             "validity": res["validity_days"]}
 
 
@@ -228,6 +229,7 @@ def diff(prev: dict | None, new: dict) -> dict | None:
     if a["validity"] != b["validity"]:
         parts.append(f"Quote validity: {a['validity']} → {b['validity']} days")
     return {"p50": (a["p50"], b["p50"]), "band": (a["band"], b["band"]), "rec": (a["rec"], b["rec"]),
+            "range": ((a["p10"], a["p90"]), (b["p10"], b["p90"])),
             "validity": (a["validity"], b["validity"]),
             "changed_lines": changed, "removed_lines": removed, "text": ". ".join(parts) + "."}
 
@@ -293,7 +295,7 @@ def quote_markdown(res: dict) -> str:
     if res.get("insufficient"):
         out += ["> NOT PRICED: not enough information (" + "; ".join(res["insufficient"]) + ").", ""]
     elif not q["ready"]:
-        out += ["> DRAFT: not released (gates pending or open questions).", ""]
+        out += ["> DRAFT: not released (an approval is pending or a question is still open).", ""]
     out += [f"**Part:** {q['part']}: {s.get('part_description') or '(description not stated)'}", "",
             f"**Quantity:** {q['qty']} pcs total, releases of {q['lot']}", "",
             "| Unit price if released in lots of | Unit price |", "|---:|---:|"]

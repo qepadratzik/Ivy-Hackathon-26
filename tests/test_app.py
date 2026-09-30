@@ -1,4 +1,4 @@
-"""Phase 7 gate: headless Streamlit AppTest runs the full demo path A -> (override) -> B -> C
+"""Phase 7 gate: headless Streamlit AppTest runs the full demo path Job 1 -> (estimator note) -> Job 2 -> Job 3
 through the real widgets, with no exceptions."""
 from pathlib import Path
 
@@ -8,7 +8,9 @@ from streamlit.testing.v1 import AppTest
 from qm import config, memory, store
 
 APP = str(Path(__file__).resolve().parent.parent / "app.py")
-S = ["1 · Requirements", "2 · Approach (Gate 1)", "3 · Cost ledger", "4 · Risk", "5 · Price (Gate 2)", "6 · Quote"]
+S = ["1 · Read the request", "2 · Plan the work", "3 · Cost it", "4 · Set the price", "5 · Send the quote"]
+ASSUME = "Assume and quote"
+FIX_NO = "No, we need to build a new one"
 
 
 @pytest.fixture(autouse=True)
@@ -31,20 +33,33 @@ def text_of(at) -> str:
     return "\n".join(str(m.value) for m in at.markdown) + "\n".join(str(c.value) for c in at.caption)
 
 
+def go(at, step):
+    at.radio(key="step").set_value(step)
+    return ok(at.run())
+
+
+def approve_plan(at):
+    go(at, S[1])
+    at.button(key="g1_approve_RFQ-A").click()
+    ok(at.run())
+    assert any("Checkpoint 1 approved" in str(s.value) for s in at.success)
+
+
 def test_full_demo_path():
     at = ok(AppTest.from_file(APP, default_timeout=180).run())
-    assert "RFQ-A" in text_of(at) and "Full review" in text_of(at)
+    assert "Cedar Valley" in text_of(at) and "Full review" in text_of(at)
 
-    # Beat 1: gaps -> assume black
-    at.radio(key="gap_RFQ-A_finish_color").set_value("Assume & quote")
+    # Beat 1: a missing detail -> assume black, the banner says what changed
+    at.radio(key="gap_RFQ-A_finish_color").set_value(ASSUME)
     ok(at.run())
     assert "What just changed" in text_of(at)
 
-    # Beat 2: Gate 1 quick adjust fit/tack setup +6 hr with a reason
-    at.radio(key="section").set_value(S[1])
+    # Beat 2: Checkpoint 1: the old fixture will not fit -> 6 hours, a reason is required
+    go(at, S[1])
+    assert at.radio(key="fixture_RFQ-A").value == "Yes, the old fixture still fits"
+    at.radio(key="fixture_RFQ-A").set_value(FIX_NO)
     ok(at.run())
-    at.button(key="qa_apply_RFQ-A").click()
-    ok(at.run())
+    assert at.number_input(key="fixture_hr_RFQ-A").value == config.FIXTURE_DEFAULT_HR
     at.button(key="g1_approve_RFQ-A").click()          # no reason yet -> blocked
     ok(at.run())
     assert any("reason" in str(e.value).lower() for e in at.error)
@@ -53,71 +68,71 @@ def test_full_demo_path():
     ok(at.run())
     mem = memory.list_memory()
     assert len(mem) == 1 and mem.iloc[0].line_key == "fixture.setup" and mem.iloc[0].new_value == 6.0
-    assert "Gate 1 approved" in "\n".join(str(s.value) for s in at.success)
+    assert "Checkpoint 1 approved" in "\n".join(str(s.value) for s in at.success)
 
-    # Beat 3: ledger + evidence drawer on the weld line, P1 callout
-    at.radio(key="section").set_value(S[2])
+    # Re-opening keeps the estimator's answer
+    at.button(key="g1_reopen_RFQ-A").click()
     ok(at.run())
+    assert at.radio(key="fixture_RFQ-A").value == FIX_NO
+    at.button(key="g1_approve_RFQ-A").click()
+    ok(at.run())
+    assert len(memory.list_memory()) == 1 and "Checkpoint 1 approved" in "\n".join(str(s.value) for s in at.success)
+
+    # Beat 3: cost table + "why we believe it" on the weld line, with the lesson from past jobs
+    go(at, S[2])
     at.selectbox(key="drawer_RFQ-A").set_value("weld.run")
     ok(at.run())
-    assert any("P1" in str(i.value) for i in at.info)
+    assert any("longer than quoted" in str(i.value) for i in at.info)
 
-    # Beat 4: age the material quote 90 days -> banner with validity change
+    # Beat 4: steel quote gets old -> banner with a shorter validity
     at.slider(key="mat_age").set_value(90)
     ok(at.run())
-    assert "aged 0 → 90 days" in text_of(at)
-    assert any("re-quote material" in str(w.value) for w in at.warning) or True
+    assert "days older" in text_of(at) and "Quote good for" in text_of(at)
 
-    # Beat 5: resolve the qty question, price, Gate 2, quote preview
-    at.radio(key="section").set_value(S[0])
+    # Beat 5: resolve the quantity question, approve the price, quote is ready
+    go(at, S[0])
+    at.radio(key="gap_RFQ-A_qty_conflict").set_value(ASSUME)
     ok(at.run())
-    at.radio(key="gap_RFQ-A_qty_conflict").set_value("Assume & quote")
-    ok(at.run())
-    at.radio(key="section").set_value(S[4])
-    ok(at.run())
+    go(at, S[3])
     at.button(key="g2_approve_RFQ-A").click()
     ok(at.run())
-    at.radio(key="section").set_value(S[5])
-    ok(at.run())
+    assert any("Checkpoint 2 approved" in str(s.value) for s in at.success)
+    go(at, S[4])
     assert any("Ready to send" in str(s.value) for s in at.success)
 
-    # Beat 6: RFQ B shows A's override as evidence on fit/tack setup
+    # Beat 6: Job 2 sees Job 1's note as evidence on the fixture line
     at.radio(key="rfq_pick").set_value("RFQ-B")
-    at.radio(key="section").set_value(S[2])
-    ok(at.run())
+    go(at, S[2])
     at.selectbox(key="drawer_RFQ-B").set_value("fixture.setup")
     ok(at.run())
     frames = [d.value for d in at.dataframe]
-    assert any("Estimator override" in f.to_string() and "M-0001" in f.to_string() for f in frames)
-    assert "memory now holds" in text_of(at)
+    assert any("Estimator note" in f.to_string() and "M-0001" in f.to_string() for f in frames)
+    assert "shop notebook now holds" in text_of(at)
 
-    # Beat 7: RFQ C fast-track
+    # Beat 7: Job 3 is a fast-track repeat
     at.radio(key="rfq_pick").set_value("RFQ-C")
-    at.radio(key="section").set_value(S[0])
-    ok(at.run())
-    assert "Fast-track" in text_of(at)
+    go(at, S[0])
+    assert "Fast track" in text_of(at)
     for sec in S:
-        at.radio(key="section").set_value(sec)
-        ok(at.run())
+        go(at, sec)
 
-    # Reset clears memory AND regenerates every widget (fresh defaults in the browser)
+    # Start over clears the notebook AND regenerates every widget (fresh defaults in the browser)
     at.button(key="reset").click()
     ok(at.run())
     assert memory.list_memory().empty
     assert at.radio(key="rfq_pick~1").value == "RFQ-A" and at.slider(key="mat_age~1").value == 0
     assert at.radio(key="gap_RFQ-A_finish_color~1").value == "Ask the customer"
-    at.radio(key="gap_RFQ-A_finish_color~1").set_value("Assume & quote")
+    at.radio(key="gap_RFQ-A_finish_color~1").set_value(ASSUME)
     ok(at.run())
     assert "What just changed" in text_of(at)
 
 
-def test_paste_box_and_every_section_for_each_rfq():
+def test_paste_box_and_every_step_for_each_job():
     at = ok(AppTest.from_file(APP, default_timeout=180).run())
     for rid in ["RFQ-B", "RFQ-C", "RFQ-A"]:
         at.radio(key="rfq_pick").set_value(rid)
         for sec in S:
-            at.radio(key="section").set_value(sec)
-            ok(at.run())
+            go(at, sec)
     at.radio(key="rfq_pick").set_value("PASTE")
     ok(at.run())
     at.text_area(key="paste_text").set_value(
@@ -126,8 +141,20 @@ def test_paste_box_and_every_section_for_each_rfq():
     at.button(key="paste_go").click()
     ok(at.run())
     for sec in S:
-        at.radio(key="section").set_value(sec)
-        ok(at.run())
+        go(at, sec)
+
+
+def test_details_switch_shows_the_technical_views():
+    at = ok(AppTest.from_file(APP, default_timeout=180).run())
+    go(at, S[2])
+    assert not at.get("plotly_chart")
+    at.toggle(key="details").set_value(True)
+    ok(at.run())
+    assert len(at.get("plotly_chart")) == 2
+    for rid in ["RFQ-A", "RFQ-B", "RFQ-C"]:
+        at.radio(key="rfq_pick").set_value(rid)
+        for sec in S:
+            go(at, sec)
 
 
 @pytest.mark.parametrize("mode", ["offline", "live"])
@@ -150,41 +177,56 @@ def test_demo_runs_with_ollama_configured_but_unreachable(monkeypatch, mode):
     monkeypatch.setattr(llm.requests, "get", down)
     pipeline.clear_caches()
     at = ok(AppTest.from_file(APP, default_timeout=180).run())
-    assert "offline" in text_of(at) if mode == "offline" else True
-    at.radio(key="gap_RFQ-A_finish_color").set_value("Assume & quote")
+    assert "saved answers only" in text_of(at) if mode == "offline" else True
+    at.radio(key="gap_RFQ-A_finish_color").set_value(ASSUME)
     ok(at.run())
     for rid in ["RFQ-A", "RFQ-B", "RFQ-C"]:
         at.radio(key="rfq_pick").set_value(rid)
         for sec in S:
-            at.radio(key="section").set_value(sec)
-            ok(at.run())
+            go(at, sec)
     if mode == "offline":
         assert not calls
     pipeline.clear_caches()
 
 
-def test_gate2_use_recommended_and_out_of_range_reason():
+def test_price_choices_and_out_of_range_reason():
     at = ok(AppTest.from_file(APP, default_timeout=180).run())
-    at.radio(key="section").set_value(S[4])
+    approve_plan(at)
+    go(at, S[3])
+    assert at.radio(key="price_choice_RFQ-A").value == "Recommended price"
+    rec = None
+    for m in at.markdown:
+        if "Recommended price" in str(m.value) and "<table" in str(m.value):
+            rec = m.value
+    assert rec and "Lower price" in rec and "Higher price" in rec
+    at.radio(key="price_choice_RFQ-A").set_value("Another amount")
     ok(at.run())
-    rec = at.number_input(key="g2_price_RFQ-A").value
-    at.number_input(key="g2_price_RFQ-A").set_value(round(rec * 1.4, 2))
+    base = at.number_input(key="price_custom_RFQ-A").value
+    at.number_input(key="price_custom_RFQ-A").set_value(round(base * 1.4, 2))
     ok(at.run())
     at.button(key="g2_approve_RFQ-A").click()
     ok(at.run())
     assert any("reason" in str(e.value).lower() for e in at.error)
-    at.button(key="g2_userec_RFQ-A").click()
-    ok(at.run())
-    assert at.number_input(key="g2_price_RFQ-A").value == rec
-    at.number_input(key="g2_price_RFQ-A").set_value(round(rec * 1.4, 2))
-    ok(at.run())
     at.text_input(key="g2_reason_RFQ-A").set_value("strategic account, backlog is full")
     at.button(key="g2_approve_RFQ-A").click()
     ok(at.run())
     mem = memory.list_memory()
     assert len(mem) == 1 and mem.iloc[0].kind == "gate2_price" and "strategic account" in mem.iloc[0].text
-    at.radio(key="section").set_value(S[2])      # drawer picks a default line after a selection exists
-    ok(at.run())
+    go(at, S[2])                                  # the drawer picks a default line after a selection exists
     at.selectbox(key="drawer_RFQ-A").set_value("mat.A36")
     ok(at.run())
     assert not at.warning or all("created with a default value" not in str(w.value) for w in at.warning)
+
+
+def test_price_needs_the_plan_first_and_recommended_needs_no_reason():
+    at = ok(AppTest.from_file(APP, default_timeout=180).run())
+    go(at, S[3])
+    assert at.button(key="g2_approve_RFQ-A").disabled
+    assert any("approve the plan first" in str(i.value) for i in at.info)
+    approve_plan(at)
+    go(at, S[3])
+    assert not at.button(key="g2_approve_RFQ-A").disabled
+    at.button(key="g2_approve_RFQ-A").click()
+    ok(at.run())
+    assert any("Checkpoint 2 approved" in str(s.value) for s in at.success)
+    assert memory.list_memory().empty

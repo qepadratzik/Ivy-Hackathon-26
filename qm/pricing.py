@@ -146,3 +146,17 @@ def gate2_check(price: float | None, curve: dict) -> dict:
 
 def pwin_at(price: float, p50: float, spec: dict) -> float:
     return float(win_prob([price / p50], spec)[0])
+
+
+def price_options(curve: dict, risk: dict, spec: dict) -> list[dict]:
+    """Three prices a manager can pick from: lower (wins more often), recommended, higher (more per win).
+    profit_if_win = price - planning cost (typical cost + safety cushion); average_profit = chance x profit."""
+    lo, hi = curve["range"]
+    rec = curve["recommended"]
+    cost = curve["decision_cost"]
+    out = []
+    for name, price in (("Lower price", lo), ("Recommended price", rec), ("Higher price", hi)):
+        p = pwin_at(price, risk["p50"], spec)
+        out.append({"name": name, "price": float(price), "p_win": p, "profit_if_win": float(price - cost),
+                    "average_profit": float(p * (price - cost))})
+    return out

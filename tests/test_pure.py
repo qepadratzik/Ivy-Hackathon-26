@@ -52,8 +52,9 @@ def test_make_row_authority_per_source_type(src):
 
 def test_make_row_score_is_sim_times_authority_times_decay():
     r = evidence.make_row("past_quote", "J-9", 1.5, 0.7, age_days=180, half_life_key="purchased")
-    assert r["half_life"] == 180 and r["decay"] == pytest.approx(0.5)
-    assert r["score"] == pytest.approx(0.7 * config.AUTHORITY["past_quote"] * 0.5, abs=1e-4)
+    assert r["half_life"] == config.HALF_LIFE_DAYS["purchased"]
+    assert r["decay"] == pytest.approx(0.5 ** (180 / config.HALF_LIFE_DAYS["purchased"]), abs=1e-3)
+    assert r["score"] == pytest.approx(0.7 * config.AUTHORITY["past_quote"] * r["decay"], abs=1e-3)
     assert isinstance(r["value"], float) and r["value"] == 1.5
 
 
@@ -244,12 +245,12 @@ def job(**kw):
     return pd.Series(base)
 
 
-@pytest.mark.parametrize("key", ["weld.run", "fit_tack.setup", "press_brake.run", "laser.run"])
+@pytest.mark.parametrize("key", ["weld.run", "weld.setup", "press_brake.run", "laser.run"])
 def test_note_applies_none_job_always_true(key):
     assert evidence.note_applies(key, None, {"cosmetic_weld": True, "first_run": True, "thickness_in": 0.75})
 
 
-@pytest.mark.parametrize("key", ["weld.run", "grind.run"])
+@pytest.mark.parametrize("key", ["weld.run", "weld.run"])
 @pytest.mark.parametrize("job_cos,spec_cos,expected", [
     (True, True, True), (False, False, True), (True, False, False), (False, True, False),
     (True, None, True), (False, None, True),   # unknown on the RFQ: don't gate
@@ -262,7 +263,7 @@ def test_note_applies_weld_missing_spec_key_is_ungated():
     assert evidence.note_applies("weld.run", job(cosmetic_weld=True), {})
 
 
-@pytest.mark.parametrize("key", ["fit_tack.setup", "fixture.setup"])
+@pytest.mark.parametrize("key", ["weld.setup", "fixture.setup"])
 @pytest.mark.parametrize("job_first,job_fixture,spec_first,expected", [
     (True, False, True, True),     # first-run job built without a fixture: the P2 driver
     (True, True, True, False),     # first run but a fixture was quoted: different situation
@@ -286,7 +287,7 @@ def test_note_applies_press_brake_gated_on_half_inch_plate(job_th, spec_th, expe
     assert evidence.note_applies("press_brake.run", job(thickness_in=job_th), {"thickness_in": spec_th}) == expected
 
 
-@pytest.mark.parametrize("key", ["laser.run", "press_brake.setup", "weld.setup", "inspect_pack.run", "mat.A36"])
+@pytest.mark.parametrize("key", ["cut.run", "press_brake.setup", "inspect_pack.run", "mat.A36"])
 def test_note_applies_other_lines_not_gated(key):
     nj = job(cosmetic_weld=True, first_run=True, has_fixture_line=True, thickness_in=1.0)
     assert evidence.note_applies(key, nj, {"cosmetic_weld": False, "first_run": False, "thickness_in": 0.1})
@@ -328,7 +329,7 @@ def test_line_samples_deterministic_per_seed_and_stream():
     a = uncertainty.line_samples(ln, 200, 42)
     np.testing.assert_array_equal(a, uncertainty.line_samples(dict(ln), 200, 42))
     assert not np.array_equal(a, uncertainty.line_samples(ln, 200, 43))
-    assert not np.array_equal(a, uncertainty.line_samples(dict(ln, key="grind.run"), 200, 42))
+    assert not np.array_equal(a, uncertainty.line_samples(dict(ln, key="cut.run"), 200, 42))
 
 
 def test_stream_key_material_shared_others_per_line():
@@ -745,8 +746,10 @@ def test_triage_close_analog_threshold(sim, label):
 
 def test_triage_M_lists_every_reason():
     t = triage.triage(dict(BASE, repeat_part=False, tolerance_class="tight", qty=120))
-    assert t == {"label": "M", "track": "Standard review",
-                 "reason": "no repeat or very close past job; tight tolerance; qty 120 > 50"}
+    assert t["label"] == "M" and t["track"] == "Standard review"
+    assert t["reason"] == "no repeat or very close past job; tight tolerance; qty 120 > 50"
+    assert t["plain"] == ("We have not built this exact part before; the tolerance is tight; "
+                          "it is a bigger order (120 parts)")
 
 
 def test_triage_missing_tolerance_is_standard():

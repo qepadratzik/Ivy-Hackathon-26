@@ -40,7 +40,7 @@ def test_p1_cosmetic_weld_overrun(t):
 def test_p2_first_run_no_fixture_setup_overrun(t):
     j, o, d = t["jobs"], t["routing_ops"], t["docs"]
     p2 = j[j.first_run & ~j.has_fixture_line]
-    ft = o[(o.work_center == "fit_tack") & o.setup_hr_act.notna() & o.job_id.isin(p2.job_id)]
+    ft = o[(o.work_center == "weld") & o.setup_hr_act.notna() & o.job_id.isin(p2.job_id)]
     assert len(ft) >= 5
     assert (ft.setup_hr_act / ft.setup_hr_est).mean() >= 1.5
     notes = d[d.job_id.isin(ft.job_id) & (d.doc_type == "debrief") & d.text.str.contains("fixture|jig", case=False)]
@@ -102,7 +102,7 @@ def test_hero_jobs(t):
     assert o[o.job_id == "J-1077"].run_hr_act.isna().all()
     r = j.loc["J-1103"]
     assert r.first_run and not r.has_fixture_line
-    ft = o[(o.job_id == "J-1103") & (o.work_center == "fit_tack")].iloc[0]
+    ft = o[(o.job_id == "J-1103") & (o.work_center == "weld")].iloc[0]
     assert ft.setup_hr_act / ft.setup_hr_est >= 1.6
     d = t["docs"]
     assert d[(d.job_id == "J-1103") & (d.doc_type == "debrief")].text.str.contains("fixture").any()

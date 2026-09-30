@@ -82,7 +82,7 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
     dropped = set()
     for _, o in ops.iterrows():
         wc = o.work_center
-        if no_weld and wc in ("weld", "grind", "fit_tack", "fixture"):
+        if no_weld and wc in ("weld", "fixture"):
             dropped.add(config.WC_LABELS.get(wc, wc).lower())
             continue
         if wc == "fixture":
@@ -97,20 +97,13 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
                                        f"{analog.job_id} {'actual' if use_act else 'estimate'}"))
     if dropped:
         rules.append(f"RFQ says no welding: removed {', '.join(sorted(dropped))} from the analog's routing")
-    wcs = set(ops.work_center) - ({"weld", "grind", "fit_tack", "fixture"} if no_weld else set())
-    if spec.get("cosmetic_weld") and "weld" in wcs and "grind" not in wcs:
-        d = config.WORK_CENTERS["grind"]
-        lines.append(_routing_line("grind", "setup", d[1], "rule: cosmetic weld needs grind"))
-        lines.append(_routing_line("grind", "run", d[2] * 1.6, "rule: cosmetic weld needs grind"))
-        rules.append("Cosmetic weld: added a grind / clean-up op")
-    elif spec.get("cosmetic_weld") and "grind" in wcs:
-        rules.append("Cosmetic weld: kept the grind / clean-up op")
-    if spec.get("first_run") and spec.get("weldment") and not have_fixture and "fit_tack" in wcs:
+    wcs = set(ops.work_center) - ({"weld", "fixture"} if no_weld else set())
+    if spec.get("first_run") and spec.get("weldment") and not have_fixture and "weld" in wcs:
         lines.insert(_first_routing_index(lines), _routing_line("fixture", "setup", config.FIXTURE_DEFAULT_HR,
                                                                 "rule: first run, no fixture on file"))
         rules.append(f"First run and no fixture line on the analog: added a one-time fixture build "
                      f"({config.FIXTURE_DEFAULT_HR:.0f} hr shop default)")
-    elif spec.get("revision_change") and spec.get("weldment") and not have_fixture and "fit_tack" in wcs:
+    elif spec.get("revision_change") and spec.get("weldment") and not have_fixture and "weld" in wcs:
         fx = _routing_line("fixture", "setup", 0.0, "rule: new revision, confirm the existing fixture still fits")
         fx["check"] = True
         lines.insert(_first_routing_index(lines), fx)
@@ -186,11 +179,11 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
     if cw is None:
         eff = "Weld class unknown"
     elif bool(cw) == aw:
-        eff = "Same weld class" + (" (grind op kept)" if cw else "")
+        eff = "Same weld class"
     elif cw:
-        eff = "Cosmetic vs standard: expect more weld + grind hours (pattern P1)"
+        eff = "Cosmetic vs standard: expect more welding time (lesson from past jobs)"
     else:
-        eff = "Standard vs cosmetic analog: weld/grind hours may come in lower"
+        eff = "Standard vs cosmetic analog: welding time may come in lower"
     rows.append(dict(field="Weld", rfq=wtxt(cw), analog=wtxt(aw), effect=eff))
     # finish
     fin = (spec.get("finish") or "not stated").replace("_", " ")

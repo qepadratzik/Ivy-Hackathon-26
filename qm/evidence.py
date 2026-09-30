@@ -25,7 +25,7 @@ VENDOR_TABLE_DATE = date(2026, 7, 1)
 MAX_NOTES_PER_LINE = 3
 MAX_OVERRIDE_NOTES_PER_LINE = 3
 SOURCE_LABELS = {"actual": "Past job (actual)", "past_quote": "Past quote (estimate)", "shop_default": "Shop default",
-                 "note": "Shop-floor note", "override": "Estimator override", "pattern": "Pattern adjustment",
+                 "note": "Shop-floor note", "override": "Estimator note", "pattern": "Pattern adjustment",
                  "supplier_quote": "Supplier quote"}
 
 
@@ -85,12 +85,12 @@ def note_applies(line_key: str, note_job: pd.Series | None, spec: dict) -> bool:
     """A debrief/NCR only moves a number if its job matches the RFQ on the driver of that line."""
     if note_job is None:
         return True
-    if line_key in ("weld.run", "grind.run"):
+    if line_key == "weld.run":
         return spec.get("cosmetic_weld") is None or bool(note_job.cosmetic_weld) == bool(spec.get("cosmetic_weld"))
-    if line_key == "fit_tack.setup" and spec.get("quote_has_fixture") and bool(note_job.first_run) \
+    if line_key == "weld.setup" and spec.get("quote_has_fixture") and bool(note_job.first_run) \
             and not bool(note_job.has_fixture_line):
         return False  # "no fixture was quoted" stories don't apply when this quote carries a fixture line
-    if line_key in ("fit_tack.setup", "fixture.setup"):
+    if line_key in ("weld.setup", "fixture.setup"):
         first = bool(spec.get("first_run"))
         return bool(note_job.first_run) == first and (not first or not bool(note_job.has_fixture_line))
     if line_key == "press_brake.run":
@@ -187,7 +187,7 @@ def evidence_routing(ctx: Context, line: dict) -> tuple[list[dict], dict]:
             else:
                 val, how = max(0.0, structured_base + delta), f"{delta:+.2f} hr applied to this line's evidence base"
             rows.append(make_row("override", nrow.doc_id, val, nrow.sim, age, "note",
-                                 why=f"Estimator override on a similar quote ({nrow.job_id}): {how}",
+                                 why=f"Estimator note on a similar quote ({nrow.job_id}): {how}",
                                  text=nrow.text, when=nrow.date))
             n_over += 1
             continue

@@ -32,32 +32,32 @@ def p1_cosmetic_weld(spec: dict, t: dict) -> dict | None:
         return None
     r = float((cos.run_hr_act / cos.run_hr_est).mean())
     r_std = float((std.run_hr_act / std.run_hr_est).mean()) if len(std) else None
-    return dict(id="P1", line_key="weld.run", title="Cosmetic welds overrun quoted weld hours",
+    return dict(id="P1", line_key="weld.run", title="Visible (cosmetic) welds take longer than quoted",
                 ratio=round(r, 3), n=len(cos),
                 stat=f"cosmetic-weld jobs ran {r:.2f}x their quoted weld run hours (n={len(cos)})"
                      + (f" vs {r_std:.2f}x for standard welds" if r_std else ""),
                 adjustment=f"weld run hours x{r:.2f} on the estimate",
-                plain=f"On {len(cos)} past cosmetic-weld jobs, welding took {r:.2f}x the quoted hours"
-                      + (f" (standard welds: {r_std:.2f}x)" if r_std else "") + ", so this quote plans for the extra time.")
+                plain=f"On {len(cos)} past jobs with visible welds, welding took {r:.2f}x the quoted hours"
+                      + (f" (ordinary welds: {r_std:.2f}x)" if r_std else "") + ", so this quote plans for the extra time.")
 
 
 def p2_first_run_fixture(spec: dict, t: dict) -> dict | None:
     if not (spec.get("first_run") and spec.get("weldment")):
         return None
     o = _ops_with_jobs(t)
-    ft = o[(o.work_center == "fit_tack") & o.setup_hr_act.notna() & o.first_run & ~o.has_fixture_line]
+    ft = o[(o.work_center == "weld") & o.setup_hr_act.notna() & o.first_run & ~o.has_fixture_line]
     if len(ft) < MIN_N:
         return None
     r = float((ft.setup_hr_act / ft.setup_hr_est).mean())
     d = t["docs"]
     notes = d[d.job_id.isin(ft.job_id) & d.text.str.contains("fixture|jig", case=False)]
-    return dict(id="P2", line_key="fit_tack.setup", title="First-run weldments without a fixture overrun setup",
+    return dict(id="P2", line_key="weld.setup", title="New welded parts without a fixture run long on setup",
                 ratio=round(r, 3), n=len(ft), notes=len(notes),
-                stat=f"first-run weldments quoted without a fixture ran {r:.2f}x their fit/tack setup "
+                stat=f"first-run weldments quoted without a fixture ran {r:.2f}x their fit-up and weld setup "
                      f"(n={len(ft)}; {len(notes)} debriefs mention building a fixture)",
-                adjustment=f"fit/tack setup x{r:.2f}, or quote a one-time fixture line",
-                plain=f"First-run weldments quoted without a fixture took {r:.2f}x the planned fit-up setup "
-                      f"({len(ft)} jobs; {len(notes)} debriefs mention building one), so plan the fixture time.")
+                adjustment=f"weld setup x{r:.2f}, or quote a one-time fixture line",
+                plain=f"New welded parts quoted without a fixture took {r:.2f}x the planned fit-up and weld setup "
+                      f"({len(ft)} jobs; {len(notes)} shop notes mention building one), so plan the fixture time.")
 
 
 def p3_press_brake_thick(spec: dict, t: dict) -> dict | None:
@@ -75,13 +75,13 @@ def p3_press_brake_thick(spec: dict, t: dict) -> dict | None:
     r_ncr = float((pb[hit].run_hr_act / pb[hit].run_hr_est).mean()) if hit.any() else 1.0
     r_ok = float((pb[~hit].run_hr_act / pb[~hit].run_hr_est).mean()) if (~hit).any() else 1.0
     expected = rate * r_ncr + (1 - rate) * r_ok
-    return dict(id="P3", line_key="press_brake.run", title="Press brake on 1/2\"+ plate has rework",
+    return dict(id="P3", line_key="press_brake.run", title="Bending thick plate (1/2\" and up) often needs rework",
                 ratio=round(expected, 3), n=len(pb), ncr_rate=round(rate, 2),
                 stat=f"{rate:.0%} of press-brake jobs on 1/2\"+ plate had an NCR (n={len(pb)}); those ran "
                      f"{r_ncr:.2f}x quoted brake hours",
                 adjustment=f"press brake run hours x{expected:.2f} (expected rework)",
-                plain=f"{rate:.0%} of press-brake jobs on 1/2-inch-plus plate needed an NCR ({len(pb)} jobs), "
-                      f"so brake hours include the expected rework.")
+                plain=f"{rate:.0%} of bending jobs on 1/2-inch-plus plate needed rework ({len(pb)} jobs), "
+                      f"so the bending hours include the expected rework.")
 
 
 def p4_price_sensitive(spec: dict, t: dict) -> dict | None:
@@ -96,12 +96,12 @@ def p4_price_sensitive(spec: dict, t: dict) -> dict | None:
     wl, wh = float(low.won.mean()), float(high.won.mean())
     if not (wl >= 0.70 and wh <= 0.25):
         return None  # only a pattern if this customer is sharply price-sensitive (most customers are not)
-    return dict(id="P4", line_key="price", title=f"{spec.get('customer_name')} buys on price",
+    return dict(id="P4", line_key="price", title=f"{spec.get('customer_name')} shops on price",
                 ratio=None, n=len(c),
                 stat=f"won {wl:.0%} of quotes under {PRICE_SENSITIVE_CUTOFF:.2f}x cost (n={len(low)}) but "
                      f"{wh:.0%} at {PRICE_SENSITIVE_CUTOFF + 0.05:.2f}x or more (n={len(high)})",
                 adjustment=f"keep the markup under {PRICE_SENSITIVE_CUTOFF:.2f}x; the win model already reflects this",
-                plain=f"{spec.get('customer_name')} won {wl:.0%} of quotes under {PRICE_SENSITIVE_CUTOFF:.2f}x cost "
+                plain=f"We won {wl:.0%} of {spec.get('customer_name')}'s quotes priced under {PRICE_SENSITIVE_CUTOFF:.2f}x cost "
                       f"but only {wh:.0%} above that, so keep the markup tight.")
 
 

@@ -77,10 +77,8 @@ EMAIL (received {received}):
 
 # ---------------------------------------------------------------- normalization helpers
 _MATERIAL_PATTERNS = [
-    ("304SS", r"\b304\b|stainless|\bss\s*304|\bss\b"),
     ("5052AL", r"5052|alum"),
     ("A500", r"a[\s-]?500|\bhss\b|\btube\b(?!.*plate)"),
-    ("1018", r"\b1018\b|c1018|\bcrs\b|cold[\s-]?rolled bar"),
     ("A36", r"a[\s-]?36|hr\s*plate|hot[\s-]?rolled|\bhrs\b"),
 ]
 GAUGE = {"16": 0.0598, "14": 0.075, "12": 0.105, "11": 0.1196, "10": 0.135, "7": 0.1793}
@@ -153,8 +151,8 @@ def normalize_finish(text) -> str | None:
     t = str(text).lower()
     if "powder" in t:
         return "powder_coat"
-    if "zinc" in t or "plate" in t and "zinc" in t:
-        return "zinc"
+    if "zinc" in t:
+        return None   # not offered in this shop model: becomes a question for the customer
     if any(w in t for w in ("paint", "primer", "e-coat", "ecoat")):
         return "powder_coat"  # closest priced finish in this shop's history
     if any(w in t for w in ("none", "bare", "oiled", "raw", "no finish", "mill")):
@@ -313,13 +311,13 @@ def rule_extract(email: str) -> dict:
     m = re.search(r"(?:releases?|lots?)\s+of\s+(\d+)", body, re.I)
     if m:
         put("release_qty", m.group(1), m.group(0))
-    m = re.search(r"(\d+/\d+\"?|\d*\.\d+\"?|\d+\s*ga)\s*(?:\"|in\.?)?\s*([^\n,.;]*?(?:a-?36|a-?500|1018|304|5052|plate|sheet|steel)[^\n,.;]*)",
+    m = re.search(r"(\d+/\d+\"?|\d*\.\d+\"?|\d+\s*ga)\s*(?:\"|in\.?)?\s*([^\n,.;]*?(?:a-?36|a-?500|5052|plate|sheet|steel)[^\n,.;]*)",
                   body, re.I)
     if m:
         put("material", m.group(0), m.group(0))
         put("thickness_in", m.group(1), m.group(1))
     else:
-        m = re.search(r"\b(a-?36|a-?500|1018|304 ?(?:ss|stainless)?|stainless(?: steel)?|5052|alumin(?:um|ium))\b[^\n,.;]*",
+        m = re.search(r"\b(a-?36|a-?500|5052|alumin(?:um|ium))\b[^\n,.;]*",
                       body, re.I)
         if m:
             put("material", m.group(0), m.group(0))
@@ -333,7 +331,7 @@ def rule_extract(email: str) -> dict:
     m0 = re.search(r"finish[^\n.]*?\b(none|bare|no finish|raw|mill finish|as[- ]welded)\b[^\n.,]*", body, re.I)
     if m0:
         put("finish", "none", m0.group(0))
-    m = re.search(r"(powder[\s-]?coat[^\n.,]*|zinc[^\n.,]*|paint[^\n.,]*)", body, re.I)
+    m = re.search(r"(powder[\s-]?coat[^\n.,]*|paint[^\n.,]*)", body, re.I)
     if m:
         put("finish", m.group(1), m.group(1))
         line = re.search(r"[^\n]*" + re.escape(m.group(1)) + r"[^\n]*", body).group(0)

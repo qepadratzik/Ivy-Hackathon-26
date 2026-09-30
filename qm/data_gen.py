@@ -4,10 +4,12 @@
 
 ~150 random jobs over Oct 2024 - Sep 2026 plus handcrafted hero jobs, with seeded patterns:
   P1 cosmetic-weld jobs overrun weld run hours      (act/est ~ N(1.35, 0.08))
-  P2 first-run weldments w/o fixture overrun fit/tack setup (x1.6-2.2)
+  P2 first-run weldments w/o fixture overrun fit-up + weld setup (x1.6-2.2)
   P3 press brake on plate >= 0.5" gets NCRs / rework (~30%)
   P4 Prairie Implement only wins below ~1.25x cost
   P5 steel price per lb rises (~+15% last 6 months vs first 6)
+Simple shop: 5 job types, 3 materials (A36 plate, A500 tube, 5052 aluminum sheet), 5 in-house processes
+(cut, bend, fit & weld, drill & tap, inspect & pack) + outside powder coat + a one-time fixture.
 All numbers are ILLUSTRATIVE. All names are fictional.
 """
 from __future__ import annotations
@@ -51,19 +53,14 @@ MATERIALS = {
     # normalized: base $/lb at START, quote interval (days), follows the steel index?
     "A36": (0.74, 7, True),
     "A500": (0.98, 7, True),
-    "1018": (1.05, 14, True),
-    "304SS": (3.10, 30, False),
     "5052AL": (3.45, 30, False),
 }
 MATERIAL_ALIASES = {
     "A36": ["A36", "A-36 HR", "HR A36", "ASTM A36 plate", "A36 HR plate"],
     "A500": ["A500 tube", "A500 Gr B", "ASTM A500", "HSS A500"],
-    "1018": ["1018", "C1018 CF bar", "1018 CRS"],
-    "304SS": ["304 SS", "304 stainless", "SS304"],
     "5052AL": ["5052-H32", "5052 alum", "AL 5052"],
 }
-MATERIAL_ITEM = {"A36": "A36 plate", "A500": "A500 tube", "1018": "1018 bar", "304SS": "304 SS tube",
-                 "5052AL": "5052 aluminum sheet"}
+MATERIAL_ITEM = {"A36": "A36 plate", "A500": "A500 tube", "5052AL": "5052 aluminum sheet"}
 STEEL_SUPPLIERS = ["Skunk River Steel Supply", "Central Iowa Metals", "Heartland Plate & Tube"]
 SPECIALTY_SUPPLIERS = ["Prairie Specialty Metals", "Heartland Plate & Tube"]
 SUPPLIER_FACTOR = {"Skunk River Steel Supply": 0.98, "Central Iowa Metals": 1.00, "Heartland Plate & Tube": 1.03,
@@ -78,20 +75,18 @@ PURCHASED = {
 }
 POWDER_COLORS = ["black", "black", "black", "gloss black", "implement yellow", "orange", "gray", "red"]
 
-# (setup_hr, run_hr_per_unit, probability) base estimates per family and work center
+# (process, setup_hr per batch, run_hr per part, probability it is used) base estimates per job type
 ROUTING = {
-    "hitch_bracket": [("laser", 0.50, 0.075, 1), ("press_brake", 0.70, 0.050, 1), ("saw", 0.25, 0.030, 1),
-                      ("fit_tack", 2.00, 0.200, 1), ("weld", 0.50, 0.440, 1), ("grind", 0.25, 0.110, 0.5),
+    "hitch_bracket": [("cut", 0.75, 0.105, 1), ("press_brake", 0.70, 0.050, 1), ("weld", 2.50, 0.70, 1),
                       ("inspect_pack", 0.25, 0.050, 1)],
-    "guard": [("laser", 0.50, 0.060, 1), ("press_brake", 0.80, 0.100, 1), ("fit_tack", 1.00, 0.080, 0.6),
-              ("weld", 0.40, 0.150, 0.6), ("grind", 0.25, 0.060, 0.3), ("inspect_pack", 0.25, 0.060, 1)],
-    "frame": [("saw", 0.40, 0.150, 1), ("laser", 0.50, 0.100, 1), ("press_brake", 0.70, 0.080, 0.6),
-              ("fit_tack", 3.00, 0.900, 1), ("weld", 0.60, 2.000, 1), ("grind", 0.30, 0.400, 0.8),
+    "guard": [("cut", 0.50, 0.060, 1), ("press_brake", 0.80, 0.100, 1), ("weld", 1.40, 0.20, 0.6),
+              ("inspect_pack", 0.25, 0.060, 1)],
+    "frame": [("cut", 0.90, 0.250, 1), ("press_brake", 0.70, 0.080, 0.6), ("weld", 3.60, 3.20, 1),
               ("machining", 1.20, 0.300, 0.3), ("inspect_pack", 0.40, 0.200, 1)],
-    "mounting_plate": [("laser", 0.40, 0.050, 1), ("press_brake", 0.60, 0.050, 0.4), ("machining", 1.00, 0.100, 1),
+    "mounting_plate": [("cut", 0.40, 0.050, 1), ("press_brake", 0.60, 0.050, 0.4), ("machining", 1.00, 0.100, 1),
                        ("inspect_pack", 0.20, 0.030, 1)],
-    "tube_assembly": [("saw", 0.30, 0.060, 1), ("machining", 1.00, 0.120, 1), ("fit_tack", 1.50, 0.150, 1),
-                      ("weld", 0.50, 0.300, 1), ("grind", 0.25, 0.080, 0.4), ("inspect_pack", 0.25, 0.050, 1)],
+    "tube_assembly": [("cut", 0.30, 0.060, 1), ("machining", 1.00, 0.120, 1), ("weld", 2.00, 0.50, 1),
+                      ("inspect_pack", 0.25, 0.050, 1)],
 }
 LEAD_DAYS = {"hitch_bracket": (25, 35), "guard": (20, 30), "frame": (30, 45), "mounting_plate": (12, 20),
              "tube_assembly": (20, 30)}
@@ -201,29 +196,23 @@ def build_lines(rng, fam: str, mat: str, t: float, qty: int, cosmetic: bool, fin
         raw(mat, rng.uniform(70, 150) * s * t * LB_PER_CUIN * 1.15)
     elif fam == "tube_assembly":
         raw(mat, rng.uniform(12, 26) * s)
-        raw("1018", rng.uniform(1.5, 4.0) * s)
+        raw("A36", rng.uniform(1.5, 4.0) * s)          # end caps / plates
         pur("Grease zerk 1/4-28", 1)
     size = SIZE_CLASS[fam]
     if finish.startswith("powder"):
         bom.append({"item_type": "outside", "item": "powder_coat", "qty_per": 1, "uom": "ea",
                     "unit_cost": round(config.POWDER_COAT_PRICE[size] * rng.uniform(0.95, 1.08), 2),
                     "cost_date": d, "_mat": None})
-    elif finish.startswith("zinc"):
-        bom.append({"item_type": "outside", "item": "zinc_plate", "qty_per": 1, "uom": "ea",
-                    "unit_cost": round(config.ZINC_PRICE[size] * rng.uniform(0.95, 1.08), 2),
-                    "cost_date": d, "_mat": None})
     ops = []
     for wc, setup, run, p in ROUTING[fam]:
         include = rng.random() < p
-        if wc == "grind" and cosmetic and fam != "mounting_plate":
-            include = True
         if wc == "press_brake" and fam in ("frame", "mounting_plate") and t >= 0.5:
             include = include or rng.random() < 0.6
         if forced_ops is not None:
             include = wc in forced_ops
         if not include:
             continue
-        run_b = run * (1.6 if (wc == "grind" and cosmetic) else 1.0)
+        run_b = run
         ops.append({"work_center": wc,
                     "setup_hr_est": round(setup * rng.normal(1.0, 0.08), 2),
                     "run_hr_est": round(run_b * s * rng.normal(1.0, 0.06), 3)})
@@ -239,7 +228,7 @@ def apply_actuals(rng, ops: list[dict], cosmetic: bool, first_run: bool, fixture
         r_ratio = rng.normal(1.03, 0.07)
         if wc == "weld":
             r_ratio = rng.normal(1.35, 0.08) if cosmetic else rng.normal(1.02, 0.07)
-        if wc == "fit_tack" and first_run and not fixture:
+        if wc == "weld" and first_run and not fixture:
             s_ratio = rng.uniform(1.6, 2.2)
         if wc == "press_brake" and ncr_pb:
             r_ratio = rng.uniform(1.25, 1.45)
@@ -271,8 +260,8 @@ def describe(fam: str, mat: str, t: float, cosmetic: bool, finish: str, rng, fir
                            f"Adapter / mounting plate, {th} A36 plate, machined holes"])
         weld = "no welding"
     else:
-        m = "304 SS tube" if mat == "304SS" else "2x2x3/16 A500 tube"
-        body = f"Tube assembly, {m} with 1018 bar end fittings, welded"
+        m = "2x2x3/16 A500 tube"
+        body = f"Tube assembly, {m} with A36 plate end caps, welded"
     txt = f"{body}; {weld}; {fin}"
     if first_run:
         txt += "; new part, first run"
@@ -280,12 +269,9 @@ def describe(fam: str, mat: str, t: float, cosmetic: bool, finish: str, rng, fir
 
 
 def pick_finish(rng, fam: str, mat: str) -> str:
-    if mat in ("304SS", "5052AL"):
+    if mat == "5052AL":
         return "none"
-    r = rng.random()
-    if fam == "mounting_plate" and r < 0.25:
-        return "zinc plate"
-    if r < 0.08:
+    if rng.random() < 0.08:
         return "none"
     return f"powder coat {rng.choice(POWDER_COLORS)}"
 
@@ -299,9 +285,8 @@ def hero_specs() -> list[dict]:
         dict(job_id="J-0918", cust="C02", fam="hitch_bracket", pn="CVE-HB-4410 Rev A", mat="A36", t=0.375, qty=100,
              cosmetic=True, finish="powder coat black", first_run=True, fixture=True, d=date(2025, 5, 14),
              won=True, ratio=1.34, lead=32, bom=hb_bom,
-             ops=[("fixture", 6.0, 0, 6.4, 0), ("laser", 0.5, 0.075, 0.55, 0.078), ("press_brake", 0.7, 0.05, 0.75, 0.052),
-                  ("saw", 0.25, 0.03, 0.25, 0.031), ("fit_tack", 2.0, 0.20, 2.2, 0.21), ("weld", 0.5, 0.45, 0.55, 0.60),
-                  ("grind", 0.25, 0.18, 0.3, 0.2), ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
+             ops=[("fixture", 6.0, 0, 6.4, 0), ("cut", 0.75, 0.105, 0.80, 0.110), ("press_brake", 0.7, 0.05, 0.75, 0.052),
+                  ("weld", 2.5, 0.70, 2.7, 0.94), ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
              desc="Hitch bracket weldment Rev A, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, "
                   "bushings & bolt kit; cosmetic welds on visible side, no spatter; powder coat black; new part, first run",
              debrief="Rev A first run. Fixture we quoted paid for itself, fit-up went fast after that. "
@@ -309,18 +294,16 @@ def hero_specs() -> list[dict]:
         dict(job_id="J-0987", cust="C03", fam="hitch_bracket", pn="HLW-HB-2207", mat="A36", t=0.375, qty=150,
              cosmetic=True, finish="powder coat implement yellow", first_run=False, fixture=False, d=date(2025, 12, 2),
              won=True, ratio=1.31, lead=30, bom=hb_bom,
-             ops=[("laser", 0.5, 0.075, 0.5, 0.077), ("press_brake", 0.7, 0.05, 0.7, 0.051), ("saw", 0.25, 0.03, 0.25, 0.03),
-                  ("fit_tack", 2.0, 0.20, 2.1, 0.2), ("weld", 0.5, 0.44, 0.5, 0.58), ("grind", 0.25, 0.18, 0.25, 0.21),
-                  ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
+             ops=[("cut", 0.75, 0.105, 0.75, 0.107), ("press_brake", 0.7, 0.05, 0.7, 0.051),
+                  ("weld", 2.5, 0.70, 2.6, 0.92), ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
              desc="Hitch bracket weldment, 3/8 A36 plate, laser cut + formed ears, 2x2x3/16 A500 tube, bushings; "
                   "cosmetic weld, visible side smooth, no spatter; powder coat yellow",
              debrief="Weld ran over on the show side again, about a third over quote. Grind kept up."),
         dict(job_id="J-1042", cust="C02", fam="hitch_bracket", pn="CVE-HB-4410 Rev B", mat="A36", t=0.375, qty=200,
              cosmetic=True, finish="powder coat black", first_run=False, fixture=False, d=date(2026, 3, 10),
              won=True, ratio=1.32, lead=31, bom=hb_bom,
-             ops=[("laser", 0.5, 0.075, 0.55, 0.078), ("press_brake", 0.7, 0.05, 0.72, 0.052), ("saw", 0.25, 0.03, 0.25, 0.031),
-                  ("fit_tack", 2.0, 0.20, 2.1, 0.21), ("weld", 0.5, 0.46, 0.55, 0.62), ("grind", 0.25, 0.18, 0.3, 0.21),
-                  ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
+             ops=[("cut", 0.75, 0.105, 0.80, 0.109), ("press_brake", 0.7, 0.05, 0.72, 0.052),
+                  ("weld", 2.5, 0.70, 2.6, 0.94), ("inspect_pack", 0.25, 0.05, 0.25, 0.05)],
              desc="Hitch bracket weldment Rev B, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, "
                   "bushings & bolt kit; cosmetic welds on visible side, no spatter, smooth; powder coat black",
              debrief="Rev B ran fine on the Rev A fixture. Weld on the visible side still runs long, "
@@ -328,41 +311,39 @@ def hero_specs() -> list[dict]:
         dict(job_id="J-1077", cust="C01", fam="hitch_bracket", pn="PIC-HB-5120", mat="A36", t=0.375, qty=300,
              cosmetic=True, finish="powder coat red", first_run=True, fixture=False, d=date(2026, 6, 18),
              won=False, ratio=1.38, lead=33, bom=hb_bom,
-             ops=[("laser", 0.5, 0.075, None, None), ("press_brake", 0.7, 0.05, None, None), ("saw", 0.25, 0.03, None, None),
-                  ("fit_tack", 2.0, 0.20, None, None), ("weld", 0.5, 0.45, None, None), ("grind", 0.25, 0.16, None, None),
-                  ("inspect_pack", 0.25, 0.05, None, None)],
+             ops=[("cut", 0.75, 0.105, None, None), ("press_brake", 0.7, 0.05, None, None),
+                  ("weld", 2.5, 0.72, None, None), ("inspect_pack", 0.25, 0.05, None, None)],
              desc="Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, tube, bushings; cosmetic welds visible "
                   "side; powder coat red",
              debrief=None),
         dict(job_id="J-1103", cust="C04", fam="hitch_bracket", pn="NSA-HB-118", mat="A36", t=0.375, qty=150,
              cosmetic=False, finish="powder coat black", first_run=True, fixture=False, d=date(2026, 7, 8),
              won=True, ratio=1.29, lead=30, bom=hb_bom,
-             ops=[("laser", 0.5, 0.075, 0.5, 0.077), ("press_brake", 0.7, 0.05, 0.75, 0.051), ("saw", 0.25, 0.03, 0.25, 0.03),
-                  ("fit_tack", 2.0, 0.20, 4.4, 0.21), ("weld", 0.5, 0.42, 0.5, 0.43), ("grind", 0.25, 0.10, 0.25, 0.1),
-                  ("inspect_pack", 0.25, 0.05, 0.3, 0.05)],
+             ops=[("cut", 0.75, 0.105, 0.80, 0.108), ("press_brake", 0.7, 0.05, 0.75, 0.051),
+                  ("weld", 2.5, 0.66, 5.3, 0.68), ("inspect_pack", 0.25, 0.05, 0.30, 0.05)],
              desc="Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & "
                   "bolt kit; standard structural welds; powder coat black; new part, first run",
              debrief="First run on this bracket and nobody quoted a fixture. Spent most of the morning building one "
-                     "out of drop, fit/tack setup ran more than double. Quote a new fixture on first-run weldments."),
+                     "out of drop, fit-up and weld setup ran more than double. Quote a new fixture on first-run weldments."),
         dict(job_id="J-0842", cust="C07", fam="mounting_plate", pn="LHM-MP-0620", mat="A36", t=0.5, qty=50,
              cosmetic=False, finish="powder coat black", first_run=True, fixture=False, d=date(2025, 3, 12),
              won=True, ratio=1.33, lead=16,
              bom=[("raw", "A36", 14.6), ("outside", "powder_coat", 1)],
-             ops=[("laser", 0.4, 0.05, 0.45, 0.052), ("machining", 1.0, 0.10, 1.1, 0.104), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
+             ops=[("cut", 0.4, 0.05, 0.45, 0.052), ("machining", 1.0, 0.10, 1.1, 0.104), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
              desc="Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13; no welding; powder coat black",
              debrief="Ran clean. Tap drill program saved for next time."),
         dict(job_id="J-0955", cust="C07", fam="mounting_plate", pn="LHM-MP-0620", mat="A36", t=0.5, qty=40,
              cosmetic=False, finish="powder coat black", first_run=False, fixture=False, d=date(2025, 10, 1),
              won=True, ratio=1.34, lead=15,
              bom=[("raw", "A36", 14.6), ("outside", "powder_coat", 1)],
-             ops=[("laser", 0.4, 0.05, 0.4, 0.051), ("machining", 1.0, 0.10, 1.0, 0.101), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
+             ops=[("cut", 0.4, 0.05, 0.4, 0.051), ("machining", 1.0, 0.10, 1.0, 0.101), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
              desc="Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13; no welding; powder coat black",
              debrief=None),
         dict(job_id="J-1118", cust="C07", fam="mounting_plate", pn="LHM-MP-0620", mat="A36", t=0.5, qty=40,
              cosmetic=False, finish="powder coat black", first_run=False, fixture=False, d=date(2026, 8, 5),
              won=True, ratio=1.35, lead=15,
              bom=[("raw", "A36", 14.6), ("outside", "powder_coat", 1)],
-             ops=[("laser", 0.4, 0.05, 0.42, 0.05), ("machining", 1.0, 0.10, 1.05, 0.102), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
+             ops=[("cut", 0.4, 0.05, 0.42, 0.05), ("machining", 1.0, 0.10, 1.05, 0.102), ("inspect_pack", 0.2, 0.03, 0.2, 0.03)],
              desc="Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13; no welding; powder coat black",
              debrief="Repeat, programs on file. No issues."),
     ]
@@ -417,7 +398,7 @@ def generate(seed: int | None = None) -> dict[str, pd.DataFrame]:
         elif fam == "mounting_plate":
             mat, t = "A36", float(rng.choice([0.375, 0.5, 0.625, 0.75], p=[0.3, 0.35, 0.2, 0.15]))
         else:
-            mat, t = ("304SS" if rng.random() < 0.12 else "A500"), 0.1875
+            mat, t = "A500", 0.1875
         cosmetic = bool(fam in ("hitch_bracket", "frame", "guard") and rng.random() < {"hitch_bracket": 0.4,
                                                                                          "frame": 0.35,
                                                                                          "guard": 0.3}[fam])
@@ -585,14 +566,14 @@ def gen_docs(rng, jobs: list[dict], notes: list[dict], ncr_ids: set[str]) -> pd.
         wcs = {o["work_center"] for o in j["_ops"]}
         if j.get("_hero"):
             if j.get("_debrief"):
-                wc, lk = ("fit_tack", "fit_tack.setup") if "fixture" in j["_debrief"].lower() and j["first_run"] \
+                wc, lk = ("weld", "weld.setup") if "fixture" in j["_debrief"].lower() and j["first_run"] \
                     and not j["has_fixture_line"] else ("weld", "weld.run") if j["cosmetic_weld"] else (None, None)
                 add(j, "debrief", done, j["_debrief"], wc, lk)
             continue
         # P2: first-run weldment without fixture line -> ~50% get a fixture debrief
-        if j["first_run"] and not j["has_fixture_line"] and "fit_tack" in wcs and rng.random() < 0.55:
+        if j["first_run"] and not j["has_fixture_line"] and "weld" in wcs and rng.random() < 0.55:
             n = take("P2", j["part_family"])
-            add(j, "debrief", done, n["text"], "fit_tack", "fit_tack.setup")
+            add(j, "debrief", done, n["text"], "weld", "weld.setup")
         # P1: cosmetic weld overrun notes
         if j["cosmetic_weld"] and "weld" in wcs and rng.random() < 0.45:
             n = take("P1", j["part_family"])

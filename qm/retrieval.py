@@ -14,7 +14,7 @@ import pandas as pd
 from qm import config, store
 from qm.data_gen import frac, normalize_pn, qty_bucket
 
-MATERIAL_FAMILY = {"A36": "carbon", "A500": "carbon", "1018": "carbon", "304SS": "stainless", "5052AL": "aluminum"}
+MATERIAL_FAMILY = {"A36": "steel", "A500": "steel", "5052AL": "aluminum"}
 MIN_CANDIDATES_FOR_MATERIAL_FILTER = 5
 
 

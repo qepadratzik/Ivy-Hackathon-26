@@ -40,7 +40,7 @@ def _describe(spec: dict) -> str:
         t = spec.get("thickness_in")
         bits.append(f"{spec['material']} {frac(float(t)) + chr(34) if t else ''}".strip())
     if spec.get("cosmetic_weld") is not None:
-        bits.append("cosmetic weld" if spec["cosmetic_weld"] else "standard weld")
+        bits.append("visible (cosmetic) weld" if spec["cosmetic_weld"] else "standard weld")
     if spec.get("first_run"):
         bits.append("first run")
     return ", ".join(bits)
@@ -64,7 +64,7 @@ def _write(row: dict) -> dict:
 
 def record_line_override(rfq_id: str, spec: dict, line_key: str, label: str, work_center: str | None,
                          old: float, new: float, reason: str) -> dict:
-    text = (f"Estimator override on {label} ({_describe(spec)}): {old:.2f}→{new:.2f}. "
+    text = (f"Estimator note on {label} ({_describe(spec)}): changed from {old:.3g} to {new:.3g}. "
             f"Reason: {reason.strip()}")
     return _write(dict(job_id=rfq_id, doc_type="override", date=config.AS_OF, part_family=spec.get("part_family"),
                        work_center=work_center, line_key=line_key, old_value=float(old), new_value=float(new),
