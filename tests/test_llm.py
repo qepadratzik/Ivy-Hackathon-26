@@ -192,3 +192,12 @@ def test_cache_files_never_contain_env_secrets(monkeypatch, tmp_path):
     llm.call_model_meta("intake_extract", "RFQ S", Tiny)
     for f in (tmp_path / "cache").glob("*.json"):
         assert "dummy-secret-value-123" not in f.read_text()
+
+
+def test_ollama_format_requires_every_field_recursively():
+    from qm.intake import RFQSpec
+    fmt = llm.build_ollama_payload("intake_extract", "x", RFQSpec, "qwen3:8b")["format"]
+    assert set(fmt["required"]) == set(RFQSpec.model_fields)
+    qty = fmt["properties"]["qty"]
+    assert set(qty["required"]) == {"value", "confidence", "source_quote"}
+    assert qty["properties"]["confidence"]["enum"] == ["high", "medium", "low"]

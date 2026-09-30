@@ -18,8 +18,8 @@ except Exception:  # dotenv is optional at runtime
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
-MEMORY_DIR = DATA_DIR / "memory"          # demo-session overrides (gitignored)
-CHROMA_DIR = DATA_DIR / "chroma"          # vector store (gitignored, rebuilt on demand)
+MEMORY_DIR = Path(os.getenv("QM_MEMORY_DIR") or DATA_DIR / "memory")   # demo-session overrides (gitignored)
+CHROMA_DIR = Path(os.getenv("QM_CHROMA_DIR") or DATA_DIR / "chroma")    # vector store (gitignored, rebuilt)
 SQLITE_PATH = DATA_DIR / "quote_memory.sqlite"
 CACHE_DIR = ROOT / "cache" / "llm"
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "llm"

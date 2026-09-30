@@ -195,6 +195,19 @@ def inline_refs(schema: dict) -> dict:
     return walk(schema)
 
 
+def require_all(schema: dict) -> dict:
+    """Mark every property required (recursively). Pydantic leaves defaulted fields optional, which lets a
+    grammar-constrained small model return {}; requiring them makes it emit every field (null allowed)."""
+    if isinstance(schema, dict):
+        out = {k: require_all(v) for k, v in schema.items()}
+        if isinstance(out.get("properties"), dict):
+            out["required"] = list(out["properties"])
+        return out
+    if isinstance(schema, list):
+        return [require_all(x) for x in schema]
+    return schema
+
+
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
@@ -236,7 +249,7 @@ def build_ollama_payload(task: str, prompt: str, schema: type[BaseModel] | None,
     if think_supported:
         payload["think"] = False
     if schema is not None:
-        payload["format"] = inline_refs(schema.model_json_schema())
+        payload["format"] = require_all(inline_refs(schema.model_json_schema()))
     return payload
 
 

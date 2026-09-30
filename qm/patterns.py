@@ -36,7 +36,9 @@ def p1_cosmetic_weld(spec: dict, t: dict) -> dict | None:
                 ratio=round(r, 3), n=len(cos),
                 stat=f"cosmetic-weld jobs ran {r:.2f}x their quoted weld run hours (n={len(cos)})"
                      + (f" vs {r_std:.2f}x for standard welds" if r_std else ""),
-                adjustment=f"weld run hours x{r:.2f} on the estimate")
+                adjustment=f"weld run hours x{r:.2f} on the estimate",
+                plain=f"On {len(cos)} past cosmetic-weld jobs, welding took {r:.2f}x the quoted hours"
+                      + (f" (standard welds: {r_std:.2f}x)" if r_std else "") + ", so this quote plans for the extra time.")
 
 
 def p2_first_run_fixture(spec: dict, t: dict) -> dict | None:
@@ -53,7 +55,9 @@ def p2_first_run_fixture(spec: dict, t: dict) -> dict | None:
                 ratio=round(r, 3), n=len(ft), notes=len(notes),
                 stat=f"first-run weldments quoted without a fixture ran {r:.2f}x their fit/tack setup "
                      f"(n={len(ft)}; {len(notes)} debriefs mention building a fixture)",
-                adjustment=f"fit/tack setup x{r:.2f}, or quote a one-time fixture line")
+                adjustment=f"fit/tack setup x{r:.2f}, or quote a one-time fixture line",
+                plain=f"First-run weldments quoted without a fixture took {r:.2f}x the planned fit-up setup "
+                      f"({len(ft)} jobs; {len(notes)} debriefs mention building one), so plan the fixture time.")
 
 
 def p3_press_brake_thick(spec: dict, t: dict) -> dict | None:
@@ -75,7 +79,9 @@ def p3_press_brake_thick(spec: dict, t: dict) -> dict | None:
                 ratio=round(expected, 3), n=len(pb), ncr_rate=round(rate, 2),
                 stat=f"{rate:.0%} of press-brake jobs on 1/2\"+ plate had an NCR (n={len(pb)}); those ran "
                      f"{r_ncr:.2f}x quoted brake hours",
-                adjustment=f"press brake run hours x{expected:.2f} (expected rework)")
+                adjustment=f"press brake run hours x{expected:.2f} (expected rework)",
+                plain=f"{rate:.0%} of press-brake jobs on 1/2-inch-plus plate needed an NCR ({len(pb)} jobs), "
+                      f"so brake hours include the expected rework.")
 
 
 def p4_price_sensitive(spec: dict, t: dict) -> dict | None:
@@ -94,7 +100,9 @@ def p4_price_sensitive(spec: dict, t: dict) -> dict | None:
                 ratio=None, n=len(c),
                 stat=f"won {wl:.0%} of quotes under {PRICE_SENSITIVE_CUTOFF:.2f}x cost (n={len(low)}) but "
                      f"{wh:.0%} at {PRICE_SENSITIVE_CUTOFF + 0.05:.2f}x or more (n={len(high)})",
-                adjustment=f"keep the markup under {PRICE_SENSITIVE_CUTOFF:.2f}x; the win model already reflects this")
+                adjustment=f"keep the markup under {PRICE_SENSITIVE_CUTOFF:.2f}x; the win model already reflects this",
+                plain=f"{spec.get('customer_name')} won {wl:.0%} of quotes under {PRICE_SENSITIVE_CUTOFF:.2f}x cost "
+                      f"but only {wh:.0%} above that, so keep the markup tight.")
 
 
 QUERIES = [p1_cosmetic_weld, p2_first_run_fixture, p3_press_brake_thick, p4_price_sensitive]
@@ -116,7 +124,7 @@ def find_patterns(spec: dict, t: dict, line_keys: set[str] | None = None, narrat
 
 def narrate_pattern(p: dict) -> tuple[str, str]:
     data = {k: p[k] for k in ("title", "stat", "adjustment")}
-    fallback = f"{p['title']}: {p['stat']}, so we apply {p['adjustment']}."
+    fallback = p.get("plain") or f"{p['title']}: {p['stat']}, so we apply {p['adjustment']}."
     out, meta = llm.call_model_meta("pattern_narration", NARRATION_PROMPT.format(data=json.dumps(data)),
                                     None, fallback=fallback)
     text = out.strip() if isinstance(out, str) and out.strip() else fallback
