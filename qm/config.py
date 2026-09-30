@@ -103,8 +103,11 @@ MC_SAMPLES = 2000
 RISK_SHARE = 0.5              # risk-adjusted cost = P50 + RISK_SHARE * (P90 - P50)
 PRICE_GRID = (1.0, 1.8, 161)  # candidate price multipliers on P50
 REC_BAND = 0.90               # recommended range = exp margin >= 90% of peak
-# Capacity: minimum acceptable margin over risk-adjusted cost rises with shop load.
-MIN_MARGIN_AT_LOAD = [(0.0, 0.05), (0.5, 0.10), (0.8, 0.18), (1.0, 0.28)]
+# Capacity: minimum acceptable margin over risk-adjusted cost rises with shop load (the floor) ...
+MIN_MARGIN_AT_LOAD = [(0.0, 0.04), (0.5, 0.10), (0.8, 0.22), (1.0, 0.35)]
+# ... and shop time has an opportunity cost: busy shop -> each labor hour displaces other work;
+# slow shop -> burdened overhead is already sunk, so thinner margins still pay. Share of labor cost.
+CAPACITY_PREMIUM_AT_LOAD = [(0.0, -0.10), (0.5, 0.0), (1.0, 0.30)]
 EXPEDITE_PRICE_PCT = 0.12     # +12% price ...
 EXPEDITE_DAYS_SAVED = 7       # ... for one week faster (ILLUSTRATIVE)
 QUOTE_VALIDITY_DAYS = 30

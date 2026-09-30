@@ -35,3 +35,15 @@
 - Verified: `tests/test_intake.py` 33 pass: A -> exactly {qty_conflict, finish_color}; "3/8 plate" vs "0.375 A-36 HR" normalizes (no conflict); B none + first run; C none + S/fast-track; live Ollama result cached then served from cache (mocked HTTP).
 - Next: Phase 4 proposal, evidence engine, patterns.
 
+## [Wed 01:05 CT] Phase 4: Proposal, evidence, patterns: DONE
+- Built: `qm/proposal.py` (analog BOM/routing using actual hours, material/thickness swap, finish add/remove, first-run fixture rule, cosmetic keeps grind, difference table incl. revision-change and steel-price drift rows), `qm/evidence.py` (Section 7.4 exactly; per-line rows for past jobs, shop default, supplier quotes, vendor table, notes sized by their job's act/est ratio, override notes as deltas, pattern rows; notes gated by line driver e.g. cosmetic notes never move a standard-weld line), `qm/patterns.py` (P1-P4, n>=3, LLM one-liner with template fallback).
+- Verified: worked example (0.537 / CV 0.16 / conf 0.56 / 0.39-0.69) passes; RFQ A ledger 19 lines all with value/range/confidence/evidence; weld line carries P1; aging material 90 days: A36 green 0.97 -> red 0.21, flag + validity 30 -> 15 days.
+## [Wed 01:05 CT] Phase 5: Uncertainty & pricing: DONE
+- Built: `qm/uncertainty.py` (2,000-sample triangular Monte Carlo, per-line seeded streams, steel lines share one market shock, gap + escalation contingencies), `qm/pricing.py` (logistic win model with standardized ratio + segment/new/qty-bucket/customer one-hots; exp margin vs risk-adjusted cost P50 + 0.5(P90-P50); capacity = floor + labor opportunity cost; expedite +12% / -7 days; Gate 2 range check; per-release-size prices).
+- Verified: P10 < P50 < P90 (A: ~150/156/162); Prairie markup 1.23x vs Cedar 1.34x; capacity 10% -> 100% moves A from ~$207 to ~$217.
+- Decisions: material prices raised to realistic small-shop levels (A36 ~$0.86/lb now) and regenerated; capacity has a continuous opportunity-cost term (a pure floor only moved the price above ~85% load).
+## [Wed 01:05 CT] Phase 6: Memory write-back: DONE
+- Built: `qm/memory.py` (override -> docs row in data/memory CSV + SQLite + vector store immediately; decisions for Gate 2 / reasoned flips; replace-per-RFQ; reset).
+- Verified: automated test: A's fit/tack setup override (+6 hr, "new fixture needed") appears on B's fit/tack setup as a counted evidence row and raises B's value; unrelated RFQ C unaffected; reset removes it. `pipeline.run_pipeline` + `diff` (change banner) + quote preview in place. 86 tests green.
+- Next: Phase 7 Streamlit UI.
+

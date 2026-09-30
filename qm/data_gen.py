@@ -49,11 +49,11 @@ SIZE_CLASS = {"hitch_bracket": "medium", "guard": "medium", "frame": "large", "m
 
 MATERIALS = {
     # normalized: base $/lb at START, quote interval (days), follows the steel index?
-    "A36": (0.54, 7, True),
-    "A500": (0.78, 7, True),
-    "1018": (0.92, 14, True),
-    "304SS": (2.65, 30, False),
-    "5052AL": (3.10, 30, False),
+    "A36": (0.74, 7, True),
+    "A500": (0.98, 7, True),
+    "1018": (1.05, 14, True),
+    "304SS": (3.10, 30, False),
+    "5052AL": (3.45, 30, False),
 }
 MATERIAL_ALIASES = {
     "A36": ["A36", "A-36 HR", "HR A36", "ASTM A36 plate", "A36 HR plate"],
