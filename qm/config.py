@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 MEMORY_DIR = Path(os.getenv("QM_MEMORY_DIR") or DATA_DIR / "memory")   # demo-session overrides (gitignored)
 CHROMA_DIR = Path(os.getenv("QM_CHROMA_DIR") or DATA_DIR / "chroma")    # vector store (gitignored, rebuilt)
-SQLITE_PATH = DATA_DIR / "quote_memory.sqlite"
+SQLITE_PATH = Path(os.getenv("QM_SQLITE_PATH") or DATA_DIR / "quote_memory.sqlite")
 CACHE_DIR = ROOT / "cache" / "llm"
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "llm"
 DEMO_RFQ_DIR = ROOT / "demo" / "rfqs"
@@ -100,6 +100,7 @@ MATERIAL_STALE_DAYS = 30
 
 # ---------------------------------------------------------------- uncertainty / pricing
 MC_SAMPLES = 2000
+LABOR_CORRELATION = 0.5       # labor lines share a common factor (a bad week hits weld, fit-up and grind together)
 RISK_SHARE = 0.5              # risk-adjusted cost = P50 + RISK_SHARE * (P90 - P50)
 PRICE_GRID = (1.0, 1.8, 161)  # candidate price multipliers on P50
 REC_BAND = 0.90               # recommended range = exp margin >= 90% of peak

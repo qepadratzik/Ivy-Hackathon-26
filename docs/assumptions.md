@@ -103,9 +103,9 @@ The LLM drafts one clarification email covering every "ask" item (template fallb
 ## Uncertainty (S7)
 - Each line ~ Triangular(low, value, high) × its multiplier ($/unit); 2,000 samples; per-line seeded streams so
   unrelated edits don't reshuffle other lines.
-- **Steel lines share one random stream** (one market shock, perfectly correlated). All other lines are
-  **independent**; this understates correlated risk (e.g. every labor op running long on a bad week), so real
-  bands would be somewhat wider.
+- Gaussian copula: **steel lines share one market shock** (perfectly correlated); **labor lines share a "bad week on
+  the floor" factor** with pairwise correlation 0.5 (`config.LABOR_CORRELATION`); purchased and outside lines are
+  independent. The correlations are assumed priors, not fitted.
 - Gap contingencies and material escalation are added as fixed dollars per unit.
 
 ## Pricing (S8)
@@ -131,3 +131,25 @@ Resulting recommended markups on RFQ A's cost: Cedar Valley 1.33×, Hawkeye 1.29
   temperature 0.1, timeout 60 s, one retry with the validation error appended, then fixture/template fallback.
 - Cache key = sha256(provider, model, task, system prompt + prompt, schema); offline mode also accepts a cache hit
   from another provider for the same prompt, then fixtures, then templates.
+
+## Changes after the red-team review (docs/review.md)
+- **Revision change → one-time fixture check line.** When the RFQ is a new revision of a part we built and the analog
+  had no fixture line, the proposal adds *Fixture build (one-time)* at **0 hr**, locked at the approved value and shown
+  red with "confirm the old fixture still fits; history says a new fixture takes ~6 hr". The estimator sets the hours at
+  Gate 1 (the quick-adjust suggests the 6.0 hr shop default). One-time lines are spread over the **order** quantity,
+  never per release.
+- **Override memory on one-time lines** carries the absolute value (e.g. "a new fixture took 6 hr"); on per-release /
+  per-unit lines it carries the delta (new − old) applied to the next quote's evidence base.
+- **P2 with a fixture line**: when the quote already carries a fixture line, P2 becomes an explanation on that line
+  (no numeric row), and "no fixture was quoted" debriefs no longer inflate fit/tack setup (no double count). If the
+  estimator removes the fixture line, P2 goes back onto fit/tack setup as a ×1.94 pattern row.
+- **Not enough information to price**: if the closest past job is below the 0.35 similarity bar, or 3+ essentials had
+  to be assumed from it, the quote says NOT PRICED and Gate 2 is blocked. Missing essentials are otherwise filled from
+  the analog and listed as assumptions/gaps.
+- **"No welding"** in the RFQ removes weld / grind / fit-up ops from the proposal and the part is not treated as a weldment.
+  Tube assemblies are priced on A500 tube when the RFQ mentions tube.
+- **Stale Gate 2**: an approved price is invalidated if P50 later moves more than 0.5%, the price falls below the new
+  floor, or Gate 1 is re-opened.
+- **Quote**: unit price by release size (release, 2× release, order total), a separate line for the conflicting total
+  (e.g. 200 pcs), and a "Setup & tooling" block (setup per release, one-time fixture) as buyers ask.
+- **Pasted RFQs** draft the clarification email from the template instantly; the model drafts it only on request.

@@ -114,6 +114,12 @@ def find_patterns(spec: dict, t: dict, line_keys: set[str] | None = None, narrat
         p = q(spec, t)
         if not p or p["n"] < MIN_N:
             continue
+        if p["id"] == "P2" and line_keys is not None and "fixture.setup" in line_keys:
+            # the proposal already carries a one-time fixture line: P2 explains it instead of inflating setup
+            p.update(line_key="fixture.setup", ratio=None,
+                     adjustment="a one-time fixture line is in this quote, so setup is not inflated",
+                     plain=p["plain"].replace("so plan the fixture time.", "so this quote carries a one-time "
+                                                                             "fixture line instead."))
         if line_keys is not None and p["line_key"] != "price" and p["line_key"] not in line_keys:
             continue
         if narrate:

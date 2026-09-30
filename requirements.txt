@@ -2,6 +2,7 @@ streamlit>=1.40
 pandas>=2.2
 numpy>=1.26
 scikit-learn>=1.4
+scipy>=1.11          # installed with scikit-learn; used for the Monte Carlo copula
 plotly>=5.20
 chromadb>=1.0
 requests>=2.31

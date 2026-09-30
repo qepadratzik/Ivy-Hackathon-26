@@ -33,7 +33,9 @@ def default_state() -> dict:
         "gate2_price": None,
         "gate2_reason": "",
         "gate2_approved": False,
+        "gate2_p50": None,          # cost snapshot at Gate 2 approval (to detect stale approvals)
         "expedite": False,
+        "email_llm": None,          # None = auto (model for demo RFQs, template for pasted ones until asked)
     }
 
 
@@ -125,10 +127,14 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
     ledger, meta = evidence.build_ledger(spec, lines, sims, t, pats, overrides, st["material_age_days"])
 
     has_outside = any(l["category"] == "outside" for l in ledger)
+    if not has_outside and any(k.startswith("out.") for k in st["gate1_excluded"] or []):
+        # the estimator removed the coating line at Gate 1: the color / finish questions go away too
+        gap_list = [g for g in gap_list if g["id"] not in ("finish_color", "finish_conflict")]
     due_gap, due_info = gaps.due_date_check(spec, first_release_hours(ledger, spec), has_outside)
     if due_gap:
         gap_list += gaps.apply_actions([due_gap], st["gap_actions"])
-    email, email_meta = gaps.clarification_email(gap_list, spec, rfq.get("email_text", ""))
+    use_llm = st["email_llm"] if st["email_llm"] is not None else rfq.get("rfq_id") != "RFQ-PASTE"
+    email, email_meta = gaps.clarification_email(gap_list, spec, rfq.get("email_text", ""), use_llm=use_llm)
 
     cont = uncertainty.contingencies(ledger, gap_list, meta["material"])
     risk = uncertainty.simulate(ledger, cont)
@@ -137,12 +143,28 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
     lead_days = int(max(due_info["min_lead_days"], 14))
     exp = pricing.expedite(curve["recommended"], lead_days)
 
-    chosen = st["gate2_price"] if st["gate2_price"] else curve["recommended"]
-    if st["expedite"] and not st["gate2_price"]:
+    chosen = st["gate2_price"] if st["gate2_price"] is not None else curve["recommended"]
+    if st["expedite"] and st["gate2_price"] is None:
         chosen = exp["price"]
     g2 = pricing.gate2_check(float(chosen), curve)
     if st["expedite"]:
         g2 = {"status": "ok", "in_range": True, "expedite": True}
+    insufficient = []
+    if analog is None or float(analog.sim) < config.SIM_THRESHOLD:
+        insufficient.append("no past job is similar enough (similarity below "
+                            f"{config.SIM_THRESHOLD}) to build a routing from")
+    if len(spec.get("assumed_from_analog") or []) >= 3:
+        insufficient.append(f"{len(spec['assumed_from_analog'])} essentials were missing and had to be assumed "
+                            f"({', '.join(f.replace('_in', '').replace('_', ' ') for f in spec['assumed_from_analog'])})")
+    g2_stale = None
+    if st.get("gate2_approved") and st.get("gate2_p50"):
+        drift = risk["p50"] / st["gate2_p50"] - 1
+        if abs(drift) > 0.005:
+            g2_stale = f"costs moved {drift * 100:+.1f}% since the price was approved"
+        elif float(chosen) < curve["floor_price"] - 0.005 and not st["expedite"]:
+            g2_stale = "the approved price is now below the minimum-margin floor"
+    if not st.get("gate1_approved") and st.get("gate2_approved"):
+        g2_stale = "the approach (Gate 1) was re-opened after the price was approved"
     chosen_pwin = pricing.pwin_at(float(chosen) / (1 + exp["pct"]) if st["expedite"] else float(chosen),
                                   risk["p50"], spec)
 
@@ -154,6 +176,7 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
         "patterns": pats, "ledger": ledger, "material_meta": meta["material"], "material_stale": stale,
         "due": due_info, "contingencies": cont, "risk": risk, "pricing": curve, "expedite": exp,
         "lead_days": lead_days, "chosen_price": float(chosen), "chosen_pwin": chosen_pwin, "gate2": g2,
+        "gate2_stale": g2_stale, "insufficient": insufficient,
         "state": st, "validity_days": config.QUOTE_VALIDITY_STALE_DAYS if stale else config.QUOTE_VALIDITY_DAYS,
         "llm_meta": [x["llm"], email_meta] + [{"task": "pattern_narration", "source": p.get("narration_source")}
                                               for p in pats],
@@ -205,6 +228,7 @@ def diff(prev: dict | None, new: dict) -> dict | None:
     if a["validity"] != b["validity"]:
         parts.append(f"Quote validity: {a['validity']} → {b['validity']} days")
     return {"p50": (a["p50"], b["p50"]), "band": (a["band"], b["band"]), "rec": (a["rec"], b["rec"]),
+            "validity": (a["validity"], b["validity"]),
             "changed_lines": changed, "removed_lines": removed, "text": ". ".join(parts) + "."}
 
 
@@ -216,11 +240,18 @@ def build_quote(res: dict) -> dict:
     lot = int(spec.get("lot_qty") or spec.get("qty") or 1)
     qty = int(spec.get("qty") or lot)
     per_unit_cont = risk["contingency_total"]
-    breaks = sorted({lot, min(qty, lot * 2), qty} | ({int(c["sheet"]) for c in res["intake"]["conflicts"]
-                                                    if c["field"] == "qty" and isinstance(c["sheet"], int)}))
-    rows = [{"lot": b, "unit_price": pricing.price_at_lot(ledger, per_unit_cont, b, markup, spec)} for b in breaks]
-    for r in rows:
-        r["unit_price"] = round(price if r["lot"] == lot else r["unit_price"], 2)
+    breaks = sorted({lot, min(qty, lot * 2), qty})
+    rows = [{"lot": b, "unit_price": round(price if b == lot else
+                                           pricing.price_at_lot(ledger, per_unit_cont, b, markup, spec), 2)}
+            for b in breaks]
+    alt_totals = []
+    for c in res["intake"]["conflicts"]:
+        if c["field"] == "qty" and isinstance(c["sheet"], int) and c["sheet"] != qty:
+            alt_totals.append({"total": c["sheet"], "lot": lot, "unit_price": round(
+                pricing.price_at_lot(ledger, per_unit_cont, lot, markup, spec, total=c["sheet"]), 2)})
+    setup_per_release = sum(l["value"] * l["multiplier"] * lot for l in ledger
+                            if l["kind"] == "routing" and l["hour_type"] == "setup" and l["work_center"] != "fixture")
+    tooling = sum(l["value"] * l["multiplier"] * qty for l in ledger if l["key"] == "fixture.setup")
     assumptions = [g["assumption"] for g in res["gaps"] if g["action"] == "assume"]
     pending = [g["title"] for g in res["gaps"] if g["action"] == "ask"]
     for mat, info in res["material_meta"].items():
@@ -230,8 +261,8 @@ def build_quote(res: dict) -> dict:
         else:
             assumptions.append(f"{mat} pricing based on current supplier quotes; subject to mill surcharges "
                                f"after {config.QUOTE_VALIDITY_DAYS} days.")
-    if any(l["key"] == "fixture.setup" for l in ledger):
-        assumptions.append("Includes a one-time fixture build, amortized over the order quantity.")
+    for f in spec.get("assumed_from_analog") or []:
+        assumptions.append(f"{f.replace('_in', '').replace('_', ' ').capitalize()} not stated; quoted as on our closest past job.")
     exclusions = ["Freight (FOB our dock)", "First article inspection report unless noted",
                   "Engineering or print changes after award"]
     if "first article" in (res["rfq"].get("email_text") or "").lower():
@@ -240,11 +271,16 @@ def build_quote(res: dict) -> dict:
     for l in ledger:
         cats[l["category"]] = cats.get(l["category"], 0.0) + l["cost"]
     lead = res["expedite"]["lead_days"] if res["state"].get("expedite") else res["lead_days"]
-    ready = res["state"].get("gate1_approved") and res["state"].get("gate2_approved") and not pending
-    return {"part": spec.get("part_number"), "customer": spec.get("customer_name"), "qty": qty, "lot": lot,
-            "unit_price": round(price, 2), "breaks": rows, "lead_days": lead,
+    st = res["state"]
+    ready = (st.get("gate1_approved") and st.get("gate2_approved") and not pending and not res.get("gate2_stale")
+             and not res.get("insufficient"))
+    return {"part": spec.get("part_number") or "(part number not stated)",
+            "customer": spec.get("customer_name") or "(customer not stated)", "qty": qty, "lot": lot,
+            "unit_price": round(price, 2), "breaks": rows, "alt_totals": alt_totals, "lead_days": lead,
+            "setup_per_release": setup_per_release, "tooling": tooling,
             "validity_days": res["validity_days"], "assumptions": assumptions, "exclusions": exclusions,
             "pending": pending, "cost_mix": cats, "ready": bool(ready),
+            "date": max(config.AS_OF, date.today()),
             "terms": "Net 30. FOB Boone Creek Fabrication, Boone County, IA. Pricing per the revision named above; "
                      "print changes may require a re-quote."}
 
@@ -253,14 +289,22 @@ def quote_markdown(res: dict) -> str:
     q = res["quote"]
     s = res["spec"]
     out = [f"# Quotation: {q['part']}", "", "**Boone Creek Fabrication** (fictional)  ",
-           f"To: {q['customer']}  ", f"Date: {config.AS_OF:%B %d, %Y}  ", f"Valid: {q['validity_days']} days", ""]
-    if not q["ready"]:
+           f"To: {q['customer']}  ", f"Date: {q['date']:%B %d, %Y}  ", f"Valid: {q['validity_days']} days", ""]
+    if res.get("insufficient"):
+        out += ["> NOT PRICED: not enough information (" + "; ".join(res["insufficient"]) + ").", ""]
+    elif not q["ready"]:
         out += ["> DRAFT: not released (gates pending or open questions).", ""]
-    out += [f"**Part:** {s.get('part_number')}: {s.get('part_description') or ''}", "",
-            f"**Quantity:** {q['qty']} pcs, releases of {q['lot']}", "",
-            "| Release size | Unit price |", "|---:|---:|"]
-    out += [f"| {r['lot']} | ${r['unit_price']:,.2f} |" for r in q["breaks"]]
-    out += ["", f"**Lead time:** {q['lead_days']} days ARO for the first release", ""]
+    out += [f"**Part:** {q['part']}: {s.get('part_description') or '(description not stated)'}", "",
+            f"**Quantity:** {q['qty']} pcs total, releases of {q['lot']}", "",
+            "| Unit price if released in lots of | Unit price |", "|---:|---:|"]
+    out += [f"| {r['lot']} pcs{' (as requested)' if r['lot'] == q['lot'] else ''} | ${r['unit_price']:,.2f} |"
+            for r in q["breaks"]]
+    for a in q.get("alt_totals", []):
+        out += ["", f"If the total is {a['total']} pcs (releases of {a['lot']}): ${a['unit_price']:,.2f}/unit."]
+    out += ["", f"**Setup & tooling (included in the unit prices above):** setup ${q['setup_per_release']:,.2f} per "
+                f"release" + (f"; one-time fixture/tooling ${q['tooling']:,.2f}, spread over the {q['qty']} pcs"
+                              if q["tooling"] > 0 else "; no tooling charge") + ".", ""]
+    out += [f"**Lead time:** {q['lead_days']} days ARO for the first release", ""]
     if q["assumptions"]:
         out += ["**Assumptions**", ""] + [f"- {a}" for a in q["assumptions"]] + [""]
     out += ["**Exclusions**", ""] + [f"- {e}" for e in q["exclusions"]] + [""]

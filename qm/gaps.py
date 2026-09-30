@@ -152,12 +152,15 @@ def template_email(first: str, part: str, questions: list[str]) -> str:
     return "\n".join(lines)
 
 
-def clarification_email(gaps: list[dict], spec: dict, email_text: str) -> tuple[str | None, dict]:
+def clarification_email(gaps: list[dict], spec: dict, email_text: str,
+                        use_llm: bool = True) -> tuple[str | None, dict]:
     asks = [g["question"] for g in gaps if g["action"] == "ask"]
     if not asks:
         return None, {"source": None}
     first = contact_first_name(email_text)
     part = spec.get("part_number") or "your part"
+    if not use_llm:   # e.g. pasted RFQs: instant template; the model drafts only when asked
+        return template_email(first, part, asks), {"source": "template", "provider": "template", "model": "rules"}
     prompt = EMAIL_PROMPT.format(first=first, customer=spec.get("customer_name") or "", part=part,
                                  questions="\n".join(f"{i}. {q}" for i, q in enumerate(asks, 1)))
     out, meta = llm.call_model_meta("clarification_email", prompt, None,

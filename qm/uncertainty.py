@@ -1,9 +1,9 @@
 """S7 Uncertainty: Monte Carlo over the ledger.
 
 Each line ~ Triangular(low, value, high) in its own unit, times its multiplier to $/unit.
-2,000 samples. Material (steel) lines move together (one shared market shock); all other lines are
-independent (stated in docs/assumptions.md: this understates correlated risk, e.g. all labor running
-long together). Gap/escalation contingencies are added as fixed dollars.
+2,000 samples. Material (steel) lines move together (one shared market shock); labor lines are partially
+correlated (a shared "bad week on the floor" factor, rho = config.LABOR_CORRELATION); purchased and
+outside lines are independent (stated in docs/assumptions.md). Gap/escalation contingencies are added as fixed dollars.
 Each line has its own seeded random stream, so unrelated edits don't shuffle other lines' draws.
 """
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import zlib
 
 import numpy as np
+from scipy.special import ndtr
 
 from qm import config
 
@@ -21,12 +22,29 @@ def stream_key(line: dict) -> str:
     return "material" if line["category"] == "material" else line["key"]
 
 
+def _normal(seed: int, name: str, n: int) -> np.ndarray:
+    return np.random.default_rng([seed, zlib.crc32(name.encode())]).standard_normal(n)
+
+
+def tri_ppf(u: np.ndarray, lo: float, mode: float, hi: float) -> np.ndarray:
+    """Inverse CDF of Triangular(lo, mode, hi)."""
+    c = (mode - lo) / (hi - lo)
+    return np.where(u < c, lo + np.sqrt(u * (hi - lo) * (mode - lo)),
+                    hi - np.sqrt((1 - u) * (hi - lo) * (hi - mode)))
+
+
 def line_samples(line: dict, n: int, seed: int) -> np.ndarray:
+    """Triangular draws via a Gaussian copula: steel lines share one market shock (rho = 1), labor lines share
+    a 'bad week on the floor' factor (rho = LABOR_CORRELATION), everything else is independent."""
     lo, mode, hi = line["low"], line["value"], line["high"]
     if lo is None or hi is None or hi <= lo:
         return np.full(n, float(mode) * line["multiplier"])
-    rng = np.random.default_rng([seed, zlib.crc32(stream_key(line).encode())])
-    return rng.triangular(lo, mode, hi, n) * line["multiplier"]
+    mode = min(max(float(mode), float(lo)), float(hi))
+    z = _normal(seed, stream_key(line), n)
+    if line["category"] == "labor":
+        load = np.sqrt(config.LABOR_CORRELATION)     # pairwise correlation between labor lines = LABOR_CORRELATION
+        z = load * _normal(seed, "labor-common", n) + np.sqrt(1 - load ** 2) * z
+    return tri_ppf(ndtr(z), float(lo), mode, float(hi)) * line["multiplier"]
 
 
 def contingencies(ledger: list[dict], gaps: list[dict], material_meta: dict) -> list[dict]:

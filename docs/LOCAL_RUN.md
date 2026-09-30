@@ -86,7 +86,7 @@ python -m qm.pipeline --warm demo/rfqs
 This also downloads the small local embedding model (~80 MB, once). Expected:
 ```
 Provider: ollama:qwen3:8b  mode: live
-  RFQ-A: gaps=['qty_conflict', 'finish_color'] analog=J-1042 P50=$156.35 rec=$208.73 llm=['live', ...]
+  RFQ-A: gaps=['qty_conflict', 'finish_color'] analog=J-1042 P50=$156.12 rec=$209.20 llm=['live', ...]
   RFQ-B: gaps=[] analog=J-1103 ...
   RFQ-C: gaps=[] analog=J-1118 ...
 ```

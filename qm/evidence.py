@@ -87,6 +87,9 @@ def note_applies(line_key: str, note_job: pd.Series | None, spec: dict) -> bool:
         return True
     if line_key in ("weld.run", "grind.run"):
         return spec.get("cosmetic_weld") is None or bool(note_job.cosmetic_weld) == bool(spec.get("cosmetic_weld"))
+    if line_key == "fit_tack.setup" and spec.get("quote_has_fixture") and bool(note_job.first_run) \
+            and not bool(note_job.has_fixture_line):
+        return False  # "no fixture was quoted" stories don't apply when this quote carries a fixture line
     if line_key in ("fit_tack.setup", "fixture.setup"):
         first = bool(spec.get("first_run"))
         return bool(note_job.first_run) == first and (not first or not bool(note_job.has_fixture_line))
@@ -165,7 +168,7 @@ def evidence_routing(ctx: Context, line: dict) -> tuple[list[dict], dict]:
             rows.append(make_row("pattern", p["id"], est_base * p["ratio"], 1.0, 0, None,
                                  why=f"{p['title']}: {p['stat']}", text=p.get("narration")))
     # notes: debriefs / NCRs (ratio from the note's own job) and estimator overrides (delta)
-    notes = retrieval.related_notes(ctx.spec, wc if wc != "fixture" else "fit_tack", key, tables=ctx.t)
+    notes = retrieval.related_notes(ctx.spec, wc, key, tables=ctx.t)
     seen, n_notes, n_over = set(), 0, 0
     for nrow in notes.itertuples(index=False):
         if nrow.sim < config.SIM_THRESHOLD or nrow.text in seen:
@@ -178,9 +181,13 @@ def evidence_routing(ctx: Context, line: dict) -> tuple[list[dict], dict]:
             if ctx.spec.get("rfq_id") and nrow.job_id == ctx.spec.get("rfq_id"):
                 continue  # this quote's own Gate 1 edit is already the locked value; don't count it twice
             delta = float(nrow.new_value) - float(nrow.old_value)
-            rows.append(make_row("override", nrow.doc_id, max(0.0, structured_base + delta), nrow.sim, age, "note",
-                                 why=f"Estimator override on a similar quote ({nrow.job_id}): {delta:+.2f} "
-                                     f"{'hr' if ht else ''} applied to this line's evidence base",
+            if key == "fixture.setup" or float(nrow.old_value) == 0:
+                # one-time line: the override IS the amount (e.g. "a new fixture took 6 hr"), not a delta
+                val, how = float(nrow.new_value), f"{float(nrow.new_value):.2f} hr one-time"
+            else:
+                val, how = max(0.0, structured_base + delta), f"{delta:+.2f} hr applied to this line's evidence base"
+            rows.append(make_row("override", nrow.doc_id, val, nrow.sim, age, "note",
+                                 why=f"Estimator override on a similar quote ({nrow.job_id}): {how}",
                                  text=nrow.text, when=nrow.date))
             n_over += 1
             continue
@@ -290,6 +297,7 @@ def build_ledger(spec: dict, lines: list[dict], sims: pd.DataFrame, tables: dict
     """lines = proposal lines after Gate 1 (with 'value' = the approved quantity/hours).
     overrides = {line_key: {'old':..., 'new':..., 'reason':...}} made at Gate 1 on routing lines."""
     overrides = overrides or {}
+    spec = dict(spec, quote_has_fixture=any(l["key"] == "fixture.setup" and l.get("include", True) for l in lines))
     ctx = Context(spec, sims, tables, patterns, material_age_offset)
     lot = max(1, int(spec.get("lot_qty") or spec.get("qty") or 1))
     total_qty = max(1, int(spec.get("qty") or lot))
@@ -311,6 +319,8 @@ def build_ledger(spec: dict, lines: list[dict], sims: pd.DataFrame, tables: dict
                                         text=ov.get("reason")))
                 rows[0]["authority"] = 1.0
                 rows[0]["score"] = 1.0
+            elif ln.get("check"):
+                forced = approved   # "confirm" line: stays at the approved value until the estimator decides
             wc = ln["work_center"]
             if wc == "fixture":
                 mult, unit = _rate(wc) / total_qty, "hr/order"
@@ -343,7 +353,12 @@ def build_ledger(spec: dict, lines: list[dict], sims: pd.DataFrame, tables: dict
                             f"or shorten quote validity to {config.QUOTE_VALIDITY_STALE_DAYS} days.")
         if s["sum_score"] == 0:
             warnings.append("No usable evidence: shop default only, treat as a guess.")
-        if forced is not None and s["cv"] is not None and s["cv"] > 0.3:
+        if ln.get("check") and key not in overrides:
+            typical = summarize([r for r in rows if r["source_type"] != "override" or r["ref"] != "This quote (Gate 1)"])
+            warnings.append(f"New revision: confirm the old fixture still fits. History says a new fixture takes "
+                            f"~{typical['value']:.1f} hr; enter it at Gate 1 if needed (charged once, not per release)."
+                            if typical["value"] else "New revision: confirm the old fixture still fits.")
+        if key in overrides and s["cv"] is not None and s["cv"] > 0.3:
             warnings.append("Override differs a lot from history: saved with its reason so the next quote learns.")
         pats = [p["id"] for p in patterns if p.get("line_key") == key]
         ledger.append(dict(

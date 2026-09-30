@@ -50,7 +50,7 @@ st.markdown(f"""
 .qm-step div.wait {{background:#fff6e0; border-color:{YELLOW}; color:#6b4e00;}}
 .qm-step div.now {{background:#e8f0fe; border-color:{BLUE}; color:#0b3d91; font-weight:700;}}
 .qm-banner {{border-left:6px solid {BLUE}; background:#eef4ff; padding:10px 14px; border-radius:6px; margin:0.4rem 0 0.8rem 0;}}
-.qm-banner b.up {{color:{RED};}} .qm-banner b.down {{color:{GREEN};}}
+.qm-banner b.up {{color:{RED};}} .qm-banner b.down {{color:{GREEN};}} .qm-banner b.neutral {{color:{BLUE};}}
 .qm-mail {{white-space:pre-wrap; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.8rem;
            background:#f8fafc; border:1px solid #e5e7eb; border-radius:6px; padding:10px; max-height:420px; overflow:auto;}}
 table.qm-t {{width:100%; border-collapse:collapse; font-size:0.85rem;}}
@@ -64,6 +64,11 @@ table.qm-t th {{color:#475467; font-weight:600;}}
 # ---------------------------------------------------------------- helpers
 def chip(level: str, text: str) -> str:
     return f'<span class="qm-chip" style="background:{CHIP.get(level, GREY)}">{html.escape(text)}</span>'
+
+
+def mailbox(text: str) -> str:
+    """Pre-formatted text box that survives Streamlit's markdown (no blank lines inside the HTML block)."""
+    return "<div class='qm-mail'>" + html.escape(str(text)).replace("\n", "<br>") + "</div>"
 
 
 def money(x: float) -> str:
@@ -105,6 +110,22 @@ def boot() -> dict:
     return intake.load_demo_rfqs()
 
 
+def K(name: str) -> str:
+    """Widget key for the current 'generation'. Reset bumps the generation so the browser drops every old
+    widget (and its remembered value) and draws fresh ones with their defaults."""
+    gen = st.session_state.get("_gen", 0)
+    return name if gen == 0 else f"{name}~{gen}"
+
+
+def reset_demo() -> None:
+    memory.reset_memory()
+    pipeline.clear_caches()
+    gen = st.session_state.get("_gen", 0) + 1
+    for k in list(st.session_state.keys()):
+        del st.session_state[k]
+    st.session_state["_gen"] = gen
+
+
 def S() -> dict:
     if "qm" not in st.session_state:
         st.session_state.qm = {"rfq_states": {}, "last": {}, "banner": {}, "g1_pending": {}, "g1_ver": {},
@@ -124,9 +145,12 @@ def cause_of_change(old: dict, new: dict) -> list[str]:
         a, b = ops["gap_actions"].get(gid, "ask"), nps["gap_actions"].get(gid, "ask")
         if a != b:
             c.append(f"gap '{gid.replace('_', ' ')}' switched {a} → {b}")
-    if ops["gate1_edits"] != nps["gate1_edits"] or ops["gate1_excluded"] != nps["gate1_excluded"]:
-        eds = [f"{k} → {v['value']:.2f}" for k, v in nps["gate1_edits"].items()]
-        c.append("Gate 1 edits: " + (", ".join(eds) if eds else "cleared"))
+    if ops["gate1_edits"] != nps["gate1_edits"] or ops["gate1_excluded"] != nps["gate1_excluded"] \
+            or ops["gate1_approved"] != nps["gate1_approved"]:
+        lab = {l["key"]: l["label"] for l in new["res"]["proposal"]["lines"]}
+        eds = [f"{lab.get(k, k)} → {v['value']:.2f}" for k, v in nps["gate1_edits"].items()]
+        eds += [f"removed {lab.get(k, k)}" for k in nps["gate1_excluded"]]
+        c.append("Gate 1: " + (", ".join(eds) if eds else "approach approved as proposed"))
     if ops["material_age_days"] != nps["material_age_days"]:
         c.append(f"newest material quote aged {ops['material_age_days']} → {nps['material_age_days']} days")
     if ops["capacity"] != nps["capacity"]:
@@ -150,12 +174,12 @@ with st.sidebar:
     st.markdown("## 📐 Quote Memory")
     st.caption("Evidence-weighted quoting for **Boone Creek Fabrication** (fictional). "
                "Every number shows its sources.")
-    pick = st.radio("Which RFQ?", list(RFQS) + ["PASTE"], format_func=lambda k: RFQ_LABELS.get(k, k), key="rfq_pick")
+    pick = st.radio("Which RFQ?", list(RFQS) + ["PASTE"], format_func=lambda k: RFQ_LABELS.get(k, k), key=K("rfq_pick"))
     rfq = None
     if pick == "PASTE":
-        txt = st.text_area("Paste an RFQ email", key="paste_text", height=180,
+        txt = st.text_area("Paste an RFQ email", key=K("paste_text"), height=180,
                            placeholder="From: buyer@customer.example\nSubject: RFQ ...\n\nPlease quote 100 pcs ...")
-        if st.button("Read this RFQ", key="paste_go"):
+        if st.button("Read this RFQ", key=K("paste_go")):
             st_["paste"] = txt
             for d in (st_["rfq_states"], st_["last"], st_["banner"], st_["g1_pending"]):
                 d.pop("RFQ-PASTE", None)
@@ -165,13 +189,13 @@ with st.sidebar:
         rfq = RFQS[pick]
     st.divider()
     st.markdown("**What-if controls**")
-    cap = st.slider("Shop load (how busy are we?)", 0, 100, 50, 5, format="%d%%", key="capacity",
+    cap = st.slider("Shop load (how busy are we?)", 0, 100, 50, 5, format="%d%%", key=K("capacity"),
                     help="Busy shop: each hour displaces other work, so the price floor and opportunity cost rise.")
-    age = st.slider("Age our newest material quote by (days)", 0, 180, 0, 15, key="mat_age",
+    age = st.slider("Age our newest material quote by (days)", 0, 180, 0, 15, key=K("mat_age"),
                     help="Simulates a stale steel quote: material evidence decays fast (30-day half-life).")
     st.divider()
     prov, mode = llm.current_provider(), llm.demo_mode()
-    st.markdown(f"**Model:** `{llm.current_model() if prov != 'mock' else 'mock fixtures'}`  \n"
+    st.markdown(f"**Model:** `{llm.current_model() if prov != 'mock' else 'mock (hand-checked extractions)'}`  \n"
                 f"**Mode:** `{mode}`" + ("  (cache only, never calls a model)" if mode == "offline" else ""))
     mem = memory.list_memory()
     with st.expander(f"🧠 Memory: {len(mem)} saved override(s)"):
@@ -180,11 +204,8 @@ with st.sidebar:
         for r in mem.itertuples(index=False):
             st.markdown(f"<div class='qm-small'><b>{r.doc_id}</b> · {html.escape(str(r.text))}</div>",
                         unsafe_allow_html=True)
-    if st.button("↺ Reset demo state", key="reset", help="Removes demo-session overrides from memory and clears all choices."):
-        memory.reset_memory()
-        pipeline.clear_caches()
-        st.session_state.clear()
-        st.rerun()
+    st.button("↺ Reset demo state", key=K("reset"), on_click=reset_demo,
+              help="Removes demo-session overrides from memory and clears all choices.")
     st.caption("All data is synthetic. Company and customer names are fictional. Rates and prices are illustrative.")
 
 if rfq is None:
@@ -198,10 +219,13 @@ def pipeline_state(r_id: str) -> dict:
     ps = st_["rfq_states"].setdefault(r_id, pipeline.default_state())
     ps["capacity"] = cap / 100
     ps["material_age_days"] = int(age)
-    prefix = f"gap_{r_id}_"
+    prefix, gen = f"gap_{r_id}_", st.session_state.get("_gen", 0)
     for k in list(st.session_state.keys()):
-        if isinstance(k, str) and k.startswith(prefix):
-            ps["gap_actions"][k[len(prefix):]] = "assume" if st.session_state[k] == ASSUME else "ask"
+        if not (isinstance(k, str) and k.startswith(prefix)):
+            continue
+        name, _, g = k.partition("~")
+        if (int(g) if g else 0) == gen:
+            ps["gap_actions"][name[len(prefix):]] = "assume" if st.session_state[k] == ASSUME else "ask"
     return ps
 
 
@@ -225,6 +249,13 @@ if last and last["sig"] != sig:
     if d:
         d["cause"] = cause_of_change(last, cur)
         st_["banner"][rid] = d
+    if d:
+        pct_ = (d["p50"][1] / d["p50"][0] - 1) * 100 if d["p50"][0] else 0
+        first = d["changed_lines"][0] if d["changed_lines"] else None
+        st.toast(esc(f"P50 {money(d['p50'][0])} → {money(d['p50'][1])} ({pct_:+.1f}%) · price "
+                     f"{money(d['rec'][0])} → {money(d['rec'][1])}"
+                     + (f" · {first['label']} {DOT.get(first['chip_from'], '')}→{DOT[first['chip_to']]}" if first else "")),
+                 icon="🔁")
 st_["last"][rid] = cur
 
 spec, led, risk, pr = res["spec"], res["ledger"], res["risk"], res["pricing"]
@@ -247,7 +278,7 @@ with c2:
 steps = []
 states = ["done", "wait" if n_asks else "done", "done" if ps["gate1_approved"] else "now",
           "done" if ps["gate1_approved"] else "", "done" if ps["gate1_approved"] else "",
-          "done" if ps["gate2_approved"] else ("now" if ps["gate1_approved"] else ""),
+          "done" if ps["gate2_approved"] and not res["gate2_stale"] else ("now" if ps["gate1_approved"] else ""),
           "done" if res["quote"]["ready"] else ("now" if ps["gate2_approved"] else "")]
 marks = {"done": "✓ ", "wait": "… ", "now": "▶ ", "": ""}
 st.markdown("<div class='qm-step'>" + "".join(
@@ -255,18 +286,20 @@ st.markdown("<div class='qm-step'>" + "".join(
             unsafe_allow_html=True)
 
 mix = {c: sum(1 for l in led if l["chip"] == c) for c in ("green", "yellow", "red")}
-kp = [("Cost per unit (P50)", money(risk["p50"]), "median of 2,000 simulations"),
+kp = [("Typical cost per unit (P50)", money(risk["p50"]), "median of 2,000 simulations"),
       ("Likely range (P10–P90)", f"{money(risk['p10'])} – {money(risk['p90'])}", f"band {risk['band_pct'] * 100:.1f}% of P50"),
-      ("Recommended price / unit", money(pr["recommended"]), f"range {money(pr['range'][0])} – {money(pr['range'][1])}"),
-      ("Win chance at that price", f"{pr['rec_p_win']:.0%}", f"markup {pr['rec_markup']:.2f}× P50"),
+      ("Recommended price / unit", money(pr["recommended"]) if not res["insufficient"] else "not priced",
+       f"range {money(pr['range'][0])} – {money(pr['range'][1])}" if not res["insufficient"] else "not enough information"),
+      ("Win chance at that price", f"{pr['rec_p_win']:.0%}" if not res["insufficient"] else "–",
+       f"markup {pr['rec_markup']:.2f}× P50" if not res["insufficient"] else "fill the gaps first"),
       ("How sure are we? (cost lines)", f"🟢{mix['green']} 🟡{mix['yellow']} 🔴{mix['red']}", "green ≥0.70 · red <0.40")]
 st.markdown("<div class='qm-kpis'>" + "".join(f"<div><span>{a}</span><b>{b}</b><br><i>{c}</i></div>" for a, b, c in kp)
             + "</div>", unsafe_allow_html=True)
 
 ban = st_["banner"].get(rid)
 if ban:
-    def arrow(a, b, fmt):
-        cls = "up" if b > a else "down"
+    def arrow(a, b, fmt, neutral=False):
+        cls = "neutral" if neutral or abs(b - a) < 1e-6 else ("up" if b > a else "down")
         return f"{fmt(a)} → <b class='{cls}'>{fmt(b)}</b>"
     pct = (ban["p50"][1] / ban["p50"][0] - 1) * 100 if ban["p50"][0] else 0
     lines_txt = ", ".join(
@@ -277,10 +310,14 @@ if ban:
         f"<div class='qm-banner'><b>What just changed</b> <span class='qm-small'>(because {html.escape(cause)})</span><br>"
         f"P50 cost/unit: {arrow(ban['p50'][0], ban['p50'][1], money)} ({pct:+.1f}%) &nbsp;·&nbsp; "
         f"Band width: {arrow(ban['band'][0] * 100, ban['band'][1] * 100, lambda x: f'{x:.1f}%')} &nbsp;·&nbsp; "
-        f"Recommended price: {arrow(ban['rec'][0], ban['rec'][1], money)}<br>"
-        f"<span class='qm-small'>Lines that changed confidence: {lines_txt}</span></div>", unsafe_allow_html=True)
+        f"Recommended price: {arrow(ban['rec'][0], ban['rec'][1], money, neutral=True)}"
+        + (f" &nbsp;·&nbsp; Quote validity: {ban['validity'][0]} → <b class='up'>{ban['validity'][1]} days</b>"
+           if ban.get("validity") and ban["validity"][0] != ban["validity"][1] else "")
+        + f"<br><span class='qm-small'>Lines that changed confidence: {lines_txt}"
+        + (f" · removed: {html.escape(', '.join(ban['removed_lines']))}" if ban.get("removed_lines") else "")
+        + "</span></div>", unsafe_allow_html=True)
 
-section = st.radio("Section", SECTIONS, horizontal=True, key="section", label_visibility="collapsed")
+section = st.radio("Section", SECTIONS, horizontal=True, key=K("section"), label_visibility="collapsed")
 st.divider()
 
 
@@ -296,7 +333,7 @@ def sec_requirements():
         with st.container(border=True):
             a, b = st.columns([2, 3])
             a.markdown(f"**{icon.get(g['kind'], '•')} {html.escape(g['title'])}**")
-            a.radio("What do we do?", [ASK, ASSUME], key=f"gap_{rid}_{g['id']}", horizontal=True,
+            a.radio("What do we do?", [ASK, ASSUME], key=K(f"gap_{rid}_{g['id']}"), horizontal=True,
                     index=1 if g["action"] == "assume" else 0)
             if g["action"] == "ask":
                 b.markdown(f"**Question for the customer:** {g['question']}")
@@ -308,29 +345,46 @@ def sec_requirements():
                 b.caption(esc(f"Contingency {g['contingency_pct']:.0%} of the affected cost{extra}."))
     if res["due"].get("slack_days") is not None:
         d = res["due"]
-        msg = (f"Due-date check: first release needs ~{d['hours_first_release']:.0f} shop hours → minimum lead ~"
-               f"{d['min_lead_days']} days; customer allows {d['available_days']} days (slack {d['slack_days']:+d}).")
+        verdict = ("not feasible as asked" if d["slack_days"] < 0 else "tight but feasible" if d["slack_days"] < 7
+                   else "comfortable")
+        msg = (f"Due-date check: {verdict}. First release needs ~{d['hours_first_release']:.0f} shop hours → minimum "
+               f"lead ~{d['min_lead_days']} days; the customer allows {d['available_days']} days "
+               f"(slack {d['slack_days']:+d}).")
         (st.warning if d["slack_days"] < 5 else st.caption)(msg)
     if res["email"]:
         with st.expander("✉️ Draft clarification email (one email covering every 'ask' item)", expanded=False):
-            st.markdown(f"<div class='qm-mail'>{html.escape(res['email'])}</div>", unsafe_allow_html=True)
+            st.markdown(mailbox(res["email"]), unsafe_allow_html=True)
             em = res["email_meta"]
-            st.caption(f"Drafted by {em.get('provider')}:{em.get('model')} ({em.get('source')}). Review before sending.")
+            if em.get("source") == "template":
+                st.caption("Drafted from a template (instant).")
+                if llm.current_provider() != "mock" and st.button("✍️ Draft it with the local model",
+                                                                    key=K(f"email_llm_{rid}")):
+                    ps["email_llm"] = True
+                    st.rerun()
+            else:
+                who = "mock mode template" if em.get("provider") == "mock" else f"{em.get('provider')}:{em.get('model')}"
+                st.caption(f"Drafted by {who} ({em.get('source')}). Review before sending.")
 
     st.markdown("#### What the customer asked for")
     left, right = st.columns([2, 3])
     with left:
         st.markdown("**The customer's request (email)**")
-        st.markdown(f"<div class='qm-mail'>{html.escape(rfq.get('email_text', ''))}</div>", unsafe_allow_html=True)
+        st.markdown(mailbox(rfq.get("email_text", "")), unsafe_allow_html=True)
         if rfq.get("customer_spec"):
             with st.expander("📎 Attached spec sheet (structured)"):
                 st.json(rfq["customer_spec"])
     with right:
         meta = x["llm"]
-        src = {"fixture": "mock fixture", "cache": "cached model output", "live": "model", "fallback": "rule-based fallback"}
-        st.markdown(f"**What we understood** <span class='qm-small'>· extracted by "
-                    f"`{meta['provider']}:{meta['model']}` ({src.get(meta['source'], meta['source'])}); the model only "
-                    f"copies text, Python converts it; every value must quote the email</span>", unsafe_allow_html=True)
+        if meta["provider"] == "mock":
+            who = ("hand-checked extraction (mock mode: the same fields the local model returns; set "
+                   "MODEL_PROVIDER=ollama for live extraction)" if meta["source"] == "fixture"
+                   else "rule-based extraction (mock mode)")
+        else:
+            src = {"cache": "cached model output", "live": "live model", "fixture": "hand-checked fallback",
+                   "fallback": "rule-based fallback"}
+            who = f"extracted by {meta['provider']}:{meta['model']} ({src.get(meta['source'], meta['source'])})"
+        st.markdown(f"**What we understood** <span class='qm-small'>· {html.escape(who)}. The model only copies text; "
+                    f"Python converts it; every value must quote the email.</span>", unsafe_allow_html=True)
         rows = []
         for name, f in x["fields"].items():
             if name in ("notes",):
@@ -378,9 +432,9 @@ def sec_approach():
                                    "Actuals": sj.has_actuals, "Similarity": sj.sim.round(2), "Why": sj.why}),
                      hide_index=True)
     st.markdown("**What's different from the analog**")
-    st.dataframe(pd.DataFrame(res["proposal"]["diff"]).rename(
-        columns={"field": "Field", "rfq": "This RFQ", "analog": f"Analog {an['job_id']}", "effect": "Expected cost effect"}),
-                 hide_index=True)
+    st.table(pd.DataFrame(res["proposal"]["diff"]).rename(
+        columns={"field": "Field", "rfq": "This RFQ", "analog": f"Analog {an['job_id']}",
+                 "effect": "Expected cost effect"}).set_index("Field"))
     if res["proposal"]["rules"]:
         st.markdown("Rules applied: " + " · ".join(f"`{r}`" for r in res["proposal"]["rules"]))
     st.caption("Proposal = the analog's BOM + routing (its ACTUAL hours where recorded), adjusted by the rules above. "
@@ -388,25 +442,35 @@ def sec_approach():
 
     st.markdown("#### Gate 1 · Estimator approves the BOM + routing")
     lines = res["proposal"]["lines"]
+    labels = {l["key"]: f"{l['label']} ({l['uom']})" for l in lines}
     if ps["gate1_approved"]:
-        st.success("✓ Gate 1 approved by the estimator." + (
-            f" {len(ps['gate1_edits'])} override(s) saved to memory." if ps["gate1_edits"] else ""))
+        n_route = sum(1 for kk in ps["gate1_edits"] if kk in res["overrides"])
+        st.success("✓ Gate 1 approved by the estimator."
+                   + (f" {n_route} routing override(s) saved to memory as evidence for similar quotes." if n_route else "")
+                   + (" BOM changes / removals logged in memory." if len(ps["gate1_edits"]) > n_route
+                      or ps["gate1_excluded"] else ""))
         for kk, e in ps["gate1_edits"].items():
             l = next(x for x in lines if x["key"] == kk)
             st.markdown(esc(f"- ✎ **{l['label']}**: {l['proposed']:.2f} → **{e['value']:.2f}** {l['uom']} · reason: _{e['reason']}_"))
-        if st.button("Re-open Gate 1", key=f"g1_reopen_{rid}"):
+        for kk in ps["gate1_excluded"]:
+            st.markdown(f"- ✂ removed **{labels.get(kk, kk)}**")
+        if st.button("Re-open Gate 1", key=K(f"g1_reopen_{rid}")):
             ps["gate1_approved"] = False
+            ps["gate2_approved"] = False          # a new approach invalidates the approved price
             st_["g1_pending"][rid] = {kk: e["value"] for kk, e in ps["gate1_edits"].items()}
+            st_.setdefault("g1_excl", {})[rid] = list(ps["gate1_excluded"])
             st_["g1_ver"][rid] = st_["g1_ver"].get(rid, 0) + 1
             st.rerun()
         return
     pending = dict(st_["g1_pending"].get(rid, {}))
+    pend_excl = set(st_.setdefault("g1_excl", {}).get(rid, ps["gate1_excluded"]))
     base = pd.DataFrame([{
-        "key": l["key"], "Include": l["key"] not in ps["gate1_excluded"], "Line": l["label"], "Unit": l["uom"],
+        "key": l["key"], "Include": l["key"] not in pend_excl, "Line": l["label"], "Unit": l["uom"],
         "From analog": round(float(l["proposed"]), 3), "Your value": round(float(pending.get(l["key"], l["proposed"])), 3),
         "Source": l["source"]} for l in lines]).set_index("key")
     ver = st_["g1_ver"].get(rid, 0)
-    ed = st.data_editor(base, key=f"g1_{rid}_{ver}", hide_index=True, disabled=["Line", "Unit", "From analog", "Source"],
+    ed = st.data_editor(base, key=K(f"g1_{rid}_{ver}"), hide_index=True, height=min(36 * len(lines) + 40, 330),
+                        disabled=["Line", "Unit", "From analog", "Source"],
                         column_config={"Your value": st.column_config.NumberColumn(format="%.3f", min_value=0.0),
                                        "Include": st.column_config.CheckboxColumn(width="small")})
     prop = {l["key"]: float(l["proposed"]) for l in lines}
@@ -414,34 +478,54 @@ def sec_approach():
     excl = [kk for kk, inc in ed["Include"].items() if not inc]
     qa1, qa2, qa3 = st.columns([3, 2, 1])
     keys = [l["key"] for l in lines]
-    labels = {l["key"]: f"{l['label']} ({l['uom']})" for l in lines}
-    qk = qa1.selectbox("Quick adjust a line", keys, format_func=lambda kk: labels[kk], key=f"qa_line_{rid}",
-                       index=keys.index("fit_tack.setup") if "fit_tack.setup" in keys else 0)
-    qd = qa2.number_input("Change by (+/−)", value=6.0 if qk == "fit_tack.setup" else 0.0, step=0.5,
-                          key=f"qa_delta_{rid}_{qk}")
+    default_line = "fixture.setup" if "fixture.setup" in keys else ("fit_tack.setup" if "fit_tack.setup" in keys else keys[0])
+    qk = qa1.selectbox("Quick adjust a line", keys, format_func=lambda kk: labels[kk], key=K(f"qa_line_{rid}"),
+                       index=keys.index(default_line))
+    cur = pend.get(qk, prop[qk])
+    suggest = config.FIXTURE_DEFAULT_HR if (qk == "fixture.setup" and cur == 0) else 0.0
+    qd = qa2.number_input("Change by (+/−)", value=suggest, step=0.5, key=K(f"qa_delta_{rid}_{qk}_{ver}"),
+                          help="Pre-filled with the shop default for a new fixture when the fixture line is at 0.")
     qa3.markdown("<div style='height:1.8rem'></div>", unsafe_allow_html=True)
-    if qa3.button("Apply", key=f"qa_apply_{rid}"):
-        pend[qk] = round(pend.get(qk, prop[qk]) + float(qd), 4)
+    if qa3.button("Apply", key=K(f"qa_apply_{rid}")):
+        pend[qk] = round(max(0.0, cur + float(qd)), 4)
+        if abs(pend[qk] - prop[qk]) < 1e-9:
+            pend.pop(qk)
         st_["g1_pending"][rid] = pend
+        st_["g1_excl"][rid] = excl
         st_["g1_ver"][rid] = ver + 1
         st.rerun()
-    if pend:
-        st.markdown("Pending changes: " + "; ".join(f"**{labels[kk]}** {prop[kk]:.2f} → {v:.2f}" for kk, v in pend.items()))
+    changes = [f"**{labels[kk]}** {prop[kk]:.2f} → {v:.2f}" for kk, v in pend.items()]
+    changes += [f"remove **{labels[kk]}**" for kk in excl]
+    if changes:
+        st.markdown("Pending changes: " + "; ".join(changes))
+    for kk, v in pend.items():
+        line_ = next(x for x in lines if x["key"] == kk)
+        if prop[kk] > 0 and not 0.5 <= v / prop[kk] <= 2.0:
+            st.warning(f"{labels[kk]}: {prop[kk]:.2f} → {v:.2f} is more than 2x off the analog. Double-check units "
+                       f"({line_['uom']}).")
     reason = st.text_input("Why? (required for any change; saved to memory so the next similar quote learns)",
-                           key=f"g1_reason_{rid}", placeholder="e.g. new fixture needed: Rev C moved the hole pattern")
-    if st.button("✓ Approve Gate 1", key=f"g1_approve_{rid}", type="primary"):
+                           key=K(f"g1_reason_{rid}"), placeholder="e.g. new fixture needed: Rev C moved the hole pattern")
+    if st.button("✓ Approve Gate 1", key=K(f"g1_approve_{rid}"), type="primary"):
         if (pend or excl) and not reason.strip():
             st.error("Add a reason for your change(s) before approving. The reason is what the next quote learns from.")
         else:
             ps["gate1_edits"] = {kk: {"value": v, "reason": reason.strip()} for kk, v in pend.items()}
             ps["gate1_excluded"] = excl
             ps["gate1_approved"] = True
-            memory.remove_for_rfq(rid)
+            memory.remove_for_rfq(rid, kinds=("gate1_line", "gate1_bom", "gate1_exclude"))
             for kk, v in pend.items():
                 l = next(x for x in lines if x["key"] == kk)
-                memory.record_line_override(rid, spec, kk, f"{l['label']} ({l['uom']})", l.get("work_center"),
-                                            prop[kk], v, reason)
+                if l["kind"] == "routing":
+                    memory.record_line_override(rid, spec, kk, f"{l['label']} ({l['uom']})", l.get("work_center"),
+                                                prop[kk], v, reason)
+                else:
+                    memory.record_decision(rid, spec, "gate1_bom", f"Estimator changed {l['label']} "
+                                           f"{prop[kk]:.2f}\u2192{v:.2f} {l['uom']}. Reason: {reason.strip()}")
+            for kk in excl:
+                memory.record_decision(rid, spec, "gate1_exclude",
+                                       f"Estimator removed {labels.get(kk, kk)} at Gate 1. Reason: {reason.strip()}")
             st_["g1_pending"][rid] = {}
+            st_["g1_excl"][rid] = excl
             st.rerun()
 
 
@@ -458,8 +542,8 @@ def evidence_sentence(l: dict) -> str:
     why = ("sources agree closely" if (l["cv"] or 0) < 0.12 else "sources disagree" if (l["cv"] or 0) > 0.3
            else "sources mostly agree")
     weight = "plenty of" if l["sum_score"] >= 3 else "some" if l["sum_score"] >= 1.2 else "thin"
-    return (f"Mostly {top}. {weight.capitalize()} evidence (weight {l['sum_score']:.1f} of 3) and {why} "
-            f"(CV {l['cv'] or 0:.2f}), so confidence is {l['confidence']:.2f}.")
+    return (f"Mostly {top}. {weight.capitalize()} evidence (weight {l['sum_score']:.1f}; 3 or more counts as full) "
+            f"and {why} (typical spread ±{(l['cv'] or 0) * 100:.0f}%), so confidence is {l['confidence']:.2f}.")
 
 
 def sec_ledger():
@@ -470,7 +554,8 @@ def sec_ledger():
     for l in order:
         learned = any(e["source_type"] == "override" and e["ref"] != "This quote (Gate 1)" and e["counted"]
                       for e in l["evidence"])
-        flags = ("✎" if l["overridden"] else "") + ("🧠" if learned else "") + ("⚠" if l["warnings"] else "") \
+        edited = l["overridden"] or abs(float(l["approved"]) - float(l["proposed"])) > 1e-9
+        flags = ("✎" if edited else "") + ("🧠" if learned else "") + ("⚠" if l["warnings"] else "") \
             + " ".join(l["patterns"])
         rows.append({"Sure?": f"{DOT[l['chip']]} {l['confidence']:.2f}", "Flags": flags, "Line": l["label"],
                      "Estimate": fmt_value(l), "Range": f"{l['low']:.3g} – {l['high']:.3g}",
@@ -480,19 +565,22 @@ def sec_ledger():
         st.markdown("**Cost ledger** <span class='qm-small'>· click a row (or pick below) to see where the number "
                     "came from</span>", unsafe_allow_html=True)
         ev = st.dataframe(pd.DataFrame(rows), hide_index=True, on_select="rerun", selection_mode="single-row",
-                          key=f"ledger_{rid}", height=min(38 * len(rows) + 40, 760),
+                          key=K(f"ledger_{rid}"), height=min(38 * len(rows) + 40, 760),
                           column_config={"$/unit": st.column_config.NumberColumn(format="$%.2f")})
         sel = list(getattr(getattr(ev, "selection", None), "rows", []) or [])
         keys = [l["key"] for l in order]
         if sel and st_["ledger_sel"].get(rid) != sel[0]:
             st_["ledger_sel"][rid] = sel[0]
-            st.session_state[f"drawer_{rid}"] = keys[sel[0]]
+            st.session_state[K(f"drawer_{rid}")] = keys[sel[0]]
+        warn = [(l["label"], w) for l in order for w in l["warnings"] if not w.startswith("Override differs")]
+        for lab, w in warn[:3]:
+            st.warning(f"⚠ **{lab}**: {w}")
         st.caption(esc(f"Total of lines: {money(sum(l['cost'] for l in led))}/unit · lot size {spec.get('lot_qty')} · "
                        f"burdened rates illustrative · ✎ estimator override · 🧠 learned from another quote · "
                        f"⚠ warning · P# pattern"))
     with right:
         default = next((l["key"] for l in order if l["patterns"]), None) or min(order, key=lambda l: l["confidence"])["key"]
-        dkey = f"drawer_{rid}"
+        dkey = K(f"drawer_{rid}")
         if st.session_state.get(dkey) not in keys:
             st.session_state[dkey] = default
         dk = st.selectbox("Where this number came from", keys, key=dkey,
@@ -523,7 +611,7 @@ def sec_ledger():
                 with st.expander(f"{e['source']} · {e['ref']} · score {e['score']:.2f}"):
                     st.markdown(f"**Why matched:** {e['why']}")
                     if e.get("text"):
-                        st.markdown(f"<div class='qm-mail'>{html.escape(str(e['text']))}</div>", unsafe_allow_html=True)
+                        st.markdown(mailbox(e["text"]), unsafe_allow_html=True)
                     if e.get("date"):
                         st.caption(f"Dated {e['date']} · {e['age_days']} days old · half-life {e['half_life'] or '—'} days")
     if res["patterns"]:
@@ -544,7 +632,7 @@ def sec_risk():
                           annotation_text=f"{name} {money(risk[q])}", annotation_position="top")
         fig.update_layout(height=320, margin=dict(l=10, r=10, t=30, b=10), showlegend=False,
                           xaxis_title="Cost per unit ($)", yaxis_title="Simulations", bargap=0.05)
-        st.plotly_chart(fig, key=f"hist_{rid}")
+        st.plotly_chart(fig, key=K(f"hist_{rid}"))
         st.caption(f"{risk['n']:,} Monte Carlo draws: each ledger line drawn from its triangular (low, value, high) "
                    f"range; steel lines move together; other lines independent (understates correlated risk).")
     with b:
@@ -554,7 +642,7 @@ def sec_risk():
                                 marker_color=[CHIP[l["chip"]] for l in spread][::-1]))
         fig2.update_layout(height=320, margin=dict(l=10, r=10, t=30, b=10), title="Where the uncertainty comes from",
                            xaxis_title="$/unit between low and high")
-        st.plotly_chart(fig2, key=f"drivers_{rid}")
+        st.plotly_chart(fig2, key=K(f"drivers_{rid}"))
     c = st.columns(4)
     for i, (lab, key_) in enumerate([("P10", "p10"), ("P50", "p50"), ("P90", "p90")]):
         c[i].metric(lab, money(risk[key_]))
@@ -574,7 +662,7 @@ def sec_risk():
         else:
             st.success(txt + " → fresh.")
     mixc = {CAT_LABEL[k_]: v for k_, v in sorted(risk["by_category"].items(), key=lambda kv: CAT_ORDER[kv[0]])}
-    st.caption("Cost mix per unit: " + " · ".join(f"{k_} {money(v)}" for k_, v in mixc.items()))
+    st.caption(esc("Cost mix per unit: " + " · ".join(f"{k_} {money(v)}" for k_, v in mixc.items())))
 
 
 # ---------------------------------------------------------------- 5 price / gate 2
@@ -598,7 +686,7 @@ def sec_price():
                           yaxis2=dict(title="Win chance (%)", overlaying="y", side="right", range=[0, 100],
                                       tickvals=[0, 25, 50, 75, 100], showgrid=False),
                           legend=dict(orientation="h", y=-0.25))
-        st.plotly_chart(fig, key=f"curve_{rid}")
+        st.plotly_chart(fig, key=K(f"curve_{rid}"))
     with b:
         st.markdown(esc(f"**Recommended: {money(pr['recommended'])}/unit** ({pr['rec_markup']:.2f}× P50 cost, "
                         f"win chance {pr['rec_p_win']:.0%})"))
@@ -606,7 +694,9 @@ def sec_price():
         st.markdown(
             f"<table class='qm-t'><tr><td>P50 cost</td><td>{money(risk['p50'])}</td></tr>"
             f"<tr><td>+ risk cushion (50% of P90−P50)</td><td>{money(pr['risk_adj_cost'] - risk['p50'])}</td></tr>"
-            f"<tr><td>+ capacity cost (shop load {pr['load']:.0%})</td><td>{money(pr['capacity_cost'])}</td></tr>"
+            f"<tr><td>+ capacity cost (shop load {pr['load']:.0%})</td><td>"
+            + (money(pr['capacity_cost']) if pr['capacity_cost'] >= 0
+               else f"−{money(-pr['capacity_cost'])} (slow shop: thinner margin OK)") + "</td></tr>"
             f"<tr><th>= decision cost</th><th>{money(pr['decision_cost'])}</th></tr>"
             f"<tr><td>Minimum margin at this load</td><td>{pr['floor_pct']:.0%} → floor {money(pr['floor_price'])}</td></tr>"
             f"</table>", unsafe_allow_html=True)
@@ -626,21 +716,31 @@ def sec_price():
         for r in past.itertuples(index=False):
             st.info(esc(f"🧠 **Past pricing decision on a similar quote** ({r.rfq_id}): {r.text}"))
     st.markdown("#### Gate 2 · Manager picks the price")
+    if res["insufficient"]:
+        st.error("Not enough information to price this RFQ: " + "; ".join(res["insufficient"])
+                 + ". Answer the open questions (section 1) or pick the right past job before pricing.")
+        return
+    if ps["gate2_approved"] and res["gate2_stale"]:
+        st.warning(esc(f"The approved price ({money(res['chosen_price'])}) is stale: {res['gate2_stale']}. "
+                       "Please re-approve."))
+        ps["gate2_approved"] = False
     if ps["gate2_approved"]:
         st.success(esc(f"✓ Gate 2 approved at {money(res['chosen_price'])}/unit"
                        + (" (expedite)" if ps["expedite"] else "") + (f" · reason: {ps['gate2_reason']}" if ps["gate2_reason"] else "")))
-        if st.button("Re-open Gate 2", key=f"g2_reopen_{rid}"):
+        if st.button("Re-open Gate 2", key=K(f"g2_reopen_{rid}")):
             ps["gate2_approved"] = False
             st.rerun()
         return
-    kp = f"g2_price_{rid}"
-    if kp not in st.session_state:
-        st.session_state[kp] = round(pr["recommended"], 2)
+    kp = K(f"g2_price_{rid}")
+    seeds = st_.setdefault("g2_seed", {})
+    if kp not in st.session_state or seeds.get(rid) is None or abs(seeds[rid] - pr["recommended"]) > 0.005:
+        st.session_state[kp] = round(pr["recommended"], 2)     # follow the recommendation when inputs change
+        seeds[rid] = pr["recommended"]
     c1, c2, c3 = st.columns([2, 2, 2])
     price = c1.number_input("Unit price ($)", min_value=0.0, step=1.0, key=kp)
-    c2.button(esc(f"Use recommended ({money(pr['recommended'])})"), key=f"g2_userec_{rid}",
+    c2.button(esc(f"Use recommended ({money(pr['recommended'])})"), key=K(f"g2_userec_{rid}"),
               on_click=lambda: st.session_state.update({kp: round(pr["recommended"], 2)}))
-    exp_on = c3.toggle("Expedite (+12%, −7 days)", key=f"g2_exp_{rid}")
+    exp_on = c3.toggle("Expedite (+12%, −7 days)", key=K(f"g2_exp_{rid}"))
     final = price * (1 + config.EXPEDITE_PRICE_PCT) if exp_on else price
     inside = pr["range"][0] - 0.005 <= price <= pr["range"][1] + 0.005
     pw = pricing.pwin_at(price, risk["p50"], spec)
@@ -649,15 +749,19 @@ def sec_price():
     reason = ""
     if not inside:
         st.warning("This price is outside the recommended range: a reason is required and will be saved to memory.")
-        reason = st.text_input("Reason for pricing outside the range", key=f"g2_reason_{rid}")
-    if st.button("✓ Approve Gate 2", key=f"g2_approve_{rid}", type="primary"):
-        if not inside and not reason.strip():
+        reason = st.text_input("Reason for pricing outside the range", key=K(f"g2_reason_{rid}"))
+    if st.button("✓ Approve Gate 2", key=K(f"g2_approve_{rid}"), type="primary"):
+        if price < 0.5 * risk["p50"]:
+            st.error(esc(f"{money(price)} is less than half of the typical cost ({money(risk['p50'])}). "
+                         "Check the entry."))
+        elif not inside and not reason.strip():
             st.error("Add a reason before approving a price outside the recommended range.")
         else:
             ps["gate2_price"] = float(final)
             ps["expedite"] = bool(exp_on)
             ps["gate2_reason"] = reason.strip()
             ps["gate2_approved"] = True
+            ps["gate2_p50"] = float(risk["p50"])
             if not inside:
                 memory.record_decision(rid, spec, "gate2_price",
                                        f"Manager priced {money(price)} vs recommended {money(pr['range'][0])}–"
@@ -674,22 +778,26 @@ def sec_quote():
         why = []
         if not ps["gate1_approved"]:
             why.append("Gate 1 (approach) not approved")
-        if not ps["gate2_approved"]:
+        if not ps["gate2_approved"] and not res["gate2_stale"]:
             why.append("Gate 2 (price) not approved")
         if q["pending"]:
             why.append(f"{len(q['pending'])} question(s) waiting on the customer")
+        if res["gate2_stale"]:
+            why.append(f"price approval is stale ({res['gate2_stale']})")
+        if res["insufficient"]:
+            why.append("not enough information to price")
         st.warning("Draft: " + "; ".join(why) + ".")
     md = pipeline.quote_markdown(res)
     with st.container(border=True):
         st.markdown(esc(md.replace("# Quotation", "### Quotation", 1)))
     c1, c2 = st.columns(2)
     c1.download_button("⬇ Download quote (Markdown)", md, file_name=f"{rid}_quote.md", mime="text/markdown",
-                       key=f"dl_md_{rid}")
+                       key=K(f"dl_md_{rid}"))
     page = (f"<!doctype html><html><head><meta charset='utf-8'><title>{rid} quote</title>"
             f"<style>body{{font-family:Arial,sans-serif;max-width:760px;margin:40px auto;color:#111}}</style></head>"
             f"<body><pre style='white-space:pre-wrap;font-family:inherit'>{html.escape(md)}</pre></body></html>")
     c2.download_button("⬇ Download quote (HTML)", page, file_name=f"{rid}_quote.html", mime="text/html",
-                       key=f"dl_html_{rid}")
+                       key=K(f"dl_html_{rid}"))
 
 
 {SECTIONS[0]: sec_requirements, SECTIONS[1]: sec_approach, SECTIONS[2]: sec_ledger, SECTIONS[3]: sec_risk,

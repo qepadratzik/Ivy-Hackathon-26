@@ -330,6 +330,9 @@ def rule_extract(email: str) -> dict:
         m = re.search(r"[^\n.]*(cosmetic|visible side|appearance)[^\n.]*", body, re.I)
         if m:
             put("cosmetic_weld", "yes", m.group(0))
+    m0 = re.search(r"finish[^\n.]*?\b(none|bare|no finish|raw|mill finish|as[- ]welded)\b[^\n.,]*", body, re.I)
+    if m0:
+        put("finish", "none", m0.group(0))
     m = re.search(r"(powder[\s-]?coat[^\n.,]*|zinc[^\n.,]*|paint[^\n.,]*)", body, re.I)
     if m:
         put("finish", m.group(1), m.group(1))
@@ -346,7 +349,7 @@ def rule_extract(email: str) -> dict:
         put("tolerance_class", m.group(0), m.group(0))
     fam = normalize_family(body[:600])
     if fam:
-        m = re.search(r"(hitch bracket|guard|shield|frame|mounting plate|tube assembly)[^\n.]*", body, re.I)
+        m = re.search(r"(hitch bracket|guard|shield|frame|mounting plate|tube assembly)(?:[^\n.]|\.(?=\d))*", body, re.I)
         put("part_family", fam, m.group(0) if m else fam)
         put("part_description", m.group(0) if m else fam, m.group(0) if m else fam)
     return out
@@ -436,6 +439,10 @@ def extract(rfq: dict) -> dict:
         if spec["part_family"]:
             fields["part_family"].update(value=spec["part_family"], confidence="medium",
                                          origin="inferred from description")
+    if spec.get("part_family") == "tube_assembly" and spec.get("material") == "A36" \
+            and re.search(r"a-?500|\bhss\b|\btube\b", f"{fields['material'].get('email_raw')} {email}", re.I):
+        spec["material"] = "A500"   # a tube assembly is priced on its tube; end plates ride along in the BOM
+        fields["material"].update(value="A500", origin=fields["material"]["origin"] + " (tube assembly: A500 tube)")
     spec.update(enrich(spec, email, received))
     return {"fields": fields, "spec": spec, "conflicts": conflicts, "llm": meta, "received": received,
             "prompt": prompt}
@@ -465,7 +472,10 @@ def enrich(spec: dict, email: str, received: date) -> dict:
     extra["first_run"] = (not extra["repeat_part"]) or (says_new and not extra["repeat_part"])
     extra["revision_change"] = bool(extra["repeat_part"] and pn and pn not in set(prior.part_number))
     extra["lot_qty"] = spec.get("release_qty") or spec.get("qty")
-    extra["weldment"] = spec.get("part_family") in ("hitch_bracket", "frame", "tube_assembly", "guard")
+    extra["rfq_text"] = email
+    extra["no_welding"] = bool(re.search(r"\bno weld(?:ing|s)?\b|\bnot welded\b|\bweld-?free\b", email, re.I))
+    extra["weldment"] = spec.get("part_family") in ("hitch_bracket", "frame", "tube_assembly", "guard") \
+        and not extra["no_welding"]
     return extra
 
 

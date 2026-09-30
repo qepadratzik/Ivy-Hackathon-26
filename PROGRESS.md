@@ -73,3 +73,10 @@
 - Next: fix/accept review items, capture `docs/screens/`, final summary, tag `v1-demo`.
 - Timeline: ~36 h ahead of the Thu 2:50 PM CT deadline; no cuts beyond `evidence_explain`.
 
+## [Wed 02:18 CT] Phase 10: Red-team review addressed
+- Review (`docs/review.md`, 22 findings: 1 blocker, 3 high) with a resolution table at the end. All fixed except #10 (mitigated) and two conscious "accepts" (stepper shows process progress; "three gates" = Gate 1, Gate 2, the human who sends).
+- **Blocker fixed:** Reset now regenerates every widget (generation-suffixed keys + on_click reset). Verified in real Chromium and in AppTest.
+- **Demo change (Beat 2):** on a revision change the system adds a red 0-hr *Fixture build (one-time)* line ("confirm the old fixture still fits"); the estimator sets 6 hr with the reason -> charged once (80 over 250 pcs, listed as tooling on the quote), line turns green. B learns on its own one-time fixture line (🧠 callout). Before, the +6 hr sat on per-release setup (charged 5x) and double-counted on B. `demo/demo_script.md` rewritten with the new on-screen numbers.
+- Also: 🔁 toast on every change, banner shows validity changes, stale Gate 2 approvals invalidated, Gate 2 price follows the recommendation, exclusions saved, "not priced" for junk pastes, no-welding RFQs, tube assemblies on A500, labor lines 0.5-correlated in the Monte Carlo (A band 7.8% -> 11.3%), release-size table + setup/tooling block on the quote, jargon cleanup.
+- `docs/screens/` captured (13 PNGs of the demo beats) for slides and the fallback. Full suite green.
+

@@ -1,5 +1,6 @@
 """Phases 4-6 acceptance: evidence engine (incl. the HANDOFF 7.4 worked example), ledger, patterns,
 uncertainty, pricing, and the override -> memory -> next-RFQ loop."""
+import numpy as np
 import pytest
 
 from qm import config, evidence, intake, memory, pipeline, pricing, store
@@ -87,8 +88,41 @@ def test_aging_material_drops_confidence_and_flags():
 def test_rfq_b_first_run_fixture_and_p2():
     res = pipeline.run_pipeline(R["RFQ-B"], {})
     assert res["analog"]["job_id"] == "J-1103"
-    assert any(l["key"] == "fixture.setup" for l in res["ledger"])
-    assert "P2" in line(res, "fit_tack.setup")["patterns"]
+    fx = line(res, "fixture.setup")
+    assert "P2" in fx["patterns"] and fx["chip"] == "green" and 5 < fx["value"] < 8
+    # P2 explains the fixture line instead of inflating setup (no double count) ...
+    assert not any(e["source_type"] == "pattern" for e in line(res, "fit_tack.setup")["evidence"])
+    # ... but if the estimator removes the fixture line, P2 goes back onto fit/tack setup as a number
+    res2 = pipeline.run_pipeline(R["RFQ-B"], {"gate1_excluded": ["fixture.setup"]})
+    ft = line(res2, "fit_tack.setup")
+    assert "P2" in ft["patterns"] and any(e["source_type"] == "pattern" for e in ft["evidence"])
+    assert ft["value"] > line(res, "fit_tack.setup")["value"]
+
+
+def test_rfq_a_revision_change_adds_red_fixture_check_line():
+    res = pipeline.run_pipeline(R["RFQ-A"], {})
+    fx = line(res, "fixture.setup")
+    assert fx["value"] == 0 and fx["chip"] == "red" and fx["cost"] == 0
+    assert any("confirm the old fixture" in w for w in fx["warnings"])
+    res2 = pipeline.run_pipeline(R["RFQ-A"], {"gate1_edits": {"fixture.setup": {"value": 6.0, "reason": "new fixture"}},
+                                              "gate1_approved": True})
+    fx2 = line(res2, "fixture.setup")
+    assert fx2["value"] == 6.0 and fx2["chip"] == "green"
+    assert fx2["cost"] == pytest.approx(6.0 * config.FIXTURE_RATE / 250)          # charged once per order
+    assert res2["quote"]["tooling"] == pytest.approx(6.0 * config.FIXTURE_RATE)
+    d = pipeline.diff(res, res2)
+    assert any(c["key"] == "fixture.setup" and c["chip_from"] == "red" and c["chip_to"] == "green"
+               for c in d["changed_lines"])
+
+
+def test_no_welding_rfq_drops_weld_ops():
+    txt = ("Quote request: guard, 0.125 5052 aluminum, riveted together, no welding. Qty 60. Finish: none (bare). "
+           "Due Nov 30.\nRaccoon River Attachments")
+    res = pipeline.run_pipeline(intake.pasted_rfq(txt), {})
+    keys = {l["key"] for l in res["ledger"]}
+    assert not keys & {"weld.run", "weld.setup", "grind.run", "fit_tack.setup"}
+    assert res["spec"]["material"] == "5052AL" and res["spec"]["finish"] == "none"
+    assert "weldment" not in res["triage"]["reason"]   # still L: first run of a new part number
 
 
 def test_rfq_c_fast_track_high_confidence():
@@ -156,9 +190,10 @@ def test_quote_breaks_and_draft_state():
     res = pipeline.run_pipeline(R["RFQ-A"], {})
     q = res["quote"]
     lots = [b["lot"] for b in q["breaks"]]
-    assert 50 in lots and 250 in lots and 200 in lots
+    assert lots == [50, 100, 250]
     prices = {b["lot"]: b["unit_price"] for b in q["breaks"]}
-    assert prices[50] > prices[250]
+    assert prices[50] > prices[100] > prices[250]
+    assert q["alt_totals"][0]["total"] == 200 and q["setup_per_release"] > 0
     assert not q["ready"] and q["pending"]
     md = pipeline.quote_markdown(res)
     assert "DRAFT" in md and "CVE-HB-4410 Rev C" in md
@@ -201,5 +236,43 @@ def test_thin_or_nonsense_pastes_still_give_sane_numbers(text):
     assert 5 < res["risk"]["p50"] < 2000 and res["pricing"]["recommended"] > res["risk"]["p50"]
     for f in s["assumed_from_analog"]:
         assert f"missing_{f}" in [g["id"] for g in res["gaps"]]
+    if not text.strip() or "asdf" in text:
+        assert res["insufficient"] and not res["quote"]["ready"]
+        assert "None" not in pipeline.quote_markdown(res) and "NOT PRICED" in pipeline.quote_markdown(res)
     if "aluminum" in text:
         assert s["material"] == "5052AL" and s["part_family"] == "guard" and s["qty"] == 60
+
+
+def test_fixture_override_on_a_is_learned_on_b_fixture_line():
+    a = pipeline.run_pipeline(R["RFQ-A"], {})
+    memory.record_line_override("RFQ-A", a["spec"], "fixture.setup", "Fixture build (one-time) (hr/order)", "fixture",
+                                0.0, 6.0, "new fixture needed: Rev C moved the hole pattern")
+    b = pipeline.run_pipeline(R["RFQ-B"], {})
+    fx = line(b, "fixture.setup")
+    ov = [e for e in fx["evidence"] if e["source_type"] == "override"]
+    assert ov and ov[0]["counted"] and ov[0]["value"] == pytest.approx(6.0) and "Rev C" in ov[0]["text"]
+    ft = line(b, "fit_tack.setup")                       # the per-release setup line is not touched
+    assert not any(e["source_type"] == "override" for e in ft["evidence"])
+    a2 = pipeline.run_pipeline(R["RFQ-A"], {})           # A never counts its own saved override
+    assert not any(e["source_type"] == "override" for e in line(a2, "fixture.setup")["evidence"])
+
+
+def test_stale_gate2_approval_is_flagged():
+    base = pipeline.run_pipeline(R["RFQ-A"], {})
+    st = {"gap_actions": {"qty_conflict": "assume", "finish_color": "assume"}, "gate1_approved": True,
+          "gate2_approved": True, "gate2_price": base["pricing"]["recommended"], "gate2_p50": base["risk"]["p50"]}
+    ok = pipeline.run_pipeline(R["RFQ-A"], dict(st, gap_actions={}))
+    assert ok["gate2_stale"] is None
+    moved = pipeline.run_pipeline(R["RFQ-A"], dict(st, material_age_days=180, capacity=1.0))
+    assert moved["gate2_stale"] and not moved["quote"]["ready"]
+    reopened = pipeline.run_pipeline(R["RFQ-A"], dict(st, gate1_approved=False))
+    assert reopened["gate2_stale"] and "re-opened" in reopened["gate2_stale"]
+
+
+def test_labor_lines_partially_correlated():
+    from qm import uncertainty
+    res = pipeline.run_pipeline(R["RFQ-A"], {})
+    w, f = line(res, "weld.run"), line(res, "fit_tack.run")
+    sw, sf = uncertainty.line_samples(w, 3000, 42), uncertainty.line_samples(f, 3000, 42)
+    r = np.corrcoef(np.argsort(np.argsort(sw)), np.argsort(np.argsort(sf)))[0, 1]
+    assert 0.3 < r < 0.7

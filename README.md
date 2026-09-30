@@ -167,6 +167,7 @@ cp scripts/pre-push .git/hooks/pre-push
 
 - **Synthetic data.** The history, patterns and customers are generated (seed 42); nothing is measured from a real shop.
 - **Weights are tunable priors**, not fitted; with real history, calibrate them against estimate-vs-actual error.
-- **Monte Carlo independence.** Steel lines share one shock; all other lines are independent, so real bands are wider.
+- **Monte Carlo correlation is assumed, not fitted.** Steel lines share one shock and labor lines are 0.5-correlated;
+  a real shop's estimate-vs-actual history should calibrate that.
 - **No CAD/drawing parsing.** Input is RFQ email text plus a structured spec sheet; reading drawings is the next step.
 - **Prototype UI.** Single-user Streamlit app with local demo memory; no ERP integration or PDF export.

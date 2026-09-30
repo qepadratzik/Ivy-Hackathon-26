@@ -24,6 +24,11 @@ def line_key_for_bom(item_type: str, item: str) -> str:
     return f"pur.{item}"
 
 
+def _th(t) -> str:
+    f = frac(float(t))
+    return f if "ga" in f else f + '"'
+
+
 def _label_bom(item_type: str, item: str) -> str:
     if item_type == "outside":
         return {"powder_coat": "Powder coat (outside)", "zinc_plate": "Zinc plate (outside)"}.get(item, item)
@@ -48,7 +53,7 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
                 src += " (material swapped)"
             if mat == analog.material and t_new and t_old and abs(float(t_new) - float(t_old)) > 1e-6:
                 q = q * float(t_new) / float(t_old)
-                rules.append(f'Thickness {frac(t_old)}" -> {frac(t_new)}": plate weight scaled x{float(t_new) / float(t_old):.2f}')
+                rules.append(f'Thickness {_th(t_old)} -> {_th(t_new)}: plate weight scaled x{float(t_new) / float(t_old):.2f}')
                 src += " (scaled for thickness)"
         if typ == "outside" and item in ("powder_coat", "zinc_plate"):
             want = {"powder_coat": "powder_coat", "zinc": "zinc_plate"}.get(spec.get("finish") or "", None)
@@ -73,8 +78,13 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
 
     # --- routing
     have_fixture = False
+    no_weld = bool(spec.get("no_welding"))
+    dropped = set()
     for _, o in ops.iterrows():
         wc = o.work_center
+        if no_weld and wc in ("weld", "grind", "fit_tack", "fixture"):
+            dropped.add(config.WC_LABELS.get(wc, wc).lower())
+            continue
         if wc == "fixture":
             have_fixture = True
         for hour_type in ("setup", "run"):
@@ -85,7 +95,9 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
             val = float(act) if use_act else float(est)
             lines.append(_routing_line(wc, hour_type, val,
                                        f"{analog.job_id} {'actual' if use_act else 'estimate'}"))
-    wcs = set(ops.work_center)
+    if dropped:
+        rules.append(f"RFQ says no welding: removed {', '.join(sorted(dropped))} from the analog's routing")
+    wcs = set(ops.work_center) - ({"weld", "grind", "fit_tack", "fixture"} if no_weld else set())
     if spec.get("cosmetic_weld") and "weld" in wcs and "grind" not in wcs:
         d = config.WORK_CENTERS["grind"]
         lines.append(_routing_line("grind", "setup", d[1], "rule: cosmetic weld needs grind"))
@@ -98,6 +110,12 @@ def build_proposal(spec: dict, analog: pd.Series, tables: dict) -> dict:
                                                                 "rule: first run, no fixture on file"))
         rules.append(f"First run and no fixture line on the analog: added a one-time fixture build "
                      f"({config.FIXTURE_DEFAULT_HR:.0f} hr shop default)")
+    elif spec.get("revision_change") and spec.get("weldment") and not have_fixture and "fit_tack" in wcs:
+        fx = _routing_line("fixture", "setup", 0.0, "rule: new revision, confirm the existing fixture still fits")
+        fx["check"] = True
+        lines.insert(_first_routing_index(lines), fx)
+        rules.append("New revision of a part we built: added a one-time fixture line at 0 hr for the estimator to "
+                     "confirm (0 if the old fixture fits, otherwise the build hours)")
     for l in lines:
         l["include"] = True
     return {"analog_id": analog.job_id, "lines": lines, "rules": rules,
@@ -185,12 +203,17 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
                      effect="Same process" + (": color to confirm" if col == "color TBD" else "") if same_fin
                      else "Finish line added/removed"))
     # first run / fixture
-    fx = any(l["key"] == "fixture.setup" and l["source"].startswith("rule") for l in lines)
+    fxl = next((l for l in lines if l["key"] == "fixture.setup"), None)
+    if fxl is None:
+        eff = "No fixture line"
+    elif fxl.get("check"):
+        eff = "New revision: one-time fixture line added at 0 hr for the estimator to confirm"
+    elif fxl["source"].startswith("rule"):
+        eff = f"One-time fixture line added ({config.FIXTURE_DEFAULT_HR:.0f} hr shop default)"
+    else:
+        eff = "Fixture line carried from the analog"
     rows.append(dict(field="First run", rfq="yes" if spec.get("first_run") else "no",
-                     analog="yes" if analog.first_run else "no",
-                     effect=f"One-time fixture line added ({config.FIXTURE_DEFAULT_HR:.0f} hr)" if fx
-                     else ("Fixture line carried from analog" if any(l["key"] == "fixture.setup" for l in lines)
-                           else "No fixture line")))
+                     analog="yes" if analog.first_run else "no", effect=eff))
     # material price drift since the analog was quoted
     mp = tables["material_prices"]
     m = spec.get("material") or analog.material
@@ -202,4 +225,15 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
                          effect=f"{(now / then - 1) * 100:+.0f}% since the analog was quoted"))
     rows.append(dict(field="Tolerance", rfq=spec.get("tolerance_class") or "not stated", analog=analog.tolerance_class,
                      effect="Same" if spec.get("tolerance_class") == analog.tolerance_class else "Check inspection time"))
+    text = (spec.get("rfq_text") or "").lower()
+    unmentioned = [l["label"] for l in lines if l["kind"] == "bom" and l["category"] == "purchased"
+                   and not any(w in text for w in ITEM_WORDS.get(l["item"], [l["item"].split()[0].lower()]))]
+    if unmentioned:
+        rows.append(dict(field="Carried over from the analog", rfq="not mentioned", analog=", ".join(unmentioned),
+                         effect="Confirm the RFQ really needs these (or untick them at Gate 1)"))
     return rows
+
+
+ITEM_WORDS = {"Bushing 1.25 OD x 1.00 ID x 1.50 L": ["bushing"], "Bolt kit 4x 1/2-13 Gr8": ["bolt", "hardware"],
+              "Hardware kit, guard": ["hardware", "fastener", "bolt", "rivet"], "Pivot pin 1.00 dia": ["pin"],
+              "Grease zerk 1/4-28": ["zerk", "grease"]}

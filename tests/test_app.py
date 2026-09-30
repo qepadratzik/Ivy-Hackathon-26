@@ -52,7 +52,7 @@ def test_full_demo_path():
     at.button(key="g1_approve_RFQ-A").click()
     ok(at.run())
     mem = memory.list_memory()
-    assert len(mem) == 1 and mem.iloc[0].line_key == "fit_tack.setup"
+    assert len(mem) == 1 and mem.iloc[0].line_key == "fixture.setup" and mem.iloc[0].new_value == 6.0
     assert "Gate 1 approved" in "\n".join(str(s.value) for s in at.success)
 
     # Beat 3: ledger + evidence drawer on the weld line, P1 callout
@@ -85,7 +85,7 @@ def test_full_demo_path():
     at.radio(key="rfq_pick").set_value("RFQ-B")
     at.radio(key="section").set_value(S[2])
     ok(at.run())
-    at.selectbox(key="drawer_RFQ-B").set_value("fit_tack.setup")
+    at.selectbox(key="drawer_RFQ-B").set_value("fixture.setup")
     ok(at.run())
     frames = [d.value for d in at.dataframe]
     assert any("Estimator override" in f.to_string() and "M-0001" in f.to_string() for f in frames)
@@ -100,10 +100,15 @@ def test_full_demo_path():
         at.radio(key="section").set_value(sec)
         ok(at.run())
 
-    # Reset clears memory
+    # Reset clears memory AND regenerates every widget (fresh defaults in the browser)
     at.button(key="reset").click()
     ok(at.run())
     assert memory.list_memory().empty
+    assert at.radio(key="rfq_pick~1").value == "RFQ-A" and at.slider(key="mat_age~1").value == 0
+    assert at.radio(key="gap_RFQ-A_finish_color~1").value == "Ask the customer"
+    at.radio(key="gap_RFQ-A_finish_color~1").set_value("Assume & quote")
+    ok(at.run())
+    assert "What just changed" in text_of(at)
 
 
 def test_paste_box_and_every_section_for_each_rfq():

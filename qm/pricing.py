@@ -114,14 +114,19 @@ def price_curve(spec: dict, risk: dict, load: float = 0.5) -> dict:
     }
 
 
-def price_at_lot(ledger: list[dict], cont_total_per_unit: float, lot: int, markup: float, spec: dict) -> float:
-    """Unit price if released in lots of `lot` (setup lines re-spread; one-time fixture stays per order)."""
+def price_at_lot(ledger: list[dict], cont_total_per_unit: float, lot: int, markup: float, spec: dict,
+                 total: int | None = None) -> float:
+    """Unit price if released in lots of `lot` (setup lines re-spread). The one-time fixture is spread over the
+    order total (re-spread only if a different `total` is given)."""
     base_lot = max(1, int(spec.get("lot_qty") or spec.get("qty") or 1))
+    base_total = max(1, int(spec.get("qty") or base_lot))
     cost = cont_total_per_unit
     for l in ledger:
         c = l["cost"]
         if l["kind"] == "routing" and l["hour_type"] == "setup" and l["work_center"] != "fixture":
             c = c * base_lot / max(1, lot)
+        elif l.get("work_center") == "fixture" and total:
+            c = c * base_total / max(1, total)
         cost += c
     return cost * markup
 

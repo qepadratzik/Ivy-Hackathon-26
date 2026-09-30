@@ -1,6 +1,7 @@
-"""S9 Memory write-back: every human override (Gate 1 edit, Gate 2 out-of-range price, reasoned
-ask/assume flip) becomes a `docs` row (doc_type=override) written to CSV + SQLite + the vector store
-immediately, so the next similar RFQ retrieves it as evidence.
+"""S9 Memory write-back: every human override (Gate 1 edit or line removal, Gate 2 out-of-range price)
+becomes a `docs` row (doc_type=override) written to CSV + SQLite + the vector store immediately.
+Line-level routing overrides come back as evidence on the next similar RFQ; other decisions are shown
+as context (e.g. past pricing decisions on similar quotes).
 
 Demo-session memory lives in data/memory/overrides.csv (gitignored). Reset deletes it.
 """

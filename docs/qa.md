@@ -28,8 +28,8 @@ They are tunable priors, not fitted values: the ordering is shop common sense (a
 **Q4. What does "confidence" mean? Is 0.56 a probability?**
 No, it's a 0-to-1 evidence-quality index, not a statistical probability. It multiplies how much weighted evidence there is (it saturates at a total score of 3, roughly three strong, recent, closely matching actuals) by how much that evidence agrees (1 minus the coefficient of variation). It drives the green/yellow/red chip and the width of the range, so the less we know, the wider the band.
 
-**Q5. Your P10/P90 band: are you treating every line as independent?**
-Partly. Steel lines share one market shock in the Monte Carlo, so plate and tube move together; every other line is sampled independently, which understates correlated labor risk (a bad weld week hits weld and grind at once). So read P90 as optimistic for shop-wide shocks; we partly cover that with separate contingencies (stale-material flag, steel-trend escalation, gap contingencies). The next step is a shared labor factor fitted from estimate-versus-actual history.
+**Q5. Your P10/P90 band looks tight (about ±6% on RFQ A). Are you treating every line as independent?**
+No. Steel lines share one market shock, and labor lines share a "bad week on the floor" factor (pairwise correlation 0.5), so weld, fit-up and grind run long together. The band is still fairly tight because most lines on RFQ A are backed by several recent actuals that agree; lines with thin or stale evidence get ranges up to ±60%, and stale steel widens the band on screen. The correlation is an assumed prior today; with a real shop's estimate-versus-actual history we would fit it, and real bands may well come out wider.
 
 **Q6. Isn't this just "ask AI what price to charge"?**
 No. The recommended price comes from a logistic win-probability model on the shop's past won and lost quotes (synthetic today), and it maximizes P(win) x (price minus risk-adjusted cost), where risk-adjusted cost is P50 plus half the gap up to P90. The manager picks the final price at Gate 2, a capacity slider raises the minimum margin (and adds an opportunity cost on labor hours) when the shop is busy, and a price outside the recommended range needs a written reason.
@@ -109,12 +109,26 @@ We scoped it out on purpose: the input is the RFQ email plus a structured spec (
 
 ---
 
+## Extra answers from our red-team review
+
+**Q25. Why is the new fixture charged once, not on every release?**
+Because it is built once. The system keeps one-time tooling on its own "Fixture build (one-time)" line, spread over the whole order (6 hr × $80 = $480 over 250 pcs), while per-release setup is spread over each release of 50. The quote lists setup per release and the one-time fixture separately, as the buyer asked.
+
+**Q26. An 83% win chance at 1.34× seems high.**
+It's what the synthetic history says for Cedar Valley, a repeat OEM customer that accepted markups up to about 1.4× in our generated data; a price-sensitive customer like Prairie Implement gets a lower recommended markup (about 1.23×). With real data the curve is only as good as the shop's won/lost records, which is why the manager still decides at Gate 2.
+
+**Q27. The A36 price is $0.886/lb in the difference table but $0.877/lb in the ledger. Which is it?**
+Both are honest: the difference table shows a simple average of the three latest supplier quotes (for comparing with the analog's date), while the ledger weights twelve quotes by recency with a 30-day half-life. The ledger value is the one used in the cost.
+
+**Q28. What if a judge pastes a nonsense or very thin RFQ?**
+The system fills gaps from the closest past job, lists every assumption as a question, and if too much is missing (or nothing in history is similar) it refuses to price: the quote says "NOT PRICED: not enough information" and Gate 2 is blocked.
+
 ## Honest limits (say these before a judge does)
 
 - **Synthetic data, fictional shop.** Nothing has been validated against a real shop's actuals yet.
 - **Prototype.** A single-PC demo, not hardened production software.
 - **Weights and half-lives are tunable priors, not fitted.** A real history would let us backtest and tune them.
-- **The Monte Carlo treats non-steel lines as independent,** which understates correlated labor risk (steel lines already move together).
+- **The Monte Carlo correlations are assumed** (steel fully shared, labor 0.5), not fitted from real estimate-vs-actual history.
 - **The win model is trained on synthetic quotes.** Real shops often don't record why they lost, and the curve is only as good as that history.
 - **No drawing/CAD parsing.**
 - **Extraction can misread.** Source quotes and Gate 1 are the check.
