@@ -23,7 +23,7 @@
 | H | Hardware: one local PC with a GPU (placeholder; get a real quote, or $0 if the shop already owns a suitable PC) | $2,500 | |
 | S | Software: open-source app + open-weights local model | $0 license fees | |
 | Ls | One-time setup labor, hours (export, column mapping, install, side-by-side trial) | 40 | |
-| Lm | Ongoing upkeep, hours per month (load new jobs and actuals, review overrides) | 4 | |
+| Lm | Ongoing upkeep, hours per month (load new jobs and actuals, review estimator notes) | 4 | |
 
 The two value levers we can't support yet (win rate and avoided misses) default to **0**. The headline number counts only estimator time.
 
@@ -77,16 +77,16 @@ Scale check: 90 hours a month is about half of one full-time person (40 hrs x 52
 
 ## 4. Benefits the math above leaves out
 
-- **Faster response.** On arrival, the RFQ is read into fields with source quotes, gaps and conflicts are listed, and one clarification email is drafted. Repeat parts triage to S / fast-track and can be quoted from one screen.
-- **Knowledge retention when the senior estimator retires.** Every override needs a written reason and is saved as evidence, alongside debrief and NCR notes. The next estimator sees "needs new fixture, add ~6 hrs" on the next similar part, not a blank spreadsheet.
+- **Faster response.** On arrival, the RFQ is read into fields with source quotes, gaps and conflicts are listed, and one clarification email is drafted. Repeat parts triage to S / Fast track, so the estimator mostly confirms a plan built from the closest past job instead of rebuilding it.
+- **Knowledge retention when the senior estimator retires.** Every change an estimator makes at Checkpoint 1 needs a written reason and is saved to the shop notebook as evidence, alongside debrief and NCR notes. The next estimator sees "needs new fixture, add ~6 hrs" on the next similar part, not a blank spreadsheet.
 - **Fewer margin-killing misses.**
-  - *Forgotten fixtures:* first-run jobs without a fixture get a one-time fixture line (prototype default: 6 hours at the illustrative $80/hr fit & tack rate, or $480).
+  - *Forgotten fixtures:* first-run jobs without a fixture get a one-time fixture line (prototype default: 6 hours at the illustrative $85/hr Fit & weld rate, or $510), and a new revision gets the question "Does the old fixture still fit?"
   - *Stale steel:* any material quote older than 30 days triggers "Re-quote material or shorten quote validity to 15 days" plus a steel-trend escalation contingency.
-  - *Known trouble spots:* cosmetic-weld overruns (P1), first-run setup overruns (P2), and thick-plate press brake NCRs (P3) show up as labeled evidence rows on the affected lines.
+  - *Known trouble spots:* cosmetic-weld overruns (P1), first-run setup overruns (P2), and thick-plate bending NCRs (P3) show up as labeled lessons from past jobs on the affected lines.
 - **Consistent quotes.** The same RFQ and the same history give the same starting numbers, whoever is quoting.
-- **Audit trail.** Every number shows the past job, note, or supplier quote it came from. Every override records the old value, the new value, the date, and the reason.
-- **Honest risk.** Confidence chips and a P10 / P50 / P90 cost band tell the manager where the uncertainty is before the price is picked at Gate 2.
-- **Data stays in the building.** Local model, local embeddings, no cloud AI service. That keeps the approach CUI/ITAR-friendly (it does not by itself make a shop compliant).
+- **Audit trail.** Every number shows the past job, note, or supplier quote it came from. Every estimator change records the old value, the new value, the date, and the reason.
+- **Honest risk.** High / Medium / Low confidence levels and a typical cost with a "very likely between" range tell the manager where the uncertainty is before the price is approved at Checkpoint 2.
+- **Data stays in the building** (shop configuration). Local model, local embeddings, no cloud AI service. That keeps the approach CUI/ITAR-friendly (it does not by itself make a shop compliant).
 
 ---
 
@@ -96,7 +96,7 @@ Scale check: 90 hours a month is about half of one full-time person (40 hrs x 52
 |---|---|---|
 | **Week 1** | Export past jobs to CSV: jobs, BOM lines, routing ops with estimated and actual hours, debrief/NCR notes, supplier material quotes. Install on one local PC. Map columns and material aliases. | The estimator re-quotes a few past jobs and agrees the closest-job matches make sense. |
 | **Week 2** | Side by side: the estimator quotes every RFQ the usual way while Quote Memory runs in parallel (its output is not sent). Log hours per RFQ both ways, where the numbers differ, and any misses it caught. | The shop has its own h0 and h1 to put in the table above. |
-| **Week 3+** | Gates in production: Gate 1, the estimator approves BOM + routing; Gate 2, the manager picks the price. Overrides with reasons feed memory. Each month, load new actuals and review estimate vs. actual on won jobs. | Go / no-go decided on the shop's own numbers. |
+| **Week 3+** | Checkpoints in production: Checkpoint 1, the estimator approves the plan (BOM + routing); Checkpoint 2, the manager approves the price. Changes with reasons feed the shop notebook. Each month, load new actuals and review estimate vs. actual on won jobs. | Go / no-go decided on the shop's own numbers. |
 
 **Pilot:** run this with a CIRAS-supported Iowa manufacturer (CIRAS is Iowa State University's Center for Industrial Research and Service). Pilot measures: estimator hours per RFQ, RFQ-to-quote turnaround, estimate-vs-actual error on won jobs, misses caught, and the estimator's own verdict.
 
