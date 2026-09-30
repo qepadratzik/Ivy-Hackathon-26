@@ -1,0 +1,1618 @@
+doc_id,job_id,doc_type,date,part_family,work_center,line_key,old_value,new_value,text
+D-0001,J-0850,rfq_email,2024-10-08,guard,,,,,"Quote needed on CVE-GD-2024 - Shield / guard panel, 12 ga A36 sheet, formed flanges, welded brackets, qty 40.
+Material and finish per print. Note: welds per print, appearance not critical.
+Timing: 5 weeks ARO
+Please send price and lead time.
+
+Kelsey Amundsen
+Cedar Valley Equipment"
+D-0002,J-0851,rfq_email,2024-10-11,tube_assembly,,,,,"RFQ - HLW-TA-6326 Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Qty: 50
+Matl: 3/16 A500 tube
+Weld: standard welds, no cosmetic requirement
+Finish: powder coat orange
+Ship date: 3 weeks ARO
+
+Brent Ostrander / Hawkeye Loader Works"
+D-0003,J-0852,rfq_email,2024-10-26,mounting_plate,,,,,"Hello,
+
+Could you please quote 40 pieces of RRA-MP-9846, Mounting plate, 1/2 A36, laser cut, drilled & tapped, per the attached drawing?
+Material: 1/2 ASTM A36 plate
+Finish: zinc plate
+Welding: welds per print, appearance not critical
+Required delivery: 2 weeks ARO
+
+Thanks,
+Travis Lindgren
+Raccoon River Attachments"
+D-0004,J-0853,rfq_email,2024-10-30,mounting_plate,,,,,"RRA-MP-9846 / Mounting plate, 3/8 A36, laser cut, drilled & tapped / qty 25
+3/8 HR A36, powder coat gray
+Delivery: 3 weeks ARO
+Quote pls.
+
+Nicole Brandvold
+Raccoon River Attachments"
+D-0005,J-0854,rfq_email,2024-10-31,guard,,,,,"Hi,
+
+Attached is a new drawing for PIC-GD-8876 (Shield / guard panel, 12 ga A36 sheet, formed flanges, welded brackets). Looking for pricing on a quantity of 150.
+Material: 12 ga A-36 HR
+Welds: welds per print, appearance not critical
+Finish: powder coat gray
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Mark Holloway
+Prairie Implement Co."
+D-0006,J-0855,rfq_email,2024-11-02,tube_assembly,,,,,"Hi,
+
+Attached is a new drawing for CVE-TA-8979 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded). Looking for pricing on a quantity of 100.
+Material: 3/16 HSS A500
+Welds: welds per print, appearance not critical
+Finish: powder coat implement yellow
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Mark Holloway
+Cedar Valley Equipment"
+D-0007,J-0856,rfq_email,2024-11-10,hitch_bracket,,,,,"RFQ - PIC-HB-5763 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Qty: 25
+Matl: 3/8 HR A36
+Weld: standard welds, no cosmetic requirement
+Finish: none
+Ship date: 5 weeks ARO
+
+Carla Voss / Prairie Implement Co."
+D-0008,J-0857,rfq_email,2024-11-10,hitch_bracket,,,,,"Good morning,
+
+We are requesting a qoute for the following:
+
+Part number: PIC-HB-5763
+Description: Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 25
+Material: 1/2 A-36 HR
+Finish: powder coat gray
+Weld requirement: show-side welds need to be smooth and blended, appearance is inspected
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Ryan Pettibone
+Prairie Implement Co."
+D-0009,J-0858,rfq_email,2024-11-17,mounting_plate,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-MP-8467
+Description: Mounting plate, 5/8 A36, laser cut, drilled & tapped
+Quantity: 20
+Material: 5/8 HR A36
+Finish: powder coat orange
+Weld requirement: standard structural welds per print
+Required date: 3 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Travis Lindgren
+Prairie Implement Co."
+D-0010,J-0859,rfq_email,2024-11-21,tube_assembly,,,,,"Hello,
+
+Could you please quote 25 pieces of NSA-TA-5985, Tube assembly, 304 SS tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 304 stainless
+Finish: none
+Welding: standard structural welds per print
+Required delivery: 4 weeks ARO
+
+Thanks,
+Brent Ostrander
+North Star Ag Systems"
+D-0011,J-0860,rfq_email,2024-11-25,tube_assembly,,,,,"RFQ - PIC-TA-9618 Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Qty: 150
+Matl: 3/16 HSS A500
+Weld: standard welds, no cosmetic requirement
+Finish: powder coat red
+Ship date: 4 weeks ARO
+
+Scott Dreyer / Prairie Implement Co."
+D-0012,J-0861,rfq_email,2024-11-25,guard,,,,,"Need price on attached, 20 pcs PIC-GD-8876-A (Shield / guard panel, 14 ga A36 sheet, formed flanges, welded brackets).
+Material: 14 ga A-36 HR. Finish: powder coat black.
+Due: 5 weeks ARO
+
+Scott Dreyer
+Prairie Implement Co."
+D-0013,J-0862,rfq_email,2024-11-27,tube_assembly,,,,,"Hello,
+
+Could you please quote 50 pieces of LHM-TA-8778, Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 A500 Gr B
+Finish: powder coat red
+Welding: standard structural welds per print
+Required delivery: 3 weeks ARO
+
+Thanks,
+Carla Voss
+Loess Hills Machinery"
+D-0014,J-0855,debrief,2024-12-01,tube_assembly,fit_tack,fit_tack.setup,,,"New tube assembly, nothing to locate the cross tubes. Tacked up a jig out of scrap plate and V-blocks. Setup ran about 4 hrs over, needs a fixture line on the quote."
+D-0015,J-0857,ncr,2024-12-07,hitch_bracket,press_brake,press_brake.run,,,"NCR: 1/2"" A36 ear brackets cracking on the outside of the 90. V-die opening too small for the thickness. Disposition: scrap 4 pcs, re-cut blanks."
+D-0016,J-0863,rfq_email,2024-12-08,tube_assembly,,,,,"Hi,
+
+Attached is a new drawnig for RRA-TA-5785 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded). Looking for pricing on a quantity of 50.
+Material: 3/16 HSS A500
+Welds: standard welds, no cosmetic requirement
+Finish: powder coat gray
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Ryan Pettibone
+Raccoon River Attachments"
+D-0017,J-0857,debrief,2024-12-12,hitch_bracket,weld,weld.run,,,Visible side welds took a lot longer than quoted. Customer wants that face clean so every piece got a cap pass and a flap disc to knock off spatter. Weld ran about a third over.
+D-0018,J-0857,debrief,2024-12-12,hitch_bracket,inspect_pack,inspect_pack.run,,,"Frames didn't fit a standard pallet, built 4 custom crates. Added a couple hrs at pack. Sprayed rust inhibitor on the bare machined surfaces before crating."
+D-0019,J-0859,debrief,2024-12-13,tube_assembly,fit_tack,fit_tack.setup,,,"Had to improvise a fixture for the first batch, tubes kept rolling on the table. Welded stops onto a scrap plate. Setup ate most of 1st shift. Add fixture hrs to the next quote."
+D-0020,J-0862,debrief,2024-12-17,tube_assembly,saw,saw.run,,,"Saw cuts on the 2x3 tube were running 1/16 long, stop block had drifted. Caught it on first piece check. Heavy burrs on the ID, added a deburr step."
+D-0021,J-0864,rfq_email,2024-12-23,tube_assembly,,,,,"Hello,
+
+Could you please quote 200 pieces of PIC-TA-4064, Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 ASTM A500
+Finish: powder coat gray
+Welding: standard welds, no cosmetic requirement
+Required delivery: 4 weeks ARO
+
+Thanks,
+Mark Holloway
+Prairie Implement Co."
+D-0022,J-0865,rfq_email,2024-12-26,guard,,,,,"Hi,
+
+Attached is a new drawing for LHM-GD-5601 (Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs). Looking for pricing on a quantity of 250.
+Material: 14 ga HR A36
+Welds: standard welds, no cosmetic requirement
+Finish: none
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Greg Stuckey
+Loess Hills Machinery"
+D-0023,J-0866,rfq_email,2025-01-01,mounting_plate,,,,,"Quote needed on PIC-MP-4456 - Adapter / mounting plate, 5/8 A36 plate, machined holes, qty 500.
+Material and finish per print. Note: welds per print, appearance not critical.
+Timing: 3 weeks ARO
+Please send price and lead time.
+
+Megan Tolliver
+Prairie Implement Co."
+D-0024,J-0867,rfq_email,2025-01-11,guard,,,,,"Quote needed on LHM-GD-6291 - Belt guard, 12 ga 5052 aluminum, laser cut and formed, tack-welded tabs, qty 60.
+Material and finish per print. Note: standard welds, no cosmetic requirement.
+Timing: 4 weeks ARO
+Please send price and lead time.
+
+Carla Voss
+Loess Hills Machinery"
+D-0025,J-0868,rfq_email,2025-01-12,guard,,,,,"Need price on attahced, 150 pcs NSA-GD-3122 (Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs).
+Material: 14 ga A36 HR plate. Finish: powder coat orange.
+Due: 4 weeks ARO
+
+Travis Lindgren
+North Star Ag Systems"
+D-0026,J-0869,rfq_email,2025-01-15,tube_assembly,,,,,"Hello,
+
+We are sourcing a new part, PIC-TA-9618 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded), and would appreciate a quote for 50 pieces.
+Material is 3/16 A500 Gr B and the finish is powder coat gloss black.
+Please pay attention to the welding note: welds per print, appearance not critical.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Brent Ostrander
+Prairie Implement Co."
+D-0027,J-0870,rfq_email,2025-01-17,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for PIC-HB-1524 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 300.
+Material: 1/4 A36
+Welds: visible welds must look clean, no spatter or undercut on the outside face
+Finish: powder coat gray
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Ryan Pettibone
+Prairie Implement Co."
+D-0028,J-0871,rfq_email,2025-01-19,guard,,,,,"Hi,
+
+New part coming up, please quote 40 pcs of HLW-GD-1917 (Belt guard, 10 ga A36 sheet, laser cut and formed, tack-welded tabs). Drawing attached.
+Material is 10 ga A-36 HR, finish is powder coat implement yellow. Note on welding: standard welds, no cosmetic requirement.
+Delivery: 4 weeks ARO
+
+Thanks much,
+Ryan Pettibone
+Hawkeye Loader Works"
+D-0029,J-0872,rfq_email,2025-01-19,hitch_bracket,,,,,"RRA-HB-3686 / Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit / qty 300
+1/4 HR A36, powder coat black
+Delivery: 5 weeks ARO
+Quote pls.
+
+Greg Stuckey
+Raccoon River Attachments"
+D-0030,J-0873,rfq_email,2025-01-27,mounting_plate,,,,,"Hi,
+
+New part coming up, please quote 500 pcs of LHM-MP-6233 (Adapter / mounting plate, 5/8 A36 plate, machined holes). Drawing attached.
+Material is 5/8 A36, finish is per print. Note on welding: standard welds, no cosmetic requirement.
+Delivery: 3 weeks ARO
+
+Thanks much,
+Brent Ostrander
+Loess Hills Machinery"
+D-0031,J-0874,rfq_email,2025-01-28,guard,,,,,"Hello,
+
+We are sourcing a new part, NSA-GD-3122 (Shield / guard panel, 10 ga A36 sheet, formed flanges, welded brackets), and would appreciate a quote for 150 pieces.
+Material is 10 ga A36 HR plate and the finish is powder coat orange.
+Please pay attention to the welding note: standard structural welds per print.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Carla Voss
+North Star Ag Systems"
+D-0032,J-0875,rfq_email,2025-02-02,tube_assembly,,,,,"Pls quote 200 ea HLW-TA-620 Tube assembly, 304 SS tube with 1018 bar end fittings, welded, material 3/16 SS304, finish none.
+Heads up on welds: welds per print, appearance not critical.
+Due: 4 weeks ARO
+
+Ryan Pettibone
+Hawkeye Loader Works"
+D-0033,J-0868,debrief,2025-02-05,guard,,,,,Paint came back on time and parts looked good.
+D-0034,J-0876,rfq_email,2025-02-08,mounting_plate,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-MP-8792
+Description: Adapter / mounting plate, 1/2 A36 plate, machined holes
+Quantity: 100
+Material: 1/2 A36
+Finish: powder coat orange
+Weld requirement: welds per print, appearance not critical
+Required date: 2 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Brent Ostrander
+Prairie Implement Co."
+D-0035,J-0873,ncr,2025-02-10,mounting_plate,press_brake,press_brake.run,,,"NCR: 5/8"" mounting plates bent with the grain, hairline cracks at the bend OD on 6 pcs. Blanks need to nest across the grain. Disposition: scrap 6 pcs, re-cut."
+D-0036,J-0877,rfq_email,2025-02-20,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: HLW-HB-4528
+Description: Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 50
+Material: 1/4 A36 HR plate
+Finish: powder coat black
+Weld requirement: cosmetic welds on the visible side, no spatter
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Nicole Brandvold
+Hawkeye Loader Works"
+D-0037,J-0876,debrief,2025-02-21,mounting_plate,inspect_pack,inspect_pack.run,,,"Frames didn't fit a standard pallet, built 4 custom crates. Added a couple hrs at pack. Sprayed rust inhibitor on the bare machined surfaces before crating."
+D-0038,J-0878,rfq_email,2025-02-22,hitch_bracket,,,,,"Hi,
+
+New part coming up, please quote 250 pcs of CVE-HB-724 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Drawing attached.
+Material is 1/4 A36 HR plate, finish is powder coat black. Note on welding: welds per print, appearance not critical.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Greg Stuckey
+Cedar Valley Equipment"
+D-0039,J-0879,rfq_email,2025-02-28,hitch_bracket,,,,,"Need price on attached, 500 pcs CVE-HB-724 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit).
+Material: 1/4 HR A36. Finish: powder coat black.
+Due: 5 weeks ARO
+
+Ryan Pettibone
+Cedar Valley Equipment"
+D-0040,J-0880,rfq_email,2025-03-06,tube_assembly,,,,,"Hello,
+
+We are sourcing a new part, HLW-TA-5174 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded), and would appreciate a quote for 50 pieces.
+Material is 3/16 A500 Gr B and the finish is powder coat gloss black.
+Please pay attention to the welding note: standard welds, no cosmetic requirement.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Travis Lindgren
+Hawkeye Loader Works"
+D-0041,J-0842,rfq_email,2025-03-12,mounting_plate,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: LHM-MP-0620
+Description: Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13
+Quantity: 50
+Material: 1/2 A36
+Finish: powder coat black
+Weld requirement: standard structural welds per print
+Required date: 3 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Scott Dreyer
+Loess Hills Machinery"
+D-0042,J-0881,rfq_email,2025-03-12,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: RRA-HB-3686
+Description: Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 250
+Material: 3/8 A36
+Finish: powder coat gloss black
+Weld requirement: standard welds, no cosmetic requirement
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Laura Kinsella
+Raccoon River Attachments"
+D-0043,J-0877,debrief,2025-03-21,hitch_bracket,weld,weld.run,,,"First 5 pcs got kicked back for weld appearance on the visible face, nothing structural. Redid the beads and blended. Weld time way over quote, cosmetic needs its own line next time."
+D-0044,J-0882,rfq_email,2025-03-22,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, HLW-HB-1845 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 100 pieces.
+Material is 3/8 A-36 HR and the finish is powder coat orange.
+Please pay attention to the welding note: visible welds must look clean, no spatter or undercut on the outside face.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Laura Kinsella
+Hawkeye Loader Works"
+D-0045,J-0883,rfq_email,2025-03-25,frame,,,,,"CVE-FR-6325 / Main frame weldment, 3x3x1/4 A500 tube with 3/8 A36 plates, pivot pins / qty 10
+3/8 A-36 HR, powder coat red
+Delivery: 5 weeks ARO
+Quote pls.
+
+Ryan Pettibone
+Cedar Valley Equipment"
+D-0046,J-0884,rfq_email,2025-03-27,hitch_bracket,,,,,"Quote needed on NSA-HB-2158 - Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, qty 50.
+Material and finish per print. Note: standard structural welds per print.
+Timing: 5 weeks ARO
+Please send price and lead time.
+
+Laura Kinsella
+North Star Ag Systems"
+D-0047,J-0885,rfq_email,2025-03-27,guard,,,,,"Quote needed on NSA-GD-3122 - Belt guard, 10 ga A36 sheet, laser cut and formed, tack-welded tabs, qty 60.
+Material and finish per print. Note: welds per print, appearance not critical.
+Timing: 5 weeks ARO
+Please send price and lead time.
+
+Greg Stuckey
+North Star Ag Systems"
+D-0048,J-0842,debrief,2025-03-28,mounting_plate,,,,,Ran clean. Tap drill program saved for next time.
+D-0049,J-0879,debrief,2025-03-30,hitch_bracket,weld,weld.run,,,"2nd shift spent most of the run cleaning spatter and dressing welds on the side that faces out. Should've bumped weld time on the quote, this customer always checks that side."
+D-0050,J-0886,rfq_email,2025-04-12,hitch_bracket,,,,,"RFQ - PIC-HB-7517 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Qty: 500
+Matl: 3/8 A36
+Weld: standard structural welds per print
+Finish: powder coat red
+Ship date: 5 weeks ARO
+
+Nicole Brandvold / Prairie Implement Co."
+D-0051,J-0887,rfq_email,2025-04-21,frame,,,,,"Hi,
+
+New part coming up, please quote 20 pcs of RRA-FR-6093 (Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts). Drawing attached.
+Material is 3/8 A36, finish is none. Note on welding: show-side welds need to be smooth and blended, appearance is inspected.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Laura Kinsella
+Raccoon River Attachments"
+D-0052,J-0888,rfq_email,2025-05-04,tube_assembly,,,,,"LHM-TA-8778 / Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded / qty 25
+3/16 HSS A500, powder coat black
+Delivery: 4 weeks ARO
+Quote pls.
+
+Jenna Pruitt
+Loess Hills Machinery"
+D-0053,J-0889,rfq_email,2025-05-09,guard,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: RRA-GD-7550
+Description: Shield / guard panel, 14 ga A36 sheet, formed flanges, welded brackets
+Quantity: 100
+Material: 14 ga HR A36
+Finish: powder coat red
+Weld requirement: welds per print, appearance not critical
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Nicole Brandvold
+Raccoon River Attachments"
+D-0054,J-0890,rfq_email,2025-05-13,frame,,,,,"LHM-FR-9592 / Main frame weldment, 3x3x1/4 A500 tube with 1/2 A36 plates, pivot pins / qty 30
+1/2 A36 HR plate, powder coat implement yellow
+Delivery: 6 weeks ARO
+Quote pls.
+
+Greg Stuckey
+Loess Hills Machinery"
+D-0055,J-0918,rfq_email,2025-05-14,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: CVE-HB-4410 Rev A
+Description: Hitch bracket weldment Rev A, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 100
+Material: 3/8 A36
+Finish: powder coat black
+Weld requirement: visible welds must look clean, no spatter or undercut on the outside face
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Ryan Pettibone
+Cedar Valley Equipment"
+D-0056,J-0891,rfq_email,2025-05-15,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for CVE-HB-2316 (Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 300.
+Material: 1/2 A36
+Welds: standard structural welds per print
+Finish: powder coat orange
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Derek Halvorsen
+Cedar Valley Equipment"
+D-0057,J-0892,rfq_email,2025-05-15,mounting_plate,,,,,"Hi,
+
+Attached is a new drawing for PIC-MP-8792 (Mounting plate, 3/8 A36, laser cut, drilled & tapped). Looking for pricing on a quantity of 300.
+Material: 3/8 A36
+Welds: standard welds, no cosmetic requirement
+Finish: powder coat black
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Dana Kessler
+Prairie Implement Co."
+D-0058,J-0893,rfq_email,2025-05-16,frame,,,,,"Hi,
+
+New part coming up, please quote 40 pcs of LHM-FR-9592 (Sub-frame weldment, A500 tube rails, 1/2 A36 gussets and mounts). Drawing attached.
+Material is 1/2 A36, finish is powder coat orange. Note on welding: standard welds, no cosmetic requirement.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Laura Kinsella
+Loess Hills Machinery"
+D-0059,J-0894,rfq_email,2025-05-17,hitch_bracket,,,,,"Hi,
+
+New part coming up, please qoute 50 pcs of NSA-HB-9067 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Drawing attached.
+Material is 3/8 A-36 HR, finish is powder coat implement yellow. Note on welding: welds per print, appearance not critical.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Jenna Pruitt
+North Star Ag Systems"
+D-0060,J-0887,debrief,2025-05-22,frame,fit_tack,fit_tack.setup,,,First run on this frame and no fixture was quoted. Spent half a day building one out of angle and toggle clamps before we could tack a single part. Quote a fixture on new frames.
+D-0061,J-0895,rfq_email,2025-05-25,mounting_plate,,,,,"Hello,
+
+Could you please quote 200 pieces of HLW-MP-1488, Mounting plate, 1/2 A36, laser cut, drilled & tapped, per the attached drawing?
+Material: 1/2 ASTM A36 plate
+Finish: powder coat black
+Welding: standard structural welds per print
+Required delivery: 3 weeks ARO
+
+Thanks,
+Mark Holloway
+Hawkeye Loader Works"
+D-0062,J-0896,rfq_email,2025-05-29,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for nsa-hb-9067 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 300.
+Material: 1/4 A-36 HR
+Welds: standard structural welds per print
+Finish: powder coat gray
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Derek Halvorsen
+North Star Ag Systems"
+D-0063,J-0897,rfq_email,2025-05-29,frame,,,,,"LHM-FR-9592 / Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts / qty 20
+3/8 A36 HR plate, powder coat gray
+Delivery: 5 weeks ARO
+Quote pls.
+
+Scott Dreyer
+Loess Hills Machinery"
+D-0064,J-0895,ncr,2025-06-05,mounting_plate,press_brake,press_brake.run,,,"NCR: 1/2"" plate flange measuring 92-93 deg vs 90 +/-1 on first 10 pcs, springback. Brake program not adjusted for this heat. Disposition: rework, re-hit on brake."
+D-0065,J-0898,rfq_email,2025-06-05,tube_assembly,,,,,"Hi,
+
+New part coming up, please quote 200 pcs of PIC-TA-4064 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded). Drawing attached.
+Material is 3/16 A500 Gr B, finish is powder coat black. Note on welding: standard structural welds per print.
+Delivery: 4 weeks ARO
+
+Thanks much,
+Laura Kinsella
+Prairie Implement Co."
+D-0066,J-0899,rfq_email,2025-06-10,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, CVE-HB-724 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 500 pieces.
+Material is 1/4 A36 and the finish is powder coat black.
+Please pay attention to the welding note: standard welds, no cosmetic requirement.
+Requested delivery: 5 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Dana Kessler
+Cedar Valley Equipment"
+D-0067,J-0918,debrief,2025-06-15,hitch_bracket,weld,weld.run,,,"Rev A first run. Fixture we quoted paid for itself, fit-up went fast after that. Cosmetic side needed extra blending."
+D-0068,J-0900,rfq_email,2025-06-18,guard,,,,,"Hello,
+
+Could you please quote 150 pieces of CVE GD 2024, Shield / guard panel, 14 ga A36 sheet, formed flanges, welded brackets, per the attached drawing?
+Material: 14 ga A-36 HR
+Finish: powder coat black
+Welding: standard structural welds per print
+Required delivery: 4 weeks ARO
+
+Thanks,
+Dana Kessler
+Cedar Valley Equipment"
+D-0069,J-0894,debrief,2025-06-19,hitch_bracket,fit_tack,fit_tack.setup,,,"Pulled the jig from the last order off the rack, needed one locating pin replaced. Setup took about 45 min vs 4+ hrs first time around."
+D-0070,J-0901,rfq_email,2025-06-21,frame,,,,,"Need price on attached, 5 pcs PIC-FR-2707 (Main frame weldment, 3x3x1/4 A500 tube with 1/2 A36 plates, pivot pins).
+Material: 1/2 A-36 HR. Finish: powder coat black.
+Due: 7 weeks ARO
+
+Scott Dreyer
+Prairie Implement Co."
+D-0071,J-0902,rfq_email,2025-06-26,hitch_bracket,,,,,"Hi,
+
+New part coming up, please qoute 150 pcs of PIC-HB-1115 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Drawing attached.
+Material is 3/8 A36, finish is powder coat black. Note on welding: cosmetic welds on the visible side, no spatter.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Scott Dreyer
+Prairie Implement Co."
+D-0072,J-0903,rfq_email,2025-07-04,mounting_plate,,,,,"Need price on attached, 200 pcs PIC-MP-1018 (Adapter / mounting plate, 5/8 A36 plate, machined holes).
+Material: 5/8 A36. Finish: powder coat implement yellow.
+Due: 2 weeks ARO
+
+Scott Dreyer
+Prairie Implement Co."
+D-0073,J-0904,rfq_email,2025-07-07,mounting_plate,,,,,"Hello,
+
+We are sourcing a new part, LHM-MP-2224 (Adapter / mounting plate, 3/8 A36 plate, machined holes), and would appreciate a quote for 40 pieces.
+Material is 3/8 A36 and the finish is zinc plate.
+Please pay attention to the welding note: welds per print, appearance not critical.
+Requested delivery: 3 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Derek Halvorsen
+Loess Hills Machinery"
+D-0074,J-0905,rfq_email,2025-07-11,guard,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-GD-8876
+Description: Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs
+Quantity: 250
+Material: 14 ga HR A36
+Finish: powder coat gray
+Weld requirement: standard structural welds per print
+Required date: 3 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Mark Holloway
+Prairie Implement Co."
+D-0075,J-0906,rfq_email,2025-07-22,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: RRA-HB-7305
+Description: Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 200
+Material: 1/2 HR A36
+Finish: none
+Weld requirement: show-side welds need to be smooth and blended, appearance is inspected
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Ryan Pettibone
+Raccoon River Attachments"
+D-0076,J-0907,rfq_email,2025-07-27,hitch_bracket,,,,,"Hello,
+
+Could you please quote 25 pieces of CVE-HB-2316, Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, per the attached drawing?
+Material: 1/4 A36
+Finish: powder coat black
+Welding: standard structural welds per print
+Required delivery: 5 weeks ARO
+
+Thanks,
+Scott Dreyer
+Cedar Valley Equipment"
+D-0077,J-0908,rfq_email,2025-07-29,hitch_bracket,,,,,"HLW-HB-7652 / Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit / qty 500
+1/4 A36, powder coat black
+Delivery: 5 weeks ARO
+Quote pls.
+
+Travis Lindgren
+Hawkeye Loader Works"
+D-0078,J-0909,rfq_email,2025-07-29,frame,,,,,"Need price on attached, 60 pcs NSA-FR-6450 (Main frame weldment, 3x3x1/4 A500 tube with 1/2 A36 plates, pivot pins).
+Material: 1/2 HR A36. Finish: powder coat red.
+Due: 5 weeks ARO
+
+Jenna Pruitt
+North Star Ag Systems"
+D-0079,J-0901,debrief,2025-08-02,frame,fit_tack,fit_tack.setup,,,"Setup ran long, no fixture on this new frame. Squaring it up w/ C-clamps and a tape was slow, took 3 tries to get diagonals in. Recommend building a real fixture and quoting it."
+D-0080,J-0901,debrief,2025-08-02,frame,,,,,Paint came back on time and parts looked good.
+D-0081,J-0910,rfq_email,2025-08-03,tube_assembly,,,,,"Need price on attached, 50 pcs LHM-TA-9914 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded).
+Material: 3/16 A500 Gr B. Finish: powder coat implement yellow.
+Due: 3 weeks ARO
+
+Mark Holloway
+Loess Hills Machinery"
+D-0082,J-0911,rfq_email,2025-08-08,tube_assembly,,,,,"Hello,
+
+Could you please quote 25 pieces of LHM-TA-1594, Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 A500 Gr B
+Finish: powder coat implement yellow
+Welding: standard structural welds per print
+Required delivery: 4 weeks ARO
+
+Thanks,
+Brent Ostrander
+Loess Hills Machinery"
+D-0083,J-0912,rfq_email,2025-08-09,mounting_plate,,,,,"Hi,
+
+New part coming up, please quote 40 pcs of NSA-MP-1242 (Adapter / mounting plate, 1/2 A36 plate, machined holes). Drawing attached.
+Material is 1/2 A-36 HR, finish is powder coat orange. Note on welding: standard structural welds per print.
+Delivery: 3 weeks ARO
+
+Thanks much,
+Carla Voss
+North Star Ag Systems"
+D-0084,J-0913,rfq_email,2025-08-11,hitch_bracket,,,,,"Need price on attached, 25 pcs CVE-HB-138 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit).
+Material: 3/8 A36 HR plate. Finish: powder coat gray.
+Due: 5 weeks ARO
+
+Mark Holloway
+Cedar Valley Equipment"
+D-0085,J-0914,rfq_email,2025-08-20,hitch_bracket,,,,,"Hi,
+
+New part coming up, please quote 25 pcs of LHM-HB-5883 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Drawing attached.
+Material is 3/8 A36, finish is powder coat red. Note on welding: standard structural welds per print.
+Delivery: 4 weeks ARO
+
+Thanks much,
+Nicole Brandvold
+Loess Hills Machinery"
+D-0086,J-0915,rfq_email,2025-08-21,frame,,,,,"Hi,
+
+New part coming up, please qoute 15 pcs of HLW-FR-4582 (Main frame weldment, 3x3x1/4 A500 tube with 3/8 A36 plates, pivot pins). Drawing attached.
+Material is 3/8 A-36 HR, finish is powder coat red. Note on welding: show-side welds need to be smooth and blended, appearance is inspected.
+Delivery: 6 weeks ARO
+
+Thanks much,
+Brent Ostrander
+Hawkeye Loader Works"
+D-0087,J-0906,debrief,2025-08-24,hitch_bracket,weld,weld.run,,,Visible side welds took a lot longer than quoted. Customer wants that face clean so every piece got a cap pass and a flap disc to knock off spatter. Weld ran about a third over.
+D-0088,J-0906,debrief,2025-08-24,hitch_bracket,inspect_pack,inspect_pack.run,,,"Frames didn't fit a standard pallet, built 4 custom crates. Added a couple hrs at pack. Sprayed rust inhibitor on the bare machined surfaces before crating."
+D-0089,J-0907,debrief,2025-08-24,hitch_bracket,,,,,"Repeat job, nothing new to report."
+D-0090,J-0911,debrief,2025-08-30,tube_assembly,fit_tack,fit_tack.setup,,,"Fit-up on this new tube assembly was a pain w/o a fixture, angles kept drifting when we tacked. Ended up building a jig halfway through setup. Setup hrs roughly double what we quoted."
+D-0091,J-0916,rfq_email,2025-09-02,tube_assembly,,,,,"Hello,
+
+Could you please qoute 150 pieces of LHM-TA-1594, Tube assembly, 304 SS tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 304 stainless
+Finish: none
+Welding: standard structural welds per print
+Required delivery: 4 weeks ARO
+
+Thanks,
+Dana Kessler
+Loess Hills Machinery"
+D-0092,J-0917,rfq_email,2025-09-04,guard,,,,,"Hello,
+
+Could you please quote 100 pieces of CVE-GD-2024, Shield / guard panel, 10 ga A36 sheet, formed flanges, welded brackets, per the attached drawing?
+Material: 10 ga A36
+Finish: powder coat gray
+Welding: visible welds must look clean, no spatter or undercut on the outside face
+Required delivery: 5 weeks ARO
+
+Thanks,
+Derek Halvorsen
+Cedar Valley Equipment"
+D-0093,J-0919,rfq_email,2025-09-07,tube_assembly,,,,,"Hi,
+
+Attached is a new drawing for NSA-TA-899 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded). Looking for pricing on a quantity of 200.
+Material: 3/16 ASTM A500
+Welds: welds per print, appearance not critical
+Finish: powder coat gray
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Carla Voss
+North Star Ag Systems"
+D-0094,J-0920,rfq_email,2025-09-10,guard,,,,,"Need price on attached, 100 pcs LHM-GD-7124 (Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs).
+Material: 14 ga HR A36. Finish: powder coat black.
+Due: 4 weeks ARO
+
+Ryan Pettibone
+Loess Hills Machinery"
+D-0095,J-0921,rfq_email,2025-09-11,guard,,,,,"RFQ - LHM-GD-6135 Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs
+Qty: 60
+Matl: 14 ga A-36 HR
+Weld: welds per print, appearance not critical
+Finish: powder coat black
+Ship date: 5 weeks ARO
+
+Brent Ostrander / Loess Hills Machinery"
+D-0096,J-0922,rfq_email,2025-09-17,guard,,,,,"Hi,
+
+New part coming up, please quote 40 pcs of RRA-GD-7550 (Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs). Drawing attached.
+Material is 14 ga A-36 HR, finish is powder coat gray. Note on welding: standard structural welds per print.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Mark Holloway
+Raccoon River Attachments"
+D-0097,J-0923,rfq_email,2025-09-22,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, PIC-HB-5336 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 150 pieces.
+Material is 3/8 A36 and the finish is none.
+Please pay attention to the welding note: standard welds, no cosmetic requirement.
+Requested delivery: 5 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Brent Ostrander
+Prairie Implement Co."
+D-0098,J-0924,rfq_email,2025-09-27,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for PIC-HB-6767 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 300.
+Material: 1/4 ASTM A36 plate
+Welds: standard structural welds per print
+Finish: none
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Laura Kinsella
+Prairie Implement Co."
+D-0099,J-0925,rfq_email,2025-09-28,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for NSA-HB-8764 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 100.
+Material: 3/8 HR A36
+Welds: cosmetic welds on the visible side, no spatter
+Finish: none
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Mark Holloway
+North Star Ag Systems"
+D-0100,J-0926,rfq_email,2025-09-29,frame,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-FR-700
+Description: Sub-frame weldment, A500 tube rails, 5/8 A36 gussets and mounts
+Quantity: 20
+Material: 5/8 A-36 HR
+Finish: powder coat black
+Weld requirement: show-side welds need to be smooth and blended, appearance is inspected
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Derek Halvorsen
+Prairie Implement Co."
+D-0101,J-0955,rfq_email,2025-10-01,mounting_plate,,,,,"Hi,
+
+Attached is a new drawing for LHM-MP-0620 (Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13). Looking for pricing on a quantity of 40.
+Material: 1/2 A36
+Welds: standard structural welds per print
+Finish: powder coat black
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Dana Kessler
+Loess Hills Machinery"
+D-0102,J-0927,rfq_email,2025-10-02,tube_assembly,,,,,"RFQ - CVE-TA-6440 Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Qty: 75
+Matl: 3/16 A500 tube
+Weld: standard structural welds per print
+Finish: powder coat gloss black
+Ship date: 4 weeks ARO
+
+Carla Voss / Cedar Valley Equipment"
+D-0103,J-0928,rfq_email,2025-10-05,frame,,,,,"RFQ - CVE-FR-6325 Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts
+Qty: 5
+Matl: 3/8 A-36 HR
+Weld: standard structural welds per print
+Finish: powder coat black
+Ship date: 6 weeks ARO
+
+Derek Halvorsen / Cedar Valley Equipment"
+D-0104,J-0920,debrief,2025-10-07,guard,fit_tack,fit_tack.setup,,,"First article setup took forever. No fixture, so we clamped to the table and measured every tack. Should quote a simple fixture, it'd pay for itself on repeats."
+D-0105,J-0929,rfq_email,2025-10-10,hitch_bracket,,,,,"CVE-HB-927 / Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit / qty 250
+1/4 A36, powder coat black
+Delivery: 5 weeks ARO
+Quote pls.
+
+Dana Kessler
+Cedar Valley Equipment"
+D-0106,J-0930,rfq_email,2025-10-11,tube_assembly,,,,,"RFQ - RRA-TA-5785 Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Qty: 50
+Matl: 3/16 ASTM A500
+Weld: welds per print, appearance not critical
+Finish: powder coat black
+Ship date: 3 weeks ARO
+
+Greg Stuckey / Raccoon River Attachments"
+D-0107,J-0931,rfq_email,2025-10-14,hitch_bracket,,,,,"Hello,
+
+Could you please quote 100 pieces of PIC-HB-3042, Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, per the attached drawing?
+Material: 3/8 ASTM A36 plate
+Finish: powder coat red
+Welding: welds per print, appearance not critical
+Required delivery: 4 weeks ARO
+
+Thanks,
+Carla Voss
+Prairie Implement Co."
+D-0108,J-0932,rfq_email,2025-10-15,hitch_bracket,,,,,"Hello,
+
+Could you please quote 250 pieces of HLW-HB-1845, Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, per the attached drawing?
+Material: 1/4 A-36 HR
+Finish: powder coat black
+Welding: show-side welds need to be smooth and blended, appearance is inspected
+Required delivery: 5 weeks ARO
+
+Thanks,
+Scott Dreyer
+Hawkeye Loader Works"
+D-0109,J-0933,rfq_email,2025-10-17,tube_assembly,,,,,"Need price on attached, 50 pcs NSA-TA-5985 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded).
+Material: 3/16 A500 tube. Finish: powder coat black.
+Due: 5 weeks ARO
+
+Scott Dreyer
+North Star Ag Systems"
+D-0110,J-0934,rfq_email,2025-10-30,mounting_plate,,,,,"RRA-MP-6451 / Mounting plate, 1/2 A36, laser cut, drilled & tapped / qty 20
+1/2 HR A36, powder coat red
+Delivery: 3 weeks ARO
+Quote pls.
+
+Kelsey Amundsen
+Raccoon River Attachments"
+D-0111,J-0935,rfq_email,2025-10-31,guard,,,,,"LHM-GD-6135 / Shield / guard panel, 10 ga A36 sheet, formed flanges, welded brackets / qty 40
+10 ga A36 HR plate, none
+Delivery: 3 weeks ARO
+Quote pls.
+
+Travis Lindgren
+Loess Hills Machinery"
+D-0112,J-0936,rfq_email,2025-11-05,hitch_bracket,,,,,"Pls quote 100 ea LHM-HB-5883 Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 1/4 A36, finish powder coat implement yellow.
+Heads up on welds: cosmetic welds on the visible side, no spatter.
+Due: 5 weeks ARO
+
+Ryan Pettibone
+Loess Hills Machinery"
+D-0113,J-0937,rfq_email,2025-11-07,mounting_plate,,,,,"Hello,
+
+We are sourcing a new part, RRA-MP-9846 (Mounting plate, 1/2 A36, laser cut, drilled & tapped), and would appreciate a quote for 20 pieces.
+Material is 1/2 HR A36 and the finish is powder coat implement yellow.
+Please pay attention to the welding note: standard welds, no cosmetic requirement.
+Requested delivery: 3 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Greg Stuckey
+Raccoon River Attachments"
+D-0114,J-0938,rfq_email,2025-11-12,mounting_plate,,,,,"Hi,
+
+New part coming up, please quote 300 pcs of PIC-MP-6529 (Mounting plate, 5/8 A36, laser cut, drilled & tapped). Drawing attached.
+Material is 5/8 HR A36, finish is powder coat black. Note on welding: standard welds, no cosmetic requirement.
+Delivery: 2 weeks ARO
+
+Thanks much,
+Derek Halvorsen
+Prairie Implement Co."
+D-0115,J-0939,rfq_email,2025-11-12,mounting_plate,,,,,"Quote needed on CVE-MP-638 - Mounting plate, 5/8 A36, laser cut, drilled & tapped, qty 20.
+Material and finish per print. Note: standard welds, no cosmetic requirement.
+Timing: 3 weeks ARO
+Please send price and lead time.
+
+Ryan Pettibone
+Cedar Valley Equipment"
+D-0116,J-0940,rfq_email,2025-11-17,hitch_bracket,,,,,"Hello,
+
+Could you please quote 250 pieces of CVE-HB-724, Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, per the attached drawing?
+Material: 3/8 HR A36
+Finish: powder coat black
+Welding: standard structural welds per print
+Required delivery: 5 weeks ARO
+
+Thanks,
+Dana Kessler
+Cedar Valley Equipment"
+D-0117,J-0941,rfq_email,2025-11-28,guard,,,,,"Hi,
+
+Attached is a new drawing for NSA-GD-4347 (Belt guard, 10 ga A36 sheet, laser cut and formed, tack-welded tabs). Looking for pricing on a quantity of 150.
+Material: 10 ga ASTM A36 plate
+Welds: standard structural welds per print
+Finish: powder coat black
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Derek Halvorsen
+North Star Ag Systems"
+D-0118,J-0942,rfq_email,2025-11-29,frame,,,,,"RFQ - NSA-FR-6151 Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts
+Qty: 10
+Matl: 3/8 A36
+Weld: welds per print, appearance not critical
+Finish: powder coat orange
+Ship date: 7 weeks ARO
+
+Laura Kinsella / North Star Ag Systems"
+D-0119,J-0943,rfq_email,2025-11-30,tube_assembly,,,,,"Need price on attached, 100 pcs HLW-TA-6326 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded).
+Material: 3/16 A500 Gr B. Finish: powder coat orange.
+Due: 4 weeks ARO
+
+Scott Dreyer
+Hawkeye Loader Works"
+D-0120,J-0987,rfq_email,2025-12-02,hitch_bracket,,,,,"Hi,
+
+New part coming up, please quote 150 pcs of HLW-HB-2207 (Hitch bracket weldment, 3/8 A36 plate, laser cut + formed ears, 2x2x3/16 A500 tube, bushings). Drawing attached.
+Material is 3/8 A36, finish is powder coat implement yellow. Note on welding: cosmetic welds on the visible side, no spatter.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Laura Kinsella
+Hawkeye Loader Works"
+D-0121,J-0944,rfq_email,2025-12-08,hitch_bracket,,,,,"Pls quote 150 ea NSA-HB-1634 Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 1/2 HR A36, finish powder coat black.
+Heads up on welds: standard welds, no cosmetic requirement.
+Due: 5 weeks ARO
+
+Mark Holloway
+North Star Ag Systems"
+D-0122,J-0945,rfq_email,2025-12-08,guard,,,,,"PIC-GD-6975 / Belt guard, 14 ga A36 sheet, laser cut and formed, tack-welded tabs / qty 60
+14 ga A-36 HR, powder coat black
+Delivery: 4 weeks ARO
+Quote pls.
+
+Kelsey Amundsen
+Prairie Implement Co."
+D-0123,J-0940,debrief,2025-12-19,hitch_bracket,powder_coat,out.powder_coat,,,"Masking took longer than planned, every tapped hole needed a plug and the bushing bores got capped before coat. Figure 5 min a piece just masking."
+D-0124,J-0946,rfq_email,2025-12-19,hitch_bracket,,,,,"CVE-HB-724 / Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit / qty 50
+1/4 A36, powder coat implement yellow
+Delivery: 4 weeks ARO
+Quote pls.
+
+Megan Tolliver
+Cedar Valley Equipment"
+D-0125,J-0947,rfq_email,2025-12-26,tube_assembly,,,,,"Hello,
+
+Could you please quote 75 pieces of CVE-TA-3568, Tube assembly, 304 SS tube with 1018 bar end fittings, welded, per the attached drawing?
+Material: 3/16 SS304
+Finish: none
+Welding: welds per print, appearance not critical
+Required delivery: 5 weeks ARO
+
+Thanks,
+Scott Dreyer
+Cedar Valley Equipment"
+D-0126,J-0987,debrief,2026-01-01,hitch_bracket,weld,weld.run,,,"Weld ran over on the show side again, about a third over quote. Grind kept up."
+D-0127,J-0948,rfq_email,2026-01-06,tube_assembly,,,,,"Hi,
+
+Attached is a new drawing for NSA-TA-1738 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded). Looking for pricing on a quantity of 150.
+Material: 3/16 ASTM A500
+Welds: welds per print, appearance not critical
+Finish: powder coat orange
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Dana Kessler
+North Star Ag Systems"
+D-0128,J-0949,rfq_email,2026-01-11,guard,,,,,"Pls qoute 20 ea HLW-GD-2082 Shield / guard panel, 12 ga A36 sheet, formed flanges, welded brackets, material 12 ga A36 HR plate, finish powder coat black.
+Heads up on welds: show-side welds need to be smooth and blended, appearance is inspected.
+Due: 5 weeks ARO
+
+Jenna Pruitt
+Hawkeye Loader Works"
+D-0129,J-0950,rfq_email,2026-01-13,tube_assembly,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-TA-7603
+Description: Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Quantity: 200
+Material: 3/16 A500 tube
+Finish: powder coat black
+Weld requirement: welds per print, appearance not critical
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Travis Lindgren
+Prairie Implement Co."
+D-0130,J-0951,rfq_email,2026-01-14,guard,,,,,"Hello,
+
+Could you please qoute 150 pieces of PIC-GD-6975, Shield / guard panel, 12 ga A36 sheet, formed flanges, welded brackets, per the attached drawing?
+Material: 12 ga ASTM A36 plate
+Finish: powder coat orange
+Welding: standard welds, no cosmetic requirement
+Required delivery: 4 weeks ARO
+
+Thanks,
+Ryan Pettibone
+Prairie Implement Co."
+D-0131,J-0952,rfq_email,2026-01-25,frame,,,,,"Hi,
+
+New part coming up, please quote 60 pcs of LHM-FR-6411 (Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts). Drawing attached.
+Material is 3/8 HR A36, finish is powder coat orange. Note on welding: cosmetic welds on the visible side, no spatter.
+Delivery: 6 weeks ARO
+
+Thanks much,
+Brent Ostrander
+Loess Hills Machinery"
+D-0132,J-0953,rfq_email,2026-01-30,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, LHM-HB-7156 (Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 250 pieces.
+Material is 1/2 HR A36 and the finish is powder coat gray.
+Please pay attention to the welding note: welds per print, appearance not critical.
+Requested delivery: 5 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Nicole Brandvold
+Loess Hills Machinery"
+D-0133,J-0954,rfq_email,2026-02-08,guard,,,,,"Hi,
+
+New part coming up, please quote 20 pcs of LHM-GD-745 (Shield / guard panel, 14 ga A36 sheet, formed flanges, welded brackets). Drawing attached.
+Material is 14 ga A36 HR plate, finish is powder coat black. Note on welding: standard welds, no cosmetic requirement.
+Delivery: 4 weeks ARO
+
+Thanks much,
+Brent Ostrander
+Loess Hills Machinery"
+D-0134,J-0956,rfq_email,2026-02-19,frame,,,,,"RFQ - PIC-FR-1413 Sub-frame weldment, A500 tube rails, 3/8 A36 gussets and mounts
+Qty: 5
+Matl: 3/8 A36
+Weld: standard structural welds per print
+Finish: powder coat red
+Ship date: 6 weeks ARO
+
+Dana Kessler / Prairie Implement Co."
+D-0135,J-0957,rfq_email,2026-02-21,guard,,,,,"Quote needed on PIC-GD-8876 - Belt guard, 12 ga A36 sheet, laser cut and formed, tack-welded tabs, qty 60.
+Material and finish per print. Note: standard structural welds per print.
+Timing: 4 weeks ARO
+Please send price and lead time.
+
+Carla Voss
+Prairie Implement Co."
+D-0136,J-0958,rfq_email,2026-02-22,frame,,,,,"Hi,
+
+New part coming up, please quote 5 pcs of NSA-FR-9473 (Main frame weldment, 3x3x1/4 A500 tube with 1/2 A36 plates, pivot pins). Drawing attached.
+Material is 1/2 A36, finish is powder coat gray. Note on welding: welds per print, appearance not critical.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Scott Dreyer
+North Star Ag Systems"
+D-0137,J-0959,rfq_email,2026-02-24,mounting_plate,,,,,"RFQ - CVE-MP-8833 Mounting plate, 1/2 A36, laser cut, drilled & tapped
+Qty: 100
+Matl: 1/2 ASTM A36 plate
+Weld: standard welds, no cosmetic requirement
+Finish: per print
+Ship date: 3 weeks ARO
+
+Carla Voss / Cedar Valley Equipment"
+D-0138,J-0960,rfq_email,2026-02-25,hitch_bracket,,,,,"RFQ - PICHB6767 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Qty: 500
+Matl: 3/8 HR A36
+Weld: standard welds, no cosmetic requirement
+Finish: powder coat implement yellow
+Ship date: 5 weeks ARO
+
+Ryan Pettibone / Prairie Implement Co."
+D-0139,J-1042,rfq_email,2026-03-10,hitch_bracket,,,,,"Pls quote 200 ea CVE-HB-4410 Rev B Hitch bracket weldment Rev B, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 3/8 A36, finish powder coat black.
+Heads up on welds: cosmetic welds on the visible side, no spatter.
+Due: 5 weeks ARO
+
+Nicole Brandvold
+Cedar Valley Equipment"
+D-0140,J-0961,rfq_email,2026-03-11,mounting_plate,,,,,"LHM-MP-595 / Adapter / mounting plate, 1/2 A36 plate, machined holes / qty 40
+1/2 A36, powder coat gloss black
+Delivery: 2 weeks ARO
+Quote pls.
+
+Kelsey Amundsen
+Loess Hills Machinery"
+D-0141,J-0962,rfq_email,2026-03-13,guard,,,,,"Hi,
+
+New part coming up, please quote 20 pcs of PIC-GD-8876 (Belt guard, 12 ga A36 sheet, laser cut and formed, tack-welded tabs). Drawing attached.
+Material is 12 ga HR A36, finish is powder coat black. Note on welding: welds per print, appearance not critical.
+Delivery: 4 weeks ARO
+
+Thanks much,
+Kelsey Amundsen
+Prairie Implement Co."
+D-0142,J-0963,rfq_email,2026-03-16,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: PIC-HB-3042
+Description: Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 200
+Material: 3/8 A36
+Finish: powder coat red
+Weld requirement: show-side welds need to be smooth and blended, appearance is inspected
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Greg Stuckey
+Prairie Implement Co."
+D-0143,J-0964,rfq_email,2026-03-20,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: CVE-HB-138
+Description: Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 150
+Material: 3/8 HR A36
+Finish: powder coat gray
+Weld requirement: visible welds must look clean, no spatter or undercut on the outside face
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Derek Halvorsen
+Cedar Valley Equipment"
+D-0144,J-0961,ncr,2026-03-23,mounting_plate,machining,machining.run,,,"NCR: 1/2-13 tapped holes on 4 pcs failed the no-go gauge, tap was worn. Disposition: rework, chased w/ new tap and re-gauged."
+D-0145,J-0958,debrief,2026-03-27,frame,fit_tack,fit_tack.setup,,,"First production run and the fixture wasn't in the quote, so we built one on the fly out of 2x2 tube and locating pins. Setup went way over. Quote fixture build on any new frame."
+D-0146,J-0965,rfq_email,2026-03-27,tube_assembly,,,,,"Need price on attached, 100 pcs CVE-TA-4704 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded).
+Material: 3/16 HSS A500. Finish: powder coat orange.
+Due: 4 weeks ARO
+
+Jenna Pruitt
+Cedar Valley Equipment"
+D-0147,J-0966,rfq_email,2026-03-29,hitch_bracket,,,,,"Quote needed on PIC-HB-6767 - Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, qty 50.
+Material and finsh per print. Note: standard structural welds per print.
+Timing: 5 weeks ARO
+Please send price and lead time.
+
+Jenna Pruitt
+Prairie Implement Co."
+D-0148,J-0967,rfq_email,2026-03-30,mounting_plate,,,,,"Good morning,
+
+We are requesting a qoute for the following:
+
+Part number: PIC-MP-2095
+Description: Adapter / mounting plate, 3/4 A36 plate, machined holes
+Quantity: 200
+Material: 3/4 HR A36
+Finish: zinc plate
+Weld requirement: standard structural welds per print
+Required date: 3 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Ryan Pettibone
+Prairie Implement Co."
+D-0149,J-0968,rfq_email,2026-04-09,hitch_bracket,,,,,"RFQ - NSA-HB-1910 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Qty: 250
+Matl: 3/8 ASTM A36 plate
+Weld: standard welds, no cosmetic requirement
+Finish: powder coat orange
+Ship date: 5 weeks ARO
+
+Carla Voss / North Star Ag Systems"
+D-0150,J-0969,rfq_email,2026-04-10,mounting_plate,,,,,"Hello,
+
+Could you please quote 100 pieces of PIC-MP-2552, Adapter / mounting plate, 1/2 A36 plate, machined holes, per the attached drawing?
+Material: 1/2 ASTM A36 plate
+Finish: powder coat orange
+Welding: standard structural welds per print
+Required delivery: 2 weeks ARO
+
+Thanks,
+Mark Holloway
+Prairie Implement Co."
+D-0151,J-1042,debrief,2026-04-10,hitch_bracket,weld,weld.run,,,"Rev B ran fine on the Rev A fixture. Weld on the visible side still runs long, cosmetic spec eats time."
+D-0152,J-0970,rfq_email,2026-04-21,hitch_bracket,,,,,"Pls quote 200 ea NSA-HB-9067 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 3/8 A36 HR plate, finish powder coat implement yellow.
+Heads up on welds: visible welds must look clean, no spatter or undercut on the outside face.
+Due: 4 weeks ARO
+
+Brent Ostrander
+North Star Ag Systems"
+D-0153,J-0966,ncr,2026-04-23,hitch_bracket,press_brake,press_brake.run,,,"NCR: 3/4"" hitch plate cracked on the outside radius, was running a 3"" V-die, too tight for 3/4. Moved to the 6"" die, tonnage checked ok. Disposition: scrap 2 pcs, re-cut."
+D-0154,J-0971,rfq_email,2026-04-30,mounting_plate,,,,,"Pls quote 40 ea NSA-MP-2432 Adapter / mounting plate, 3/8 A36 plate, machined holes, material 3/8 A-36 HR, finish powder coat black.
+Heads up on welds: welds per print, appearance not critical.
+Due: 2 weeks ARO
+
+Derek Halvorsen
+North Star Ag Systems"
+D-0155,J-0972,rfq_email,2026-05-01,tube_assembly,,,,,"Hello,
+
+We are sourcing a new part, BST-TA-5409 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded), and would appreciate a quote for 50 pieces.
+Material is 3/16 HSS A500 and the finish is per print.
+Please pay attention to the welding note: standard structural welds per print.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Scott Dreyer
+Big Sioux Trailer"
+D-0156,J-0973,rfq_email,2026-05-06,frame,,,,,"RFQ - NSA-FR-9747 Main frame weldment, 3x3x1/4 A500 tube with 3/8 A36 plates, pivot pins
+Qty: 30
+Matl: 3/8 HR A36
+Weld: visible welds must look clean, no spatter or undercut on the outside face
+Finish: powder coat black
+Ship date: 6 weeks ARO
+
+Ryan Pettibone / North Star Ag Systems"
+D-0157,J-0974,rfq_email,2026-05-16,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, RRA-HB-2908 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 25 pieces.
+Material is 1/4 HR A36 and the finish is powder coat gloss black.
+Please pay attention to the welding note: welds per print, appearance not critical.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Kelsey Amundsen
+Raccoon River Attachments"
+D-0158,J-0970,debrief,2026-05-17,hitch_bracket,weld,weld.run,,,"First 5 pcs got kicked back for weld appearance on the visible face, nothing structural. Redid the beads and blended. Weld time way over quote, cosmetic needs its own line next time."
+D-0159,J-0975,rfq_email,2026-05-20,tube_assembly,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: NSA-TA-1738
+Description: Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Quantity: 75
+Material: 3/16 ASTM A500
+Finish: powder coat gloss black
+Weld requirement: standard welds, no cosmetic requirement
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Carla Voss
+North Star Ag Systems"
+D-0160,J-0976,rfq_email,2026-05-26,mounting_plate,,,,,"Pls quote 300 ea LHM-MP-5170 Mounting plate, 3/8 A36, laser cut, drilled & tapped, material 3/8 A-36 HR, finish powder coat black.
+Heads up on welds: standard structural welds per print.
+Due: 3 weeks ARO
+
+Dana Kessler
+Loess Hills Machinery"
+D-0161,J-0977,rfq_email,2026-05-26,hitch_bracket,,,,,"Quote needed on LHM-HB-7156 - Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, qty 250.
+Material and finish per print. Note: standard structural welds per print.
+Timing: 4 weeks ARO
+Please send price and lead time.
+
+Carla Voss
+Loess Hills Machinery"
+D-0162,J-0978,rfq_email,2026-05-27,tube_assembly,,,,,"Quote needed on HLW-TA-3543 - Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded, qty 200.
+Material and finsh per print. Note: standard welds, no cosmetic requirement.
+Timing: 4 weeks ARO
+Please send price and lead time.
+
+Derek Halvorsen
+Hawkeye Loader Works"
+D-0163,J-0979,rfq_email,2026-05-28,frame,,,,,"Good morning,
+
+We are requesting a qoute for the following:
+
+Part number: CVE-FR-6325
+Description: Main frame weldment, 3x3x1/4 A500 tube with 3/8 A36 plates, pivot pins
+Quantity: 30
+Material: 3/8 A36 HR plate
+Finish: powder coat black
+Weld requirement: welds per print, appearance not critical
+Required date: 6 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Laura Kinsella
+Cedar Valley Equipment"
+D-0164,J-0980,rfq_email,2026-05-29,frame,,,,,"Hi,
+
+New part coming up, please quote 5 pcs of LHM-FR-4863 (Sub-frame weldment, A500 tube rails, 1/2 A36 gussets and mounts). Drawing attached.
+Material is 1/2 HR A36, finish is powder coat red. Note on welding: welds per print, appearance not critical.
+Delivery: 6 weeks ARO
+
+Thanks much,
+Kelsey Amundsen
+Loess Hills Machinery"
+D-0165,J-0981,rfq_email,2026-05-31,guard,,,,,"Hello,
+
+We are sourcing a new part, RRA-GD-7550 (Belt guard, 12 ga 5052 aluminum, laser cut and formed, tack-welded tabs), and would appreciate a quote for 60 pieces.
+Material is 12 ga 5052 alum and the finish is none.
+Please pay attention to the welding note: standard welds, no cosmetic requirement.
+Requested delivery: 5 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Travis Lindgren
+Raccoon River Attachments"
+D-0166,J-0982,rfq_email,2026-05-31,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for HLW-HB-7652 (Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 100.
+Material: 1/2 ASTM A36 plate
+Welds: standard welds, no cosmetic requirement
+Finish: powder coat black
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Travis Lindgren
+Hawkeye Loader Works"
+D-0167,J-0983,rfq_email,2026-06-06,frame,,,,,"Hi,
+
+New part coming up, please quote 15 pcs of CVE-FR-2914 (Sub-frame weldment, A500 tube rails, 1/2 A36 gussets and mounts). Drawing attached.
+Material is 1/2 ASTM A36 plate, finish is powder coat black. Note on welding: welds per print, appearance not critical.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Ryan Pettibone
+Cedar Valley Equipment"
+D-0168,J-0984,rfq_email,2026-06-10,tube_assembly,,,,,"Pls qoute 150 ea PIC-TA-5037 Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded, material 3/16 ASTM A500, finish powder coat black.
+Heads up on welds: standard welds, no cosmetic requirement.
+Due: 4 weeks ARO
+
+Jenna Pruitt
+Prairie Implement Co."
+D-0169,J-0973,debrief,2026-06-16,frame,weld,weld.run,,,Weld hrs over on the outside rails. Print calls cosmetic welds on the exposed side so we were blending every start and stop. Added close to 10 min a piece.
+D-0170,J-1077,rfq_email,2026-06-18,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for PIC-HB-5120 (Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, tube, bushings). Looking for pricing on a quantity of 300.
+Material: 3/8 A36
+Welds: visible welds must look clean, no spatter or undercut on the outside face
+Finish: powder coat red
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Jenna Pruitt
+Prairie Implement Co."
+D-0171,J-0985,rfq_email,2026-06-19,mounting_plate,,,,,"Hello,
+
+Could you please quote 25 pieces of CVE-MP-5321, Adapter / mounting plate, 3/4 A36 plate, machined holes, per the attached drawing?
+Material: 3/4 A-36 HR
+Finish: zinc plate
+Welding: standard welds, no cosmetic requirement
+Required delivery: 2 weeks ARO
+
+Thanks,
+Jenna Pruitt
+Cedar Valley Equipment"
+D-0172,J-0981,debrief,2026-06-28,guard,powder_coat,out.powder_coat,,,"Powder coat vendor turnaround was 8 working days, not the 5 we planned. Shipped 3 days late. Pad lead time on anything going out for coat."
+D-0173,J-0986,rfq_email,2026-07-02,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, PIC-HB-5751 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 200 pieces.
+Material is 1/4 A36 HR plate and the finish is powder coat black.
+Please pay attention to the welding note: cosmetic welds on the visible side, no spatter.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Mark Holloway
+Prairie Implement Co."
+D-0174,J-1103,rfq_email,2026-07-08,hitch_bracket,,,,,"Good morning,
+
+We are requesting a qoute for the following:
+
+Part number: NSA-HB-118
+Description: Hitch bracket weldment, 3/8 A36 plate, laser cut + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 100
+Material: 3/8 A36
+Finish: powder coat black
+Weld requirement: standard welds, no cosmetic requirement
+Required date: 5 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Mark Holloway
+North Star Ag Systems"
+D-0175,J-0988,rfq_email,2026-07-13,hitch_bracket,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: NSA-HB-4763
+Description: Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit
+Quantity: 300
+Material: 1/2 A36
+Finish: powder coat orange
+Weld requirement: show-side welds need to be smooth and blended, appearance is inspected
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Ryan Pettibone
+North Star Ag Systems"
+D-0176,J-0989,rfq_email,2026-07-17,tube_assembly,,,,,"Hello,
+
+We are sourcing a new part, PIC-TA-1375 (Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded), and would appreciate a quote for 75 pieces.
+Material is 3/16 A500 Gr B and the finish is powder coat black.
+Please pay attention to the welding note: standard structural welds per print.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Dana Kessler
+Prairie Implement Co."
+D-0177,J-0990,rfq_email,2026-07-25,frame,,,,,"RFQ - HLW-FR-3013 Main frame weldment, 3x3x1/4 A500 tube with 3/8 A36 plates, pivot pins
+Qty: 40
+Matl: 3/8 A-36 HR
+Weld: standard welds, no cosmetic requirement
+Finish: powder coat red
+Ship date: 7 weeks ARO
+
+Megan Tolliver / Hawkeye Loader Works"
+D-0178,J-0991,rfq_email,2026-07-26,hitch_bracket,,,,,"Pls quote 50 ea BST-HB-4285 Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 1/2 A36, finish powder coat implement yellow.
+Heads up on welds: welds per print, appearance not critical.
+Due: 5 weeks ARO
+
+Carla Voss
+Big Sioux Trailer"
+D-0179,J-0992,rfq_email,2026-07-26,hitch_bracket,,,,,"Need price on attahced, 100 pcs LHM-HB-8968 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit).
+Material: 1/4 A-36 HR. Finish: none.
+Due: 4 weeks ARO
+
+Mark Holloway
+Loess Hills Machinery"
+D-0180,J-0986,debrief,2026-07-27,hitch_bracket,weld,weld.run,,,"2nd shift spent most of the run cleaning spatter and dressing welds on the side that faces out. Should've bumped weld time on the quote, this customer always checks that side."
+D-0181,J-0993,rfq_email,2026-07-27,hitch_bracket,,,,,"Hi,
+
+Attached is a new drawing for LHM-HB-6770 (Hitch bracket weldment, 1/2 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit). Looking for pricing on a quantity of 25.
+Material: 1/2 A-36 HR
+Welds: welds per print, appearance not critical
+Finish: powder coat orange
+
+Let me know if you have any questions on the print.
+
+Thanks,
+Travis Lindgren
+Loess Hills Machinery"
+D-0182,J-0994,rfq_email,2026-07-30,frame,,,,,"Hi,
+
+New part coming up, please quote 5 pcs of PIC-FR-700 (Sub-frame weldment, A500 tube rails, 1/2 A36 gussets and mounts). Drawing attached.
+Material is 1/2 A36 HR plate, finish is powder coat black. Note on welding: welds per print, appearance not critical.
+Delivery: 5 weeks ARO
+
+Thanks much,
+Carla Voss
+Prairie Implement Co."
+D-0183,J-1118,rfq_email,2026-08-05,mounting_plate,,,,,"Hello,
+
+Could you please quote 40 pieces of LHM-MP-0620, Mounting plate, 1/2 A36 plate, laser cut, drilled & tapped 4x 1/2-13, per the attached drawing?
+Material: 1/2 A36
+Finish: powder coat black
+Welding: standard welds, no cosmetic requirement
+Required delivery: 3 weeks ARO
+
+Thanks,
+Dana Kessler
+Loess Hills Machinery"
+D-0184,J-1103,debrief,2026-08-07,hitch_bracket,fit_tack,fit_tack.setup,,,"First run on this bracket and nobody quoted a fixture. Spent most of the morning building one out of drop, fit/tack setup ran more than double. Quote a new fixture on first-run weldments."
+D-0185,J-0995,rfq_email,2026-08-10,hitch_bracket,,,,,"Pls qoute 25 ea HLW-HB-6060 Hitch bracket weldment, 3/8 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit, material 3/8 ASTM A36 plate, finish powder coat black.
+Heads up on welds: cosmetic welds on the visible side, no spatter.
+Due: 5 weeks ARO
+
+Carla Voss
+Hawkeye Loader Works"
+D-0186,J-0996,rfq_email,2026-08-16,tube_assembly,,,,,"Need price on attached, 50 pcs NSA-TA-5985 (Tube assembly, 304 SS tube with 1018 bar end fittings, welded).
+Material: 3/16 304 SS. Finish: none.
+Due: 4 weeks ARO
+
+Megan Tolliver
+North Star Ag Systems"
+D-0187,J-1118,debrief,2026-08-20,mounting_plate,,,,,"Repeat, programs on file. No issues."
+D-0188,J-0997,rfq_email,2026-08-22,tube_assembly,,,,,"Good morning,
+
+We are requesting a quote for the following:
+
+Part number: NSA-TA-5985
+Description: Tube assembly, 2x2x3/16 A500 tube with 1018 bar end fittings, welded
+Quantity: 50
+Material: 3/16 A500 Gr B
+Finish: powder coat black
+Weld requirement: standard structural welds per print
+Required date: 4 weeks ARO
+
+Please include lead time with your quote.
+
+Regards,
+Carla Voss
+North Star Ag Systems"
+D-0189,J-0998,rfq_email,2026-08-23,mounting_plate,,,,,"Hello,
+
+We are sourcing a new part, BST-MP-4224 (Mounting plate, 3/8 A36, laser cut, drilled & tapped), and would appreciate a quote for 300 pieces.
+Material is 3/8 A36 HR plate and the finish is zinc plate.
+Please pay attention to the welding note: standard structural welds per print.
+Requested delivery: 3 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Mark Holloway
+Big Sioux Trailer"
+D-0190,J-0993,debrief,2026-08-24,hitch_bracket,fit_tack,fit_tack.setup,,,"New part, no jig quoted. Burned about 5 hrs on setup figuring out how to hold the ears square to the base plate. Built a quick fixture, tagged it and put it on the rack for next time."
+D-0191,J-0999,rfq_email,2026-08-25,mounting_plate,,,,,"Hi,
+
+New part coming up, please quote 500 pcs of CVE-MP-5321 (Mounting plate, 3/8 A36, laser cut, drilled & tapped). Drawing attached.
+Material is 3/8 A36, finish is powder coat black. Note on welding: welds per print, appearance not critical.
+Delivery: 2 weeks ARO
+
+Thanks much,
+Carla Voss
+Cedar Valley Equipment"
+D-0192,J-0998,debrief,2026-09-11,mounting_plate,,,,,"Split the order across two shifts, no quality problems."
+D-0193,J-1000,rfq_email,2026-09-14,hitch_bracket,,,,,"Hello,
+
+We are sourcing a new part, BST-HB-6903 (Hitch bracket weldment, 1/4 A36 plate, laser + formed parts, 2x2x3/16 A500 tube, bushings & bolt kit), and would appreciate a quote for 100 pieces.
+Material is 1/4 A36 HR plate and the finish is none.
+Please pay attention to the welding note: standard structural welds per print.
+Requested delivery: 4 weeks ARO
+
+Please let me know if you need a model or have questions.
+
+Thank you,
+Nicole Brandvold
+Big Sioux Trailer"
+D-0194,J-1001,rfq_email,2026-09-15,guard,,,,,"Pls quote 150 ea BST-GD-7382 Belt guard, 12 ga A36 sheet, laser cut and formed, tack-welded tabs, material 12 ga ASTM A36 plate, finish powder coat implement yellow.
+Heads up on welds: cosmetic welds on the visible side, no spatter.
+Due: 5 weeks ARO
+
+Dana Kessler
+Big Sioux Trailer"
+D-0195,J-1002,rfq_email,2026-09-18,guard,,,,,"Hello,
+
+Could you please quote 60 pieces of PIC-GD-6622, Belt guard, 10 ga 5052 aluminum, laser cut and formed, tack-welded tabs, per the attached drawing?
+Material: 10 ga 5052 alum
+Finish: none
+Welding: show-side welds need to be smooth and blended, appearance is inspected
+Required delivery: 4 weeks ARO
+
+Thanks,
+Scott Dreyer
+Prairie Implement Co."

@@ -1,0 +1,8 @@
+customer_id,name,segment,is_new,notes
+C01,Prairie Implement Co.,OEM,False,Price-driven buyer; awards almost purely on price.
+C02,Cedar Valley Equipment,OEM,False,Cares about appearance on visible parts.
+C03,Hawkeye Loader Works,OEM,False,"Steady OEM account, mid-volume releases."
+C04,North Star Ag Systems,tier1,False,Tier-1 to ag OEMs; frequent new part numbers.
+C05,Raccoon River Attachments,aftermarket,False,"Aftermarket attachments, small lots."
+C06,Big Sioux Trailer,tier1,True,New account in 2026.
+C07,Loess Hills Machinery,aftermarket,False,"Repeat orders, small lots, pays on time."

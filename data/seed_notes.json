@@ -1,0 +1,362 @@
+[
+  {
+    "note_id": "N-01",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Visible side welds took a lot longer than quoted. Customer wants that face clean so every piece got a cap pass and a flap disc to knock off spatter. Weld ran about a third over."
+  },
+  {
+    "note_id": "N-02",
+    "doc_type": "debrief",
+    "part_family": "mounting_plate",
+    "work_center": "laser",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Laser struggled piercing the 3/4\" plate, nozzle kept getting spattered. Swapped nozzles twice and slowed the pierce. Some dross on the bottom edges, added a pass on the deburr machine."
+  },
+  {
+    "note_id": "N-03",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "First run on this frame and no fixture was quoted. Spent half a day building one out of angle and toggle clamps before we could tack a single part. Quote a fixture on new frames."
+  },
+  {
+    "note_id": "N-04",
+    "doc_type": "ncr",
+    "part_family": "hitch_bracket",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 1/2\" A36 ear brackets cracking on the outside of the 90. V-die opening too small for the thickness. Disposition: scrap 4 pcs, re-cut blanks."
+  },
+  {
+    "note_id": "N-05",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "none",
+    "mentions_fixture": true,
+    "text": "Repeat job, used the fixture from the last run. Setup was quick, under an hour and first piece checked good."
+  },
+  {
+    "note_id": "N-06",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Weld hrs over on the outside rails. Print calls cosmetic welds on the exposed side so we were blending every start and stop. Added close to 10 min a piece."
+  },
+  {
+    "note_id": "N-07",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "powder_coat",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Masking took longer than planned, every tapped hole needed a plug and the bushing bores got capped before coat. Figure 5 min a piece just masking."
+  },
+  {
+    "note_id": "N-08",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "New tube assembly, nothing to locate the cross tubes. Tacked up a jig out of scrap plate and V-blocks. Setup ran about 4 hrs over, needs a fixture line on the quote."
+  },
+  {
+    "note_id": "N-09",
+    "doc_type": "ncr",
+    "part_family": "mounting_plate",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 5/8\" mounting plates bent with the grain, hairline cracks at the bend OD on 6 pcs. Blanks need to nest across the grain. Disposition: scrap 6 pcs, re-cut."
+  },
+  {
+    "note_id": "N-10",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "saw",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Saw cuts on the 2x3 tube were running 1/16 long, stop block had drifted. Caught it on first piece check. Heavy burrs on the ID, added a deburr step."
+  },
+  {
+    "note_id": "N-11",
+    "doc_type": "debrief",
+    "part_family": "guard",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Show side welds on the guard needed extra passes to fill the corners nice and even. Anti-spatter didn't help much, still a lot of hand cleanup before it could go to coat."
+  },
+  {
+    "note_id": "N-12",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "First article setup took forever. No fixture, so we clamped to the table and measured every tack. Should quote a simple fixture, it'd pay for itself on repeats."
+  },
+  {
+    "note_id": "N-13",
+    "doc_type": "ncr",
+    "part_family": "mounting_plate",
+    "work_center": "machining",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "NCR: 1/2-13 tapped holes on 4 pcs failed the no-go gauge, tap was worn. Disposition: rework, chased w/ new tap and re-gauged."
+  },
+  {
+    "note_id": "N-14",
+    "doc_type": "ncr",
+    "part_family": "frame",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 1/2\" side rails out of tolerance from springback, angle opened up 2-3 deg after release. Overbent and re-hit. Disposition: rework."
+  },
+  {
+    "note_id": "N-15",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "First 5 pcs got kicked back for weld appearance on the visible face, nothing structural. Redid the beads and blended. Weld time way over quote, cosmetic needs its own line next time."
+  },
+  {
+    "note_id": "N-16",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "inspect_pack",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Frames didn't fit a standard pallet, built 4 custom crates. Added a couple hrs at pack. Sprayed rust inhibitor on the bare machined surfaces before crating."
+  },
+  {
+    "note_id": "N-17",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "Setup ran long, no fixture on this new frame. Squaring it up w/ C-clamps and a tape was slow, took 3 tries to get diagonals in. Recommend building a real fixture and quoting it."
+  },
+  {
+    "note_id": "N-18",
+    "doc_type": "ncr",
+    "part_family": "hitch_bracket",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 3/4\" hitch plate cracked on the outside radius, was running a 3\" V-die, too tight for 3/4. Moved to the 6\" die, tonnage checked ok. Disposition: scrap 2 pcs, re-cut."
+  },
+  {
+    "note_id": "N-19",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Weld on the tube assemblies ran close to quote. Switched to .045 wire and bumped gas flow, less porosity on the end caps."
+  },
+  {
+    "note_id": "N-20",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Welder had to slow travel speed and lay a 2nd pass on the visible side to get the bead uniform. Customer is picky about how that side looks. Figure 25-30% over on weld."
+  },
+  {
+    "note_id": "N-21",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "Had to improvise a fixture for the first batch, tubes kept rolling on the table. Welded stops onto a scrap plate. Setup ate most of 1st shift. Add fixture hrs to the next quote."
+  },
+  {
+    "note_id": "N-22",
+    "doc_type": "ncr",
+    "part_family": "guard",
+    "work_center": "laser",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "NCR: heavy dross on bottom edge of 10ga guard blanks, assist gas pressure was low on 2nd shift. Disposition: rework, deburr all pcs."
+  },
+  {
+    "note_id": "N-23",
+    "doc_type": "ncr",
+    "part_family": "mounting_plate",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 1/2\" plate flange measuring 92-93 deg vs 90 +/-1 on first 10 pcs, springback. Brake program not adjusted for this heat. Disposition: rework, re-hit on brake."
+  },
+  {
+    "note_id": "N-24",
+    "doc_type": "debrief",
+    "part_family": "guard",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Thin gauge and cosmetic welds on the outside don't mix. Kept warping, had to stitch it, let it cool, then grind flush. Weld hrs ran well past quote."
+  },
+  {
+    "note_id": "N-25",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "grind",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Grind time about as quoted. Just knocking down weld starts on the corners and breaking sharp edges before paint."
+  },
+  {
+    "note_id": "N-26",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "New part, no jig quoted. Burned about 5 hrs on setup figuring out how to hold the ears square to the base plate. Built a quick fixture, tagged it and put it on the rack for next time."
+  },
+  {
+    "note_id": "N-27",
+    "doc_type": "ncr",
+    "part_family": "frame",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: surface cracks on the bend OD of 1/2\" crossmembers. Inside radius too tight for the plate and laser edge not deburred at the bend line. Disposition: rework, grind out and weld repair per QA."
+  },
+  {
+    "note_id": "N-28",
+    "doc_type": "debrief",
+    "part_family": "guard",
+    "work_center": "powder_coat",
+    "line": "run",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Powder coat vendor turnaround was 8 working days, not the 5 we planned. Shipped 3 days late. Pad lead time on anything going out for coat."
+  },
+  {
+    "note_id": "N-29",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "2nd shift spent most of the run cleaning spatter and dressing welds on the side that faces out. Should've bumped weld time on the quote, this customer always checks that side."
+  },
+  {
+    "note_id": "N-30",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "First production run and the fixture wasn't in the quote, so we built one on the fly out of 2x2 tube and locating pins. Setup went way over. Quote fixture build on any new frame."
+  },
+  {
+    "note_id": "N-31",
+    "doc_type": "debrief",
+    "part_family": "hitch_bracket",
+    "work_center": "machining",
+    "line": "setup",
+    "pattern": "none",
+    "mentions_fixture": false,
+    "text": "Drill was walking on the mill scale on the pin holes. Added a spot drill op, setup took a little longer but holes came out true."
+  },
+  {
+    "note_id": "N-32",
+    "doc_type": "ncr",
+    "part_family": "hitch_bracket",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 5/8\" brackets bent parallel to rolling direction, 3 pcs cracked through at the bend. Leg also short from springback. Disposition: scrap 3 pcs, re-cut w/ grain rotated 90."
+  },
+  {
+    "note_id": "N-33",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "P2",
+    "mentions_fixture": true,
+    "text": "Fit-up on this new tube assembly was a pain w/o a fixture, angles kept drifting when we tacked. Ended up building a jig halfway through setup. Setup hrs roughly double what we quoted."
+  },
+  {
+    "note_id": "N-34",
+    "doc_type": "debrief",
+    "part_family": "frame",
+    "work_center": "weld",
+    "line": "run",
+    "pattern": "P1",
+    "mentions_fixture": false,
+    "text": "Over on weld again. Extra time keeping the bead consistent on the cosmetic side and wire brushing every joint before paint. None of that was in the quote."
+  },
+  {
+    "note_id": "N-35",
+    "doc_type": "ncr",
+    "part_family": "mounting_plate",
+    "work_center": "press_brake",
+    "line": "run",
+    "pattern": "P3",
+    "mentions_fixture": false,
+    "text": "NCR: 1/2\" mounting plate flanges 1.5 deg off from springback, still fits the mating part per check. Disposition: use-as-is per QA."
+  },
+  {
+    "note_id": "N-36",
+    "doc_type": "debrief",
+    "part_family": "tube_assembly",
+    "work_center": "fit_tack",
+    "line": "setup",
+    "pattern": "none",
+    "mentions_fixture": true,
+    "text": "Pulled the jig from the last order off the rack, needed one locating pin replaced. Setup took about 45 min vs 4+ hrs first time around."
+  }
+]

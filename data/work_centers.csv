@@ -1,0 +1,10 @@
+work_center,rate_per_hr,default_setup_hr,default_run_hr_per_unit
+laser,150.0,0.5,0.08
+press_brake,95.0,0.75,0.06
+saw,70.0,0.25,0.03
+machining,110.0,1.0,0.12
+fit_tack,80.0,2.0,0.2
+weld,85.0,0.5,0.4
+grind,70.0,0.25,0.12
+inspect_pack,75.0,0.25,0.05
+fixture,80.0,6.0,0.0

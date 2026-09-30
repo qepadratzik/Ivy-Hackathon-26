@@ -17,3 +17,10 @@
 - Cuts/decisions: secret regexes require key-shaped suffixes (e.g. `sk-` + 16 key chars) so docs that mention prefixes don't block; timeline check at 00:50 CT Wed: ~37 h to deadline, no cuts needed yet. Demo RFQs A/B/C written (subagent, reviewed).
 - Next: Phase 1 data generator + pattern tests.
 
+## [Wed 00:45 CT] Phase 1: Data: DONE
+- Built: `qm/data_gen.py` (seeded; 150 random jobs + 8 hero jobs over Oct 2024-Sep 2026, 7 fictional customers, BOM/routing with estimates + actuals, messy aliases, near-dup part numbers, missing finishes, typo'd emails, NCR/debrief docs, weekly steel quotes). Subagent wrote `data/seed_notes.json` (36 shop-floor notes tagged by pattern) + `qm/data_text.py` (email templates); reviewed.
+- Verified: `tests/test_data.py` 10/10. Seed 42 stats: P1 cosmetic weld act/est 1.38 (n=16); P2 first-run no-fixture fit/tack setup 1.94x (n=14, 4+ fixture notes); P3 NCR rate 0.31 (n=13); P4 Prairie win 94% below 1.25x vs 6% at >=1.30x; P5 A36 last-6 vs first-6 months +14.6%.
+- Hero jobs: J-0918 (CVE-HB-4410 Rev A, first run w/ fixture), J-0987 + J-1042 (cosmetic hitch brackets, full actuals), J-1077 (lost Prairie quote), J-1103 (first run, no fixture, setup 2.2x + fixture debrief), J-0842/J-0955/J-1118 (LHM-MP-0620 repeats for RFQ C).
+- Cuts/decisions: added a `fixture` routing op (one-time, fit_tack rate) and `line_key/old_value/new_value` columns on `docs` (needed for override memory). Data CSVs are committed; SQLite + Chroma are rebuilt locally (gitignored).
+- Next: Phase 2 store + retrieval.
+
