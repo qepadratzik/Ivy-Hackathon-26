@@ -47,3 +47,10 @@
 - Verified: automated test: A's fit/tack setup override (+6 hr, "new fixture needed") appears on B's fit/tack setup as a counted evidence row and raises B's value; unrelated RFQ C unaffected; reset removes it. `pipeline.run_pipeline` + `diff` (change banner) + quote preview in place. 86 tests green.
 - Next: Phase 7 Streamlit UI.
 
+## [Wed 01:21 CT] Phase 7: Streamlit UI: DONE
+- Built: `app.py` per Section 8: sidebar (RFQ picker A/B/C + paste box, shop-load slider, "age newest material quote" slider, model/mode indicator, memory panel, Reset), header (triage badge + reason, 7-stage stepper, KPI strip), change banner with cause ("what just changed ... because ..."), sections 1-6 (gaps with Ask/Assume + contingency, fields with confidence chips + verbatim source quotes, clarification email; analog card + diff table + editable BOM/routing + quick-adjust + required reason + Gate 1; ledger table + evidence drawer with score = sim x authority x recency and original text, pattern callouts, 🧠 "learned from an earlier quote" callout; Monte Carlo histogram + uncertainty drivers + contingencies + material freshness; expected-margin/win-chance curve with range, floor, decision-cost breakdown, standard vs expedite, Gate 2 with out-of-range reason; quote preview + Markdown/HTML download). `.streamlit/config.toml` (light theme, minimal toolbar).
+- Verified: `tests/test_app.py` AppTest runs the full A -> Gate 1 override -> weld drawer/P1 -> age 90 d -> Gate 2 -> quote -> B (sees A's override as evidence) -> C (fast-track) -> reset path, plus every section for every RFQ and a pasted RFQ, no exceptions. Real-browser walk-through (Playwright + Chromium) screenshots reviewed; fixed $-as-LaTeX rendering, clipped header, cramped tables, chart label overlap.
+- Fix: an RFQ's own saved override is no longer re-counted as "memory" evidence on itself. Tests now isolate memory via `tests/conftest.py`.
+- **Quentin: please do the local Ollama run (docs/LOCAL_RUN.md, coming in Phase 8) by ~12:30 PM CT Thu.**
+- Next: Phase 8 demo hardening (offline mode test, LOCAL_RUN.md, demo script).
+

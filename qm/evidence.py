@@ -175,6 +175,8 @@ def evidence_routing(ctx: Context, line: dict) -> tuple[list[dict], dict]:
         if nrow.doc_type == "override":
             if n_over >= MAX_OVERRIDE_NOTES_PER_LINE or pd.isna(nrow.new_value) or pd.isna(nrow.old_value):
                 continue
+            if ctx.spec.get("rfq_id") and nrow.job_id == ctx.spec.get("rfq_id"):
+                continue  # this quote's own Gate 1 edit is already the locked value; don't count it twice
             delta = float(nrow.new_value) - float(nrow.old_value)
             rows.append(make_row("override", nrow.doc_id, max(0.0, structured_base + delta), nrow.sim, age, "note",
                                  why=f"Estimator override on a similar quote ({nrow.job_id}): {delta:+.2f} "

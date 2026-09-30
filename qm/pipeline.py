@@ -89,7 +89,7 @@ def run_pipeline(rfq: dict, state: dict | None = None) -> dict:
     st.update(state or {})
     t = store.tables()
     x = get_intake(rfq)
-    spec = dict(x["spec"])
+    spec = dict(x["spec"], rfq_id=rfq.get("rfq_id"))
     gap_list = gaps.apply_actions(gaps.find_gaps(x), st["gap_actions"])
 
     sims = retrieval.similar_jobs(spec, t)
