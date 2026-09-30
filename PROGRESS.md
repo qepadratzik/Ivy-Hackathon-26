@@ -30,3 +30,8 @@
 - Cuts/decisions: structured similarity gets a weld-class term (0.32 family, 0.16 material, 0.16 thickness, 0.16 qty bucket, 0.20 weld class; HANDOFF weights x0.8), because cosmetic vs standard weld is the biggest labor driver (P1). Analog pick uses recency as a soft tiebreaker (15% weight). Hero J-1103 qty set to 150.
 - Next: Phase 3 intake, gaps, triage.
 
+## [Wed 00:54 CT] Phase 3: Intake, gaps, triage: DONE
+- Built: `qm/intake.py` (pydantic RFQSpec where the LLM only COPIES text + verbatim source quote + confidence; Python normalizes materials/fractions/gauges/dates/families; quote-verification guard downgrades any value whose quote isn't in the email; deterministic spec-sheet parse + merge -> conflicts; regex fallback extractor for pastes/offline misses; repeat-part / first-run / revision-change from history), `qm/gaps.py` (missing/conflict/color rules, ask vs assume with contingency, due-date feasibility, clarification email via LLM with template fallback), `qm/triage.py`. Hand-written mock fixtures for A/B/C intake.
+- Verified: `tests/test_intake.py` 33 pass: A -> exactly {qty_conflict, finish_color}; "3/8 plate" vs "0.375 A-36 HR" normalizes (no conflict); B none + first run; C none + S/fast-track; live Ollama result cached then served from cache (mocked HTTP).
+- Next: Phase 4 proposal, evidence engine, patterns.
+

@@ -1,0 +1,80 @@
+{
+  "task": "intake_extract",
+  "match": [
+    "HLW-HB-3300",
+    "EMAIL (received"
+  ],
+  "note": "Hand-written expected extraction for demo RFQ B (mock provider).",
+  "output": {
+    "customer_name": {
+      "value": "Hawkeye Loader Works",
+      "confidence": "high",
+      "source_quote": "Hawkeye Loader Works"
+    },
+    "part_number": {
+      "value": "HLW-HB-3300",
+      "confidence": "high",
+      "source_quote": "HLW-HB-3300, hitch bracket weldment"
+    },
+    "part_description": {
+      "value": "Hitch bracket weldment: 4 laser-cut parts and 2 formed parts from 3/8\" A36 plate, 1 tube 2x2x3/16 A500; 2 bushings per assy and a bolt kit",
+      "confidence": "high",
+      "source_quote": "4 laser-cut parts and 2 formed parts from 3/8\" A36 plate"
+    },
+    "part_family": {
+      "value": "hitch_bracket",
+      "confidence": "high",
+      "source_quote": "hitch bracket weldment"
+    },
+    "material": {
+      "value": "3/8\" A36 plate",
+      "confidence": "high",
+      "source_quote": "3/8\" A36 plate"
+    },
+    "thickness_in": {
+      "value": "3/8\"",
+      "confidence": "high",
+      "source_quote": "3/8\" A36 plate"
+    },
+    "qty": {
+      "value": "150",
+      "confidence": "high",
+      "source_quote": "Qty 150 total"
+    },
+    "release_qty": {
+      "value": "50",
+      "confidence": "high",
+      "source_quote": "releases of 50"
+    },
+    "tolerance_class": {
+      "value": "standard",
+      "confidence": "high",
+      "source_quote": "Standard tolerance, +/-0.030 unless noted."
+    },
+    "cosmetic_weld": {
+      "value": "no",
+      "confidence": "high",
+      "source_quote": "no cosmetic weld requirement"
+    },
+    "finish": {
+      "value": "powder coat",
+      "confidence": "high",
+      "source_quote": "powder coat, gloss black"
+    },
+    "finish_color": {
+      "value": "gloss black",
+      "confidence": "high",
+      "source_quote": "powder coat, gloss black"
+    },
+    "due_date": {
+      "value": "Nov 20",
+      "confidence": "high",
+      "source_quote": "First release due Nov 20"
+    },
+    "notes": {
+      "value": "New design, first production run; first article inspection report required with the first release.",
+      "confidence": "high",
+      "source_quote": "This is a new design and will be the first production run"
+    }
+  }
+}

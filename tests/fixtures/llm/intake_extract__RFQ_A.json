@@ -1,0 +1,80 @@
+{
+  "task": "intake_extract",
+  "match": [
+    "CVE-HB-4410 Rev C",
+    "EMAIL (received"
+  ],
+  "note": "Hand-written expected extraction for demo RFQ A (mock provider).",
+  "output": {
+    "customer_name": {
+      "value": "Cedar Valley Equipment",
+      "confidence": "high",
+      "source_quote": "Cedar Valley Equipment"
+    },
+    "part_number": {
+      "value": "CVE-HB-4410 Rev C",
+      "confidence": "high",
+      "source_quote": "CVE-HB-4410 Rev C hitch bracket weldment"
+    },
+    "part_description": {
+      "value": "Hitch bracket weldment: 4 laser-cut plate parts, 2 press brake formed parts, 1 piece 2x2x3/16 A500 tube; 2 bushings per assy and a bolt kit",
+      "confidence": "high",
+      "source_quote": "Construction is 4 laser-cut plate parts and 2 press brake formed parts"
+    },
+    "part_family": {
+      "value": "hitch_bracket",
+      "confidence": "high",
+      "source_quote": "hitch bracket weldment"
+    },
+    "material": {
+      "value": "3/8\" A36 plate",
+      "confidence": "high",
+      "source_quote": "all 3/8\" A36 plate"
+    },
+    "thickness_in": {
+      "value": "3/8\"",
+      "confidence": "high",
+      "source_quote": "all 3/8\" A36 plate"
+    },
+    "qty": {
+      "value": "250",
+      "confidence": "high",
+      "source_quote": "Quantity is 250 pcs total"
+    },
+    "release_qty": {
+      "value": "50",
+      "confidence": "high",
+      "source_quote": "releases of 50"
+    },
+    "tolerance_class": {
+      "value": "standard",
+      "confidence": "high",
+      "source_quote": "Tolerance is standard, +/-0.030 unless noted."
+    },
+    "cosmetic_weld": {
+      "value": "yes",
+      "confidence": "high",
+      "source_quote": "Weld is cosmetic: visible side, no spatter, smooth."
+    },
+    "finish": {
+      "value": "powder coat",
+      "confidence": "high",
+      "source_quote": "Finish is powder coat per our usual."
+    },
+    "finish_color": {
+      "value": null,
+      "confidence": "low",
+      "source_quote": null
+    },
+    "due_date": {
+      "value": "Nov 6",
+      "confidence": "high",
+      "source_quote": "First release of 50 needed by Nov 6"
+    },
+    "notes": {
+      "value": "Rev C adds a gusset and moves the hole pattern vs Rev B; work from the new print. Break out price per release and list setup/tooling charges separately.",
+      "confidence": "high",
+      "source_quote": "Rev C adds a gusset and moves the hole pattern"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "task": "intake_extract",
+  "match": [
+    "LHM-MP-0620",
+    "EMAIL (received"
+  ],
+  "note": "Hand-written expected extraction for demo RFQ C (mock provider).",
+  "output": {
+    "customer_name": {
+      "value": "Loess Hills Machinery",
+      "confidence": "high",
+      "source_quote": "Loess Hills Machinery"
+    },
+    "part_number": {
+      "value": "LHM-MP-0620",
+      "confidence": "high",
+      "source_quote": "LHM-MP-0620 mounting plate"
+    },
+    "part_description": {
+      "value": "Mounting plate, 1/2\" A36 plate, laser cut, drill and tap 4x 1/2-13, no welding",
+      "confidence": "high",
+      "source_quote": "LHM-MP-0620 mounting plate, same as last order"
+    },
+    "part_family": {
+      "value": "mounting_plate",
+      "confidence": "high",
+      "source_quote": "LHM-MP-0620 mounting plate"
+    },
+    "material": {
+      "value": "1/2\" A36 plate",
+      "confidence": "high",
+      "source_quote": "1/2\" A36 plate"
+    },
+    "thickness_in": {
+      "value": "1/2\"",
+      "confidence": "high",
+      "source_quote": "1/2\" A36 plate"
+    },
+    "qty": {
+      "value": "40",
+      "confidence": "high",
+      "source_quote": "Qty 40."
+    },
+    "release_qty": {
+      "value": null,
+      "confidence": "low",
+      "source_quote": null
+    },
+    "tolerance_class": {
+      "value": "standard",
+      "confidence": "high",
+      "source_quote": "Standard tolerance, +/-0.030 unless noted."
+    },
+    "cosmetic_weld": {
+      "value": "no",
+      "confidence": "high",
+      "source_quote": "No welding."
+    },
+    "finish": {
+      "value": "powder coat",
+      "confidence": "high",
+      "source_quote": "Powder coat black, same as last time."
+    },
+    "finish_color": {
+      "value": "black",
+      "confidence": "high",
+      "source_quote": "Powder coat black"
+    },
+    "due_date": {
+      "value": "Oct 28",
+      "confidence": "high",
+      "source_quote": "Need them by Oct 28."
+    },
+    "notes": {
+      "value": "Repeat order, same as last order.",
+      "confidence": "high",
+      "source_quote": "same as last order"
+    }
+  }
+}
