@@ -143,7 +143,7 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
     # part number / revision
     same_pn = spec.get("part_number") and normalize_pn(spec["part_number"]) == normalize_pn(analog.part_number)
     if same_pn and spec.get("part_number") != analog.part_number:
-        eff = "New revision of a part we built: check that the fixture and programs still fit"
+        eff = "New revision of a part we built: check that the fixture and cutting programs still fit"
     elif same_pn:
         eff = "Same part: programs and fixture on file"
     else:
@@ -161,7 +161,7 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
     if lot and a_lot and lot != a_lot:
         delta = setup_cost / lot - setup_cost / a_lot
         eff = f"Setup spread over {lot} pcs instead of {a_lot}: {'+' if delta >= 0 else '-'}${abs(delta):.2f}/unit"
-    q_txt = f"{spec.get('qty')} total" + (f", lots of {spec.get('release_qty')}" if spec.get("release_qty") else "")
+    q_txt = f"{spec.get('qty')} total" + (f", batches of {spec.get('release_qty')}" if spec.get("release_qty") else "")
     rows.append(dict(field="Quantity / lot", rfq=q_txt, analog=f"{a_lot} (one lot)", effect=eff))
     # material + thickness
     t = spec.get("thickness_in")
@@ -207,7 +207,7 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
         eff = "Fixture line carried from the analog"
     rows.append(dict(field="First run", rfq="yes" if spec.get("first_run") else "no",
                      analog="yes" if analog.first_run else "no", effect=eff))
-    # material price drift since the analog was quoted
+    # material price drift since that job was quoted
     mp = tables["material_prices"]
     m = spec.get("material") or analog.material
     now = mp[(mp.material == m)].sort_values("quote_date").tail(3).price_per_lb.mean()
@@ -215,7 +215,7 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
     if pd.notna(now) and pd.notna(then) and then > 0:
         rows.append(dict(field=f"{m} price", rfq=f"${now:.3f}/lb (latest quotes)",
                          analog=f"${then:.3f}/lb ({analog.quote_date:%b %Y})",
-                         effect=f"{(now / then - 1) * 100:+.0f}% since the analog was quoted"))
+                         effect=f"{(now / then - 1) * 100:+.0f}% since that job was quoted"))
     rows.append(dict(field="Tolerance", rfq=spec.get("tolerance_class") or "not stated", analog=analog.tolerance_class,
                      effect="Same" if spec.get("tolerance_class") == analog.tolerance_class else "Check inspection time"))
     text = (spec.get("rfq_text") or "").lower()
@@ -223,7 +223,7 @@ def diff_table(spec: dict, analog: pd.Series, tables: dict, lines: list[dict]) -
                    and not any(w in text for w in ITEM_WORDS.get(l["item"], [l["item"].split()[0].lower()]))]
     if unmentioned:
         rows.append(dict(field="Carried over from the analog", rfq="not mentioned", analog=", ".join(unmentioned),
-                         effect="Confirm the RFQ really needs these (or untick them at Gate 1)"))
+                         effect="Confirm the RFQ really needs these (or untick them in the plan)"))
     return rows
 
 

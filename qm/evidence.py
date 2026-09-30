@@ -128,7 +128,7 @@ def _job_rows_routing(ctx: Context, wc: str, ht: str) -> tuple[list[dict], list[
         act, est = getattr(op, f"{ht}_hr_act"), getattr(op, f"{ht}_hr_est")
         age = ctx.age(j.quote_date)
         has_act = pd.notna(act)
-        uom = "hr/unit" if ht == "run" else "hr/lot"
+        uom = "hours per part" if ht == "run" else "hours per batch"
         txt = (f"{j.part_number}: {j.description}\nQuoted {est:.3g} {uom}"
                + (f", actual {act:.3g} {uom}" if has_act else " (no actuals: lost or not run yet)"))
         rows.append(make_row("actual" if has_act else "past_quote", j.job_id, act if has_act else est, j.sim, age,
@@ -314,7 +314,7 @@ def build_ledger(spec: dict, lines: list[dict], sims: pd.DataFrame, tables: dict
             forced = None
             if ov is not None:
                 forced = float(ov["new"])
-                rows.insert(0, make_row("override", "This quote (Gate 1)", forced, 1.0, 0, None,
+                rows.insert(0, make_row("override", "This quote (Checkpoint 1)", forced, 1.0, 0, None,
                                         why=f"Estimator edit {ov['old']:.2f} -> {forced:.2f}: {ov.get('reason', '')}",
                                         text=ov.get("reason")))
                 rows[0]["authority"] = 1.0
@@ -354,9 +354,9 @@ def build_ledger(spec: dict, lines: list[dict], sims: pd.DataFrame, tables: dict
         if s["sum_score"] == 0:
             warnings.append("No usable evidence: shop default only, treat as a guess.")
         if ln.get("check") and key not in overrides:
-            typical = summarize([r for r in rows if r["source_type"] != "override" or r["ref"] != "This quote (Gate 1)"])
+            typical = summarize([r for r in rows if r["source_type"] != "override" or r["ref"] != "This quote (Checkpoint 1)"])
             warnings.append(f"New revision: confirm the old fixture still fits. History says a new fixture takes "
-                            f"~{typical['value']:.1f} hr; enter it at Gate 1 if needed (charged once, not per release)."
+                            f"about {typical['value']:.0f} hours; answer the fixture question in step 2 if needed (charged once, not per batch)."
                             if typical["value"] else "New revision: confirm the old fixture still fits.")
         if key in overrides and s["cv"] is not None and s["cv"] > 0.3:
             warnings.append("Override differs a lot from history: saved with its reason so the next quote learns.")

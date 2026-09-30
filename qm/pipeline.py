@@ -262,11 +262,11 @@ def build_quote(res: dict) -> dict:
             assumptions.append(f"{mat} pricing is based on a supplier quote {info['newest_age']} days old; "
                                f"quote valid {config.QUOTE_VALIDITY_STALE_DAYS} days.")
         else:
-            assumptions.append(f"{mat} pricing based on current supplier quotes; subject to mill surcharges "
+            assumptions.append(f"{mat} pricing based on current supplier quotes; subject to steel price increases "
                                f"after {config.QUOTE_VALIDITY_DAYS} days.")
     for f in spec.get("assumed_from_analog") or []:
         assumptions.append(f"{f.replace('_in', '').replace('_', ' ').capitalize()} not stated; quoted as on our closest past job.")
-    exclusions = ["Freight (FOB our dock)", "First article inspection report unless noted",
+    exclusions = ["Freight (not included; pick-up at our dock)", "First article inspection report unless noted",
                   "Engineering or print changes after award"]
     if "first article" in (res["rfq"].get("email_text") or "").lower():
         exclusions[1] = "First article inspection report INCLUDED with the first release"
@@ -284,7 +284,7 @@ def build_quote(res: dict) -> dict:
             "validity_days": res["validity_days"], "assumptions": assumptions, "exclusions": exclusions,
             "pending": pending, "cost_mix": cats, "ready": bool(ready),
             "date": max(config.AS_OF, date.today()),
-            "terms": "Net 30. FOB Boone Creek Fabrication, Boone County, IA. Pricing per the revision named above; "
+            "terms": "Net 30. Parts are ready for pick-up at Boone Creek Fabrication, Boone County, IA. Pricing per the revision named above; "
                      "print changes may require a re-quote."}
 
 
@@ -299,7 +299,7 @@ def quote_markdown(res: dict) -> str:
         out += ["> DRAFT: not released (an approval is pending or a question is still open).", ""]
     out += [f"**Part:** {q['part']}: {s.get('part_description') or '(description not stated)'}", "",
             f"**Quantity:** {q['qty']} pcs total, releases of {q['lot']}", "",
-            "| Unit price if released in lots of | Unit price |", "|---:|---:|"]
+            "| Price per part if released in batches of | Price per part |", "|---:|---:|"]
     out += [f"| {r['lot']} pcs{' (as requested)' if r['lot'] == q['lot'] else ''} | ${r['unit_price']:,.2f} |"
             for r in q["breaks"]]
     for a in q.get("alt_totals", []):
@@ -307,7 +307,7 @@ def quote_markdown(res: dict) -> str:
     out += ["", f"**Setup & tooling (included in the unit prices above):** setup ${q['setup_per_release']:,.2f} per "
                 f"release" + (f"; one-time fixture/tooling ${q['tooling']:,.2f}, spread over the {q['qty']} pcs"
                               if q["tooling"] > 0 else "; no tooling charge") + ".", ""]
-    out += [f"**Lead time:** {q['lead_days']} days ARO for the first release", ""]
+    out += [f"**Lead time:** {q['lead_days']} days after order for the first release", ""]
     if q["assumptions"]:
         out += ["**Assumptions**", ""] + [f"- {a}" for a in q["assumptions"]] + [""]
     out += ["**Exclusions**", ""] + [f"- {e}" for e in q["exclusions"]] + [""]

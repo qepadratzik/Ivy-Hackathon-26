@@ -100,3 +100,16 @@ def test_batch_is_clamped_and_equal_batch_means_one_release():
 def test_customer_row_reads_the_signature_not_the_sender_address(customer):
     f = intake.extract(dict(quick.quick_rfq(customer, "guard", "A36", "1/4", 80), customer_spec=None))["fields"]["customer_name"]
     assert f["email_raw"] == customer and "example" not in f["email_raw"] and f["verified"]
+
+
+@pytest.mark.parametrize("pn,fam,mat,thick", [("LHM-MP-0620", "mounting_plate", "A36", "1/2"),
+                                               ("HLW-HB-3300", "hitch_bracket", "A36", "3/8"),
+                                               ("CVE-HB-4410 Rev C", "hitch_bracket", "A36", "3/8")])
+def test_typing_a_demo_part_number_does_not_trigger_a_canned_reading(pn, fam, mat, thick):
+    """The hand-checked readings belong to the three demo emails only, never to a typed part number."""
+    rfq = quick.quick_rfq("Loess Hills Machinery", fam, mat, thick, 120, weld="none", color="gray", part_number=pn)
+    for sheet in (False, True):
+        x = intake.extract(dict(rfq, customer_spec=rfq["customer_spec"] if sheet else None))
+        assert x["llm"]["source"] == "fallback" and x["conflicts"] == []
+        assert x["spec"]["qty"] == 120 and x["spec"]["finish_color"] == "gray"
+        assert all(f["verified"] is not False for f in x["fields"].values())

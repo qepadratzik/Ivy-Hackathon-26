@@ -45,7 +45,7 @@ The shop and the app were simplified in the final week; see "Simplification (fin
 | Outside process | Powder coat only. Vendor table small $4.50, medium $8.75, large $26.00 per part (dated 2026-07-01), 8 days vendor turnaround. Finish is powder coat or none |
 | Material base prices (Oct 2024, $/lb) | A36 0.74, A500 0.98 (both follow the steel index); 5052 aluminum 3.45 (flat ±2%) |
 | Supplier quote cadence | A36 and A500 weekly, 5052 monthly; 3 fictional steel suppliers (±2-3%) |
-| Aluminum in the history | 1 of 158 jobs, on purpose: an aluminum RFQ shows thin evidence and Low confidence, which demonstrates the honest-uncertainty behavior |
+| Aluminum in the history | 1 of 158 jobs, on purpose: an aluminum RFQ shows thin evidence and a lower (Medium) confidence on the aluminum price line, which demonstrates the honest-uncertainty behavior |
 | Lead time | min days = ceil(first-release shop hours / 6 hr/day) work days → ×7/5 calendar + 5 material + 5 queue + 8 powder coat |
 
 ## Retrieval (similar past jobs)

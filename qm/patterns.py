@@ -53,10 +53,10 @@ def p2_first_run_fixture(spec: dict, t: dict) -> dict | None:
     notes = d[d.job_id.isin(ft.job_id) & d.text.str.contains("fixture|jig", case=False)]
     return dict(id="P2", line_key="weld.setup", title="New welded parts without a fixture run long on setup",
                 ratio=round(r, 3), n=len(ft), notes=len(notes),
-                stat=f"first-run weldments quoted without a fixture ran {r:.2f}x their fit-up and weld setup "
+                stat=f"first-run weldments quoted without a fixture ran {r:.2f}x their fit & weld setup "
                      f"(n={len(ft)}; {len(notes)} debriefs mention building a fixture)",
                 adjustment=f"weld setup x{r:.2f}, or quote a one-time fixture line",
-                plain=f"New welded parts quoted without a fixture took {r:.2f}x the planned fit-up and weld setup "
+                plain=f"New welded parts quoted without a fixture took {r:.2f}x the planned fit & weld setup "
                       f"({len(ft)} jobs; {len(notes)} shop notes mention building one), so plan the fixture time.")
 
 

@@ -299,3 +299,17 @@ def test_quick_demo_every_step_with_details_on_and_odd_choices():
                 qd_finish="none", qd_tol="tight", qd_qty=5, qd_batch=500)
     for sec in S:
         go(at, sec)
+
+
+def test_plain_wording_fixes_from_the_red_team_pass():
+    at = ok(AppTest.from_file(APP, default_timeout=180).run())
+    # sidebar says who read the email, and never names a model that did not run
+    assert "Email reader:" in "\n".join(str(m.value) for m in at.sidebar.markdown)
+    go(at, S[2])
+    t = text_of(at)
+    assert "plenty of evidence to go on" in t or "some evidence to go on" in t
+    assert "plenty of to go on" not in t and "Gate 1" not in t and "analog" not in t.lower()
+    assert "tick the box at the left of a row" in t
+    go(at, S[1])
+    t = text_of(at) + "\n".join(tb.value.to_string() for tb in at.table)
+    assert "since that job was quoted" in t and "text match" not in t and "Gate" not in t

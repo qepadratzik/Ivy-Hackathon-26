@@ -145,3 +145,20 @@ live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence
 - Verified: pytest green (app tests rewritten: full demo path, paste box, details switch, offline/unreachable-model modes, price choices, price-needs-plan-first); real-browser walk with screenshots (`docs/screens/01..13`).
 - Cuts/decisions: price approval is blocked until the plan is approved; re-opening the plan keeps the estimator's answer and reason.
 - Next: S3 docs, S4 final checks.
+
+## [Wed 12:45 CT] Phase S3: Plain-English docs: DONE
+- Built: `docs/PLAIN_ENGLISH.md` (story, glossary, five steps, who says what, simple Q&A), `demo/demo_script.md` rewritten click by click for two presenters (about 10 min of demo inside a 16:30 pitch, 60 s fallback, optional on-the-spot request), `docs/deck_outline.md` re-timed, and assumptions / both process maps / Q&A / ROI / README / LOCAL_RUN synced (subagent, reviewed against the code).
+- Verified: every number in the script reproduced by running the click path (see red-team below).
+- Next: S4.
+
+## [Wed 12:45 CT] Extras: nicer HTML quote, quick demo picker: DONE
+- `qm/quote_html.py`: the HTML quote download is now a one-page customer quote (letterhead, price block, tables, draft / not-priced banner, print and phone friendly, escaped, no external resources). Markdown download unchanged.
+- `qm/quick.py` + sidebar option **Quick demo**: a short form (customer, job type, material, thickness, quantity, batch, welding, finish and color, tolerance, due date, optional part number, optional quantity conflict) builds the customer's email and a matching spec sheet and runs the same five steps. Each build has its own id (RFQ-Q1, RFQ-Q2, ...), so a later build can learn from a note saved on an earlier one. The built-in reader now reads the customer name from the signature, not the sender address.
+
+## [Wed 12:45 CT] Phase S4: Verify and red-team pass 2: DONE
+- Red-team (fresh subagent, report only): 0 blockers, 7 major, 11 minor. The demo script's Job 1 to Job 3 numbers and labels all matched the app; 312 price scenarios, 14 pasted variants, 40 random quick builds and all steps x details on/off ran with no exception.
+- Fixed (majors): typed demo part numbers no longer trigger canned readings (fixtures now also require a phrase unique to each demo email); cost table shows every column and the row-click hint says what actually works (tick the box or use the dropdown); broken sentence "plenty of to go on"; sidebar now says who really read the email (a saved copy, a hand-checked copy, or built-in rules) and never names a model that did not run; jargon removed from the default view (analog, Gate 1, fit-up, ARO, FOB, mill surcharges, "text match 0.93", raw ids in the banner, hr/unit); two false claims in PLAIN_ENGLISH corrected (aluminum confidence, "left blank").
+- Fixed (minors): unticking every plan row is blocked (was a divide-by-zero), negative profit shows as -$X, price must be at least $1 and at most 5x the typical cost, quantity 0 counts as not stated, empty rows and "None" sheet values hidden in step 1, "not stated" shown as a grey chip, duplicate fixture warning removed, source labels fixed (powder coat is no longer "actual hours"), stale screenshots regenerated (16 files, incl. quick demo), script clarified (profit = price minus planning cost, Job 2 draft note, drag the slider with the mouse).
+- Not changed (by decision): the "what just changed" box stays visible after the steel slider returns to 0 (shows "back to its real age"); a paste with no quantity still prices from the closest job (it raises the question and lists the guess); quick emails greet "Hi Purchasing,"; the GitHub handle stays in clone URLs. Personal details in `docs/HANDOFF.md` line 35 were removed, but earlier commits still contain them in git history (Quentin to decide whether that matters).
+- Not verified (no key or network here): the live hosted model's reading of quick-demo emails, cache warming and `--check-model`; Windows first-load timing.
+- Next: Quentin's list below.

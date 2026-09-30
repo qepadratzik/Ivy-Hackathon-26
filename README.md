@@ -186,5 +186,5 @@ cp scripts/pre-push .git/hooks/pre-push
   a real shop's estimate-vs-actual history should calibrate that.
 - **No CAD/drawing parsing.** Input is RFQ email text plus a structured spec sheet; reading drawings is the next step.
 - **Deliberately small shop.** 5 job types, 3 materials and 5 shop steps keep the demo clear; the method does not depend
-  on the count (a new shop step is one row in `qm/config.py`). Aluminum is rare in the history, so aluminum requests show low confidence.
+  on the count (a new shop step is one row in `qm/config.py`). Aluminum is rare in the history, so the aluminum price line shows a lower confidence than steel.
 - **Prototype UI.** Single-user Streamlit app with local demo memory; no ERP integration or PDF export.

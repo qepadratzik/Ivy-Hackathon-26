@@ -32,7 +32,7 @@ Build and ship a **working, demo-ready prototype plus a pitch package** for the 
 
 **One-line pitch:** *Every number in the quote shows its sources, and how much you trust it depends on how good those sources are.*
 
-**Hard deadline:** tomorrow night (see kickoff). The team is two people: Quentin (MIS student, full-stack dev, has real custom CNC quoting experience from his company Twisted Traction) and a teammate whose skills are unknown. You are the primary builder.
+**Hard deadline:** tomorrow night (see kickoff). The team is two people: a developer with real custom CNC quoting experience and a teammate whose skills are unknown. You are the primary builder.
 
 ### 1.1 What the case asks (paraphrased; the judges grade against this)
 - Redesign the quoting process for a **small or midsize Iowa manufacturer** using AI.

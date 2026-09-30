@@ -7,7 +7,7 @@ FAMILY = {"hitch_bracket": "Hitch bracket", "guard": "Guard", "frame": "Frame", 
           "tube_assembly": "Tube assembly"}
 MATERIAL = {"A36": "A36 steel plate", "A500": "A500 steel tube", "5052AL": "5052 aluminum sheet"}
 CONF_WORD = {"green": "High", "yellow": "Medium", "red": "Low"}
-SOURCE = {"actual": "Past job (actual hours)", "past_quote": "Past quote", "shop_default": "Shop rule of thumb",
+SOURCE = {"actual": "Past job (what it really took)", "past_quote": "Past quote", "shop_default": "Shop rule of thumb",
           "note": "Shop note", "override": "Estimator note", "pattern": "Lesson from past jobs",
           "supplier_quote": "Supplier price"}
 UNITS = {"lb/unit": "lb per part", "ea/unit": "each per part", "hr/lot": "hours per batch", "hr/unit": "hours per part",

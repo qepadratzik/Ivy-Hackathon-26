@@ -690,7 +690,7 @@ def test_find_gaps_missing_required_field(field, affects, pct):
 def test_find_gaps_low_confidence_and_absent_fields():
     g = by_id(gaps.find_gaps(make_intake(low=("qty",), drop=("part_family",))))
     assert set(g) == {"missing_qty", "missing_part_family"}
-    assert "low confidence" in g["missing_qty"]["title"]
+    assert "could not be confirmed" in g["missing_qty"]["title"]
     assert g["missing_part_family"]["title"] == "part_family not stated"   # no label: falls back to the key
 
 

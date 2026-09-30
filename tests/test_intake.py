@@ -164,3 +164,8 @@ def test_rule_extract_finds_thickness_after_the_material_words_but_not_a_toleran
     assert intake.parse_thickness(out["thickness_in"]["value"]) == 0.125
     e2 = "From: a@b.example\nSubject: RFQ\n\nPlease quote 10 pcs of a guard. Tolerance +/-0.030 in."
     assert intake.rule_extract(e2)["thickness_in"]["value"] is None
+
+
+def test_zero_or_negative_quantity_counts_as_not_stated():
+    assert intake.normalize_field("qty", "0", None) is None and intake.normalize_field("release_qty", "0 pcs", None) is None
+    assert intake.normalize_field("qty", "250 pcs", None) == 250

@@ -2,7 +2,8 @@
   "task": "intake_extract",
   "match": [
     "CVE-HB-4410 Rev C",
-    "EMAIL (received"
+    "EMAIL (received",
+    "Rev C adds a gusset and moves the hole pattern"
   ],
   "note": "Hand-written expected extraction for demo RFQ A (mock provider).",
   "output": {

@@ -72,8 +72,8 @@ One sentence to remember:
 **Boone Creek Fabrication**, about 40 people in central Iowa. It builds for farm and construction equipment makers.
 
 - **5 kinds of job:** hitch bracket, guard, frame, mounting plate, tube assembly.
-- **3 materials:** A36 steel plate, A500 steel tube, 5052 aluminum sheet. (We have done almost no aluminum, so an
-  aluminum request shows low confidence. That is the system being honest.)
+- **3 materials:** A36 steel plate, A500 steel tube, 5052 aluminum sheet. (We have done almost no aluminum, so the
+  aluminum price line shows a lower confidence than the steel lines. That is the system being honest.)
 - **5 shop steps:** Cut, Bend, Fit & weld, Drill & tap, Inspect & pack. Powder coat is done by an outside vendor.
 - **158 past jobs** over two years, 7 fictional customers, about 6 in 10 quotes won.
 - **Hidden lessons in the history.** We planted these so there is something real to find. The system finds them with
@@ -81,7 +81,7 @@ One sentence to remember:
   - Jobs with visible welds took about **35% longer** to weld than quoted (20 jobs).
   - First-time welded parts without a fixture took about **1.9 times** the planned setup (21 jobs).
   - Bending thick plate needed rework about **3 times in 10**.
-  - One customer, Prairie Implement, only buys when we are cheap.
+  - A couple of customers, Prairie Implement especially, mostly buy when we are cheap.
   - Steel rose about **14%** from the first six months of the history to the last six.
 
 ---
@@ -205,7 +205,8 @@ and every number shows its sources.
 
 **What if the AI reads something wrong?**
 It has to quote the sentence it got each value from, and code checks the sentence really is in the email. If it cannot
-find support, the value is left blank and becomes a question for the customer.
+find support, the value is marked Low confidence with a warning, and if it is something we need to price, it becomes a
+question for the customer.
 
 **Who is responsible if the price is wrong?**
 A person approves the plan and a person approves the price. The tool's job is to make their decision better informed,

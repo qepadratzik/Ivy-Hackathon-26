@@ -30,6 +30,9 @@ Read `docs/PLAIN_ENGLISH.md` first (10 minutes). It has the glossary and the fiv
    - The step picker reads **1 · Read the request (2 open questions)**.
    - Top strip: **$151.48** typical cost, **$198.44** suggested price, **13 of 14 lines solid**, "needs a look: Fixture build (one-time)".
    - Sidebar: **Show the details** is off, the steel slider is at **0**, **Shop notebook: 0 saved note(s)**.
+   - Step 1 says *read by ...*: with the hosted model warmed it must read **a saved copy of claude-haiku-4-5's reading**. If it
+     says *no AI model* or *hand-checked backup*, the model answers were not saved on this PC: either re-run the warm step in
+     `docs/LOCAL_RUN.md` or say "hand-checked copy of what the AI reads" out loud. The numbers do not change either way.
    If anything looks off, press F5 once, then **Start over** again.
 
 Numbers below come from the synthetic data and are the same on every run. The AI only reads and drafts text, so if a
@@ -98,22 +101,24 @@ in a minute."
 
 **Point at:**
 - The headline: *About $154.30 per part, very likely between $145.20 and $164.02.*
-- The table: every line has a colored **How sure** (High / Medium / Low), an estimate, a cost per part, and **Based on**
-  ("3 past jobs, 3 shop notes, 3 past quotes").
+- The table: every line has a colored **How sure** (High / Medium / Low), an estimate and a cost per part. **Notes** says
+  *edited*, *learned* or *lesson* where it applies. To open a line, tick the small box at the left of its row (or use the
+  dropdown above the panel): the panel shows what it is **based on** ("3 past jobs, 3 shop notes, 3 past quotes").
 - Right panel: **0.947 hours per part** and the sentence *we found 11 pieces of evidence ... they mostly agree, so we are
   high confidence in this number.* Open **What the shop wrote down** for the real notes.
 - Scroll to **Lessons from our history**: *Visible (cosmetic) welds take longer than quoted: on 20 past jobs with visible
   welds, welding took 1.35x the quoted hours (ordinary welds: 1.02x), so this quote plans for the extra time.*
 - The fixture row: **6 hours, once**, about **$2 per part** because it is spread over 250 parts.
 
-**Say (A):** "Click any line and you see where the number came from. The last time we quoted this weld we said 0.70 hours
+**Say (A):** "Open any line and you see where the number came from. The last time we quoted this weld we said 0.70 hours
 and it took 0.94. The system noticed that welds that show always run long, found the same thing on 20 jobs, and
 plans for it. That used to live in one person's head."
 
 **Say (B):** "And notice it never says 'trust me'. Every line says how sure it is, and why."
 
 ### What if the steel quote gets old? (0:45)
-**Click (A):** left sidebar, slider **What if our steel price quote were older? (add days)** to **90**.
+**Click (A):** left sidebar, slider **What if our steel price quote were older? (add days)** to **90**. Drag it with the mouse
+(do not hold an arrow key: fast key repeats can skip the last value).
 
 **Watch:** *because our newest steel price quote is now 90 days older. Typical cost per part: $154.30 to $155.34
 (+0.7%). Very likely between $145.20-$164.02 to $145.58-$166.01. Suggested price: $202.13 to $203.50. Quote good for:
@@ -136,6 +141,9 @@ table:
 | Lower price | $193.64 | about 9 in 10 | $34.48 | $31.75 |
 | **Recommended price** | **$202.13** | **about 8 in 10** | **$42.97** | **$34.74** |
 | Higher price | $209.84 | about 6 in 10 | $50.68 | $31.79 |
+
+(Profit per part if we win is the price minus the **planning cost** of $159.16, not minus the typical cost, so $202.13 minus
+$159.16 is $42.97. Say it once if someone does the subtraction.)
 
 **Say (B):** "Now the manager decides, and this is the part I like. Go low and we win more often but earn less each time. Go
 high and we earn more when we win, but we win fewer. The middle price has the best average. The chance of winning comes
@@ -162,6 +170,8 @@ presses send."
 panel opens on **Fixture build (one-time)**.
 
 **Point at:**
+- A blue note says *these are draft numbers, the estimator has not approved the plan yet*. That is expected: we are not
+  approving Job 2 here.
 - The blue box: *because the shop notebook now holds 1 saved note(s): this quote learned from one.*
 - The green box: **Learned from an earlier quote (M-0001): Estimator note on Fixture build ... changed from 0 to 6.
   Reason: Rev C moved the hole pattern, so the old fixture will not fit.** It is counted as evidence next to real past
@@ -174,7 +184,7 @@ panel opens on **Fixture build (one-time)**.
 is now evidence on this quote, with his reason attached."
 
 **Say (B):** "And it is honest about what it does not know: it flags the weld setup on a first build as the line to look
-at. The price barely moves here ($133.21 to $133.16) because history already agreed with him. The value is that the
+at. The typical cost barely moves here ($133.21 to $133.16) because history already agreed with him. The value is that the
 reason is now saved for the next person. That is how the senior estimator's knowledge stays when he retires."
 
 ## Job 3: the easy one (0:45)
@@ -215,7 +225,8 @@ quick extras: tick **Make the spec sheet disagree on the quantity** before build
 so watch step 3: it says it is less sure, which is the honest answer."
 
 **Then:** walk the steps quickly (step 2 approve, step 3 click the aluminum line, step 4 approve). Each build gets its own
-number, so if you build a second similar request it can learn from the note you saved on the first.
+number, so a second build can learn from a note you saved on the first (for example by answering "No, we need to build a new
+one" on a new revision such as `CVE-HB-4410 Rev D`).
 
 ---
 

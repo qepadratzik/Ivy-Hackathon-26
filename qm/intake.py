@@ -47,7 +47,7 @@ class RFQSpec(BaseModel):
 FIELD_LABELS = {
     "customer_name": "Customer", "part_number": "Part number", "part_description": "Description",
     "part_family": "Part family", "material": "Material", "thickness_in": "Thickness",
-    "qty": "Total quantity", "release_qty": "Release (lot) size", "tolerance_class": "Tolerance",
+    "qty": "Total quantity", "release_qty": "Batch size", "tolerance_class": "Tolerance",
     "cosmetic_weld": "Cosmetic weld", "finish": "Finish", "finish_color": "Finish color",
     "due_date": "Due date (first release)", "notes": "Notes",
 }
@@ -232,7 +232,8 @@ def normalize_field(name: str, raw, received: date):
     if name == "thickness_in":
         return parse_thickness(raw)
     if name in ("qty", "release_qty"):
-        return parse_int(raw)
+        n = parse_int(raw)
+        return n if n and n > 0 else None
     if name == "part_family":
         return normalize_family(raw)
     if name == "finish":

@@ -13,7 +13,7 @@
 4. `python -m qm.pipeline --warm demo/rfqs` (fills `cache/llm/`; run twice, the second run should say `cache`).
 5. Commit the cache: `git add cache/llm && python scripts/secret_scan.py --staged && git commit -m "cache: warmed model outputs" && git push`.
 6. **Presentation mode:** `DEMO_MODE=offline` in `.env`, then `streamlit run app.py`. No key or wifi needed on stage;
-   the screen says "cached model output".
+   step 1 says "read by a saved copy of claude-haiku-4-5's reading" and the sidebar says "Mode: saved answers only".
 
 ---
 
@@ -115,7 +115,7 @@ Run it a second time: every `llm=` entry should now say `cache` and it should ta
 ```bash
 streamlit run app.py
 ```
-Your browser opens http://localhost:8501. The sidebar should say **Model: `qwen3:8b`**, **Mode: `live`**.
+Your browser opens http://localhost:8501. The sidebar should say **Email reader: qwen3:8b (live)**, **Mode: live**.
 
 ## 8. Walk through the demo
 Follow `demo/demo_script.md` once end to end (about 10 minutes). Click **Start over** in the

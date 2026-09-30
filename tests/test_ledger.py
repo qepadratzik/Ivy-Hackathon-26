@@ -182,7 +182,7 @@ def test_gate1_override_is_locked_and_flows_to_price():
     res = pipeline.run_pipeline(R["RFQ-A"], {"gate1_edits": {"weld.setup": {"value": old + 6, "reason": "new fixture needed"}}})
     ft = line(res, "weld.setup")
     assert ft["overridden"] and ft["value"] == pytest.approx(old + 6)
-    assert ft["evidence"][0]["ref"] == "This quote (Gate 1)"
+    assert ft["evidence"][0]["ref"] == "This quote (Checkpoint 1)"
     assert res["risk"]["p50"] > base["risk"]["p50"] and res["pricing"]["recommended"] > base["pricing"]["recommended"]
 
 

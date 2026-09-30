@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from collections import Counter
 
 import numpy as np
@@ -40,6 +41,10 @@ SRC_PLURAL = {"actual": ("past job", "past jobs"), "past_quote": ("past quote", 
               "pattern": ("lesson", "lessons"), "supplier_quote": ("supplier price", "supplier prices"),
               "shop_default": ("shop rule of thumb", "shop rules of thumb")}
 FIELD_CHIP = {"high": "green", "medium": "yellow", "low": "red"}
+GAP_SHORT = {"qty_conflict": "the quantity", "finish_color": "the powder coat color", "due_date_risk": "the delivery date"}
+TRACK_HELP = {"S": "Fast track: a clean repeat the estimator can turn around quickly.",
+              "M": "Standard review: the normal checks.",
+              "L": "Full review: new or tricky work that needs the estimator's full attention."}
 
 st.markdown(f"""
 <style>
@@ -76,7 +81,7 @@ def mailbox(text: str) -> str:
 
 
 def money(x: float) -> str:
-    return f"${x:,.2f}"
+    return f"-${-x:,.2f}" if x < 0 else f"${x:,.2f}"
 
 
 def esc(s: str) -> str:
@@ -132,6 +137,16 @@ def field_text(name: str, v) -> str:
     return str(v)
 
 
+def reader_desc(meta: dict) -> str:
+    """Who actually read the email this time (never claims a model that did not run)."""
+    if meta["provider"] == "mock":
+        return ("a hand-checked copy of what the AI reads (demo without a live model)" if meta["source"] == "fixture"
+                else "simple built-in rules (no AI model)")
+    return {"cache": f"a saved copy of {meta['model']}'s reading", "live": f"{meta['model']} (live)",
+            "fixture": "a hand-checked backup (no saved AI answer for this email)",
+            "fallback": "simple built-in rules (the AI answer was not available)"}.get(meta["source"], meta["model"])
+
+
 @st.cache_resource(show_spinner="Loading the shop's history (the first run also sets up a small search index)...")
 def boot() -> dict:
     store.vector_store()
@@ -175,7 +190,7 @@ def cause_of_change(old: dict, new: dict) -> list[str]:
         a, b = ops["gap_actions"].get(gid, "ask"), nps["gap_actions"].get(gid, "ask")
         if a != b:
             c.append(f"you chose to {'assume an answer for' if b == 'assume' else 'ask the customer about'} "
-                     f"\"{gid.replace('_', ' ')}\"")
+                     f"{GAP_SHORT.get(gid, gid.replace('_', ' '))}")
     if ops["gate1_edits"] != nps["gate1_edits"] or ops["gate1_excluded"] != nps["gate1_excluded"] \
             or ops["gate1_approved"] != nps["gate1_approved"]:
         lab = {l["key"]: plain.line_label(l) for l in new["res"]["proposal"]["lines"]}
@@ -186,7 +201,7 @@ def cause_of_change(old: dict, new: dict) -> list[str]:
         c.append(f"our newest steel price quote is now {nps['material_age_days']} days older"
                  if nps["material_age_days"] else "the steel price quote is back to its real age")
     if old["mem"] != new["mem"]:
-        learned = any(e["source_type"] == "override" and e["ref"] != "This quote (Gate 1)" and e["counted"]
+        learned = any(e["source_type"] == "override" and e["ref"] != "This quote (Checkpoint 1)" and e["counted"]
                       for l in new["res"]["ledger"] for e in l["evidence"])
         if learned or not c:
             c.append(f"the shop notebook now holds {new['mem'].split(':')[0]} saved note(s)"
@@ -259,10 +274,7 @@ with st.sidebar:
                     help="Steel prices go stale fast. Older quotes count for less, so confidence drops and the "
                          "quote is only valid for a shorter time.")
     st.divider()
-    prov, mode = llm.current_provider(), llm.demo_mode()
-    reader = "simple built-in rules (no AI model)" if prov == "mock" else llm.current_model()
-    st.markdown(f"**Email reader:** {reader}  \n" + ("**Mode:** saved answers only (works offline)" if mode == "offline"
-                                                      else "**Mode:** live"))
+    reader_box = st.container()
     mem = memory.list_memory()
     with st.expander(f"Shop notebook: {len(mem)} saved note(s)"):
         if mem.empty:
@@ -321,6 +333,8 @@ if last and last["sig"] != sig:
                      f"suggested price {money(d['rec'][0])} to {money(d['rec'][1])}"))
 st_["last"][rid] = cur
 
+reader_box.markdown(f"**Email reader:** {reader_desc(res['intake']['llm'])}  \n"
+                    + ("**Mode:** saved answers only (works offline)" if llm.demo_mode() == "offline" else "**Mode:** live"))
 spec, led, risk, pr = res["spec"], res["ledger"], res["risk"], res["pricing"]
 n_asks = sum(1 for g in res["gaps"] if g["action"] == "ask")
 tri = res["triage"]
@@ -329,7 +343,8 @@ tri = res["triage"]
 tri_color = {"S": GREEN, "M": YELLOW, "L": RED}[tri["label"]]
 st.markdown(f"<p class='qm-title'>{html.escape(spec.get('customer_name') or 'Unknown customer')} · "
             f"{html.escape(spec.get('part_number') or 'no part number')}</p>", unsafe_allow_html=True)
-st.markdown(f"<span class='qm-badge' style='background:{tri_color}'>{plain.TRACK[tri['label']]}</span> "
+st.markdown(f"<span class='qm-badge' style='background:{tri_color}' title='{html.escape(TRACK_HELP[tri['label']])}'>"
+            f"{plain.TRACK[tri['label']]}</span> "
             f"<span class='qm-small'>&nbsp;Why: {html.escape(tri.get('plain') or tri['reason'])}</span>",
             unsafe_allow_html=True)
 
@@ -402,20 +417,14 @@ def sec_read():
             with st.expander("Attached spec sheet"):
                 st.json(rfq["customer_spec"])
     with right:
-        meta = x["llm"]
-        if meta["provider"] == "mock":
-            who = ("a hand-checked copy of what the AI reads (demo without a live model)" if meta["source"] == "fixture"
-                   else "simple built-in rules (no AI model)")
-        else:
-            who = {"cache": f"a saved copy of {meta['model']}'s reading", "live": f"{meta['model']} (live)",
-                   "fixture": "a hand-checked fallback", "fallback": "simple built-in rules"}.get(
-                meta["source"], f"{meta['model']}")
+        who = reader_desc(x["llm"])
         st.markdown(f"**What we understood** <span class='qm-small'>· read by {html.escape(who)}. "
                     f"The AI only reads the words. All the math is ordinary arithmetic.</span>",
                     unsafe_allow_html=True)
         rows = []
         for name, f in x["fields"].items():
-            if name in ("notes",):
+            if name in ("notes",) or (f["value"] is None and (
+                    name == "release_qty" or (name == "finish_color" and spec.get("finish") != "powder_coat"))):
                 continue
             where = []
             if f.get("source_quote") and f.get("email_value") is not None:
@@ -424,11 +433,13 @@ def sec_read():
             if "CONFLICT" in (f.get("origin") or ""):
                 where.append(f"<b style='color:{RED}'>The email says {html.escape(field_text(name, f['email_value']))}"
                              f" but the spec sheet says {html.escape(field_text(name, f['sheet_value']))}</b>")
-            elif f.get("sheet_raw") is not None:
+            elif f.get("sheet_raw") is not None and str(f["sheet_raw"]).strip().lower() not in ("none", "n/a"):
                 where.append(f"Spec sheet: {html.escape(str(f['sheet_raw'])[:40])}")
+            shown = "no welding" if name == "cosmetic_weld" and spec.get("no_welding") else field_text(name, f["value"])
             lvl = FIELD_CHIP[f["confidence"]]
-            rows.append(f"<tr><td>{html.escape(f['label'])}</td><td><b>{html.escape(field_text(name, f['value']))}</b></td>"
-                        f"<td>{chip(lvl, plain.CONF_WORD[lvl])}</td>"
+            sure = chip("grey", "not stated") if f["value"] is None else chip(lvl, plain.CONF_WORD[lvl])
+            rows.append(f"<tr><td>{html.escape(f['label'])}</td><td><b>{html.escape(shown)}</b></td>"
+                        f"<td>{sure}</td>"
                         f"<td class='qm-small'>{'<br>'.join(where) or '—'}</td></tr>")
         st.markdown("<table class='qm-t'><tr><th>What</th><th>What we read</th><th>How sure</th><th>Where we saw it</th></tr>"
                     + "".join(rows) + "</table>", unsafe_allow_html=True)
@@ -496,8 +507,9 @@ def sec_plan():
         st.markdown(f"**Closest past job: {an['job_id']}** · {an['part_number']} · {an['qty']} parts · "
                     f"{'we won it' if an['won'] else 'we lost it'} · "
                     f"{'we have the real hours it took' if an['has_actuals'] else 'we only have the estimate'}")
-        st.caption(f"{match}" + (f" (similarity {an['sim']:.2f})" if details else "") + f". Why: {an['why']}")
-        st.caption(an["description"])
+        why = an["why"] if details else re.sub(r";?\s*text match [\d.]+", "", an["why"]).replace("earlier rev/run", "an earlier version")
+        st.caption(f"{match}" + (f" (similarity {an['sim']:.2f})" if details else "") + f". Why: {why}")
+        st.caption(re.sub(r";\s*none\b", "", an["description"]))
     if details:
         with st.expander("Other similar past jobs"):
             sj = res["similar"].head(8)
@@ -578,10 +590,13 @@ def sec_plan():
             st.warning(esc(f"{labels[kk]}: {prop[kk]:.3g} to {v:.3g} is more than double (or less than half) of "
                            f"the past job. Please double-check the number."))
     prev_reason = next((e["reason"] for e in ps["gate1_edits"].values() if e.get("reason")), "")
+    none_left = len(excl) >= len(base)
+    if none_left:
+        st.error("Keep at least one line in the plan.")
     reason = st.text_input("Why? (needed for any change. The notebook remembers it, so the next similar quote learns.)",
                            value=prev_reason, key=K(f"g1_reason_{rid}"),
                            placeholder="e.g. The Rev C hole pattern moved, so the old fixture will not fit.")
-    if st.button("Approve the plan", key=K(f"g1_approve_{rid}"), type="primary"):
+    if st.button("Approve the plan", key=K(f"g1_approve_{rid}"), type="primary", disabled=none_left):
         if (pend or excl) and not reason.strip():
             st.error("Add a reason for your change first. The reason is what the next quote learns from.")
         else:
@@ -612,10 +627,10 @@ def evidence_sentence(l: dict) -> str:
     n = sum(1 for e in l["evidence"] if e["counted"])
     agree = ("They agree closely" if (l["cv"] or 0) < 0.12 else "They disagree a lot" if (l["cv"] or 0) > 0.3
              else "They mostly agree")
-    amount = "plenty of" if l["sum_score"] >= 3 else "some" if l["sum_score"] >= 1.2 else "very little"
+    amount = ("plenty of evidence to go on" if l["sum_score"] >= 3 else "some evidence to go on"
+              if l["sum_score"] >= 1.2 else "very little evidence to go on")
     word = plain.CONF_WORD[l["chip"]].lower()
-    return (f"We found {n} pieces of evidence ({_based_on(l)}), which is {amount} to go on. {agree}, "
-            f"so we are {word} confidence in this number.")
+    return f"We found {n} pieces of evidence ({_based_on(l)}), which is {amount}. {agree}, so our confidence in this number is {word}."
 
 
 def sec_cost():
@@ -626,18 +641,22 @@ def sec_cost():
     order = sorted(led, key=lambda l: (CAT_ORDER[l["category"]], led.index(l)))
     rows = []
     for l in order:
-        learned = any(e["source_type"] == "override" and e["ref"] != "This quote (Gate 1)" and e["counted"]
+        learned = any(e["source_type"] == "override" and e["ref"] != "This quote (Checkpoint 1)" and e["counted"]
                       for e in l["evidence"])
         edited = l["overridden"] and l["key"] in res["overrides"] or abs(float(l["approved"]) - float(l["proposed"])) > 1e-9
-        flags = [t for t, on in (("Changed by estimator", edited), ("Learned from the notebook", learned),
-                                 ("Warning", bool(l["warnings"])), ("Lesson from past jobs", bool(l["patterns"]))) if on]
-        rows.append({"How sure": plain.CONF_WORD[l["chip"]], "Item": plain.line_label(l), "Kind": CAT_LABEL[l["category"]],
-                     "Our estimate": fmt_value(l), "Cost per part": round(l["cost"], 2), "Based on": _based_on(l),
-                     "Notes": ", ".join(flags)})
+        flags = [t for t, on in (("edited", edited), ("learned", learned), ("warning", bool(l["warnings"])),
+                                 ("lesson", bool(l["patterns"]))) if on]
+        rows.append({"How sure": plain.CONF_WORD[l["chip"]], "Item": plain.line_label(l),
+                     "Our estimate": fmt_value(l), "Cost per part": round(l["cost"], 2), "Notes": ", ".join(flags)})
+    keys = [l["key"] for l in order]
+    dkey = K(f"drawer_{rid}")
+    if st.session_state.get(dkey) not in keys:
+        st.session_state[dkey] = next((l["key"] for l in order if l["patterns"]), None) or \
+            min(order, key=lambda l: l["confidence"])["key"]
     left, right = st.columns([3, 2])
     with left:
-        st.markdown("**Where the cost comes from** <span class='qm-small'>· click a row to see why we believe "
-                    "the number</span>", unsafe_allow_html=True)
+        st.markdown("**Where the cost comes from** <span class='qm-small'>· tick the box at the left of a row, or use "
+                    "the dropdown on the right, to see why we believe the number</span>", unsafe_allow_html=True)
         df = pd.DataFrame(rows)
         color = {"High": SOFT["green"], "Medium": SOFT["yellow"], "Low": SOFT["red"]}
         sty = df.style
@@ -645,22 +664,18 @@ def sec_cost():
         ev = st.dataframe(sty, hide_index=True, on_select="rerun", selection_mode="single-row", key=K(f"ledger_{rid}"),
                           height=min(38 * len(rows) + 40, 640),
                           column_config={"Cost per part": st.column_config.NumberColumn(format="$%.2f"),
-                                         "Notes": st.column_config.TextColumn(width="medium")})
+                                         "Notes": st.column_config.TextColumn(width="small")})
         sel = list(getattr(getattr(ev, "selection", None), "rows", []) or [])
-        keys = [l["key"] for l in order]
         if sel and st_["ledger_sel"].get(rid) != sel[0]:
             st_["ledger_sel"][rid] = sel[0]
             st.session_state[K(f"drawer_{rid}")] = keys[sel[0]]
         for lab, w in [(plain.line_label(l), w) for l in order for w in l["warnings"]
-                       if not w.startswith("Override differs")][:3]:
+                       if not w.startswith("Override differs") and l["key"] != st.session_state.get(dkey)][:3]:
             st.warning(esc(f"**{lab}**: {w}"))
         st.caption(esc(f"Costs add up to {money(sum(l['cost'] for l in led))} per part before any safety cushion "
-                       f"(batch size {spec.get('lot_qty')}). Shop hours are charged at illustrative rates."))
+                       f"(batch size {spec.get('lot_qty')}). Shop hours are charged at illustrative rates. "
+                       f"Notes: edited = changed by the estimator, learned = from the shop notebook, lesson = from past jobs."))
     with right:
-        default = next((l["key"] for l in order if l["patterns"]), None) or min(order, key=lambda l: l["confidence"])["key"]
-        dkey = K(f"drawer_{rid}")
-        if st.session_state.get(dkey) not in keys:
-            st.session_state[dkey] = default
         dk = st.selectbox("Why do we believe this number?", keys, key=dkey,
                           format_func=lambda kk: plain.line_label(next(l for l in order if l["key"] == kk)))
         l = next(x for x in order if x["key"] == dk)
@@ -673,10 +688,11 @@ def sec_cost():
             for w in l["warnings"]:
                 st.warning(esc(w))
             for e in l["evidence"]:
-                if e["source_type"] == "override" and e["ref"] != "This quote (Gate 1)" and e["counted"]:
+                if e["source_type"] == "override" and e["ref"] != "This quote (Checkpoint 1)" and e["counted"]:
                     st.success(esc(f"**Learned from an earlier quote** ({e['ref']}): {e['text']}"))
             ev_df = pd.DataFrame([{
-                "Where it came from": f"{plain.SOURCE.get(e['source_type'], e['source'])} · {e['ref']}",
+                "Where it came from": plain.SOURCE.get(e["source_type"], e["source"])
+                + ("" if e["source_type"] in ("pattern", "shop_default") else f" · {e['ref']}"),
                 "What it said": None if e["value"] is None else fmt_value(l, e["value"]),
                 "How much it counts": plain.trust(e["score"]) if e["counted"] else "Not used",
                 **({"Score = similarity x authority x recency": f"{e['score']:.2f} = {e['similarity']:.2f} x "
@@ -688,7 +704,8 @@ def sec_cost():
             if notes:
                 with st.expander("What the shop wrote down"):
                     for e in notes:
-                        st.markdown(f"**{plain.SOURCE.get(e['source_type'], e['source'])} · {e['ref']}**")
+                        st.markdown(f"**{plain.SOURCE.get(e['source_type'], e['source'])}"
+                                    + ("" if e["source_type"] == "pattern" else f" · {e['ref']}") + "**")
                         st.markdown(mailbox(e["text"]), unsafe_allow_html=True)
             if details:
                 st.caption("Score = similarity x authority x recency. Authority: real hours 1.0 · note, override or "
@@ -787,7 +804,7 @@ def sec_price():
         names = [o["name"] for o in opts]
         pick_ = st.radio("Which price?", names + ["Another amount"], index=1, horizontal=True, key=K(f"price_choice_{rid}"))
         if pick_ == "Another amount":
-            price = st.number_input("Price per part ($)", min_value=0.0, step=1.0, value=round(pr["recommended"], 2),
+            price = st.number_input("Price per part ($)", min_value=1.0, step=1.0, value=round(pr["recommended"], 2),
                                     key=K(f"price_custom_{rid}"))
         else:
             price = round(next(o["price"] for o in opts if o["name"] == pick_), 2)
@@ -802,6 +819,9 @@ def sec_price():
         if st.button("Approve the price", key=K(f"g2_approve_{rid}"), type="primary", disabled=not ps["gate1_approved"]):
             if price < 0.5 * risk["p50"]:
                 st.error(esc(f"{money(price)} is less than half of the typical cost ({money(risk['p50'])}). "
+                             "Please check the amount."))
+            elif price > 5 * risk["p50"]:
+                st.error(esc(f"{money(price)} is more than five times the typical cost ({money(risk['p50'])}). "
                              "Please check the amount."))
             elif not inside and not reason.strip():
                 st.error("Add a reason before approving a price outside the recommended range.")

@@ -2,7 +2,8 @@
   "task": "intake_extract",
   "match": [
     "LHM-MP-0620",
-    "EMAIL (received"
+    "EMAIL (received",
+    "mounting plate, same as last order"
   ],
   "note": "Hand-written expected extraction for demo RFQ C (mock provider).",
   "output": {

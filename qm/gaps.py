@@ -72,7 +72,7 @@ def find_gaps(intake: dict) -> list[dict]:
                 affects, pct, assume = "none", 0.0, "Quoted at our standard lead time."
             elif f == "customer_name":
                 affects, pct, assume = "none", 0.0, "Treated as a new customer."
-            why = "not stated" if fld.get("value") is None else "low confidence (quote not found in email)"
+            why = "not stated" if fld.get("value") is None else "could not be confirmed in the email"
             gaps.append(dict(id=f"missing_{f}", kind="missing", field=f, title=f"{label} {why}",
                              question=f"Can you confirm the {label.lower()}?", assumption=assume,
                              contingency_pct=pct, affects=affects))
@@ -124,7 +124,7 @@ def due_date_check(spec: dict, first_release_hours: float, has_outside: bool) ->
         return dict(id="due_date_risk", kind="risk", field="due_date",
                     title=f"Due {due:%b %d} gives {avail} days; our minimum is ~{need} days",
                     question=f"Could the first release move to {date.fromordinal(received.toordinal() + need):%b %d}?",
-                    assumption="Accepted the date with overtime / expedite (labor contingency added).",
+                    assumption="Accepted the requested date; overtime may be needed to meet it (a safety cushion is added).",
                     contingency_pct=0.06, affects="labor", action="ask"), info
     return None, info
 
