@@ -86,7 +86,10 @@
 
 **Status:** every phase's acceptance checks pass in the cloud build (mock provider + offline mode). Full test suite
 green (~290 tests incl. headless AppTest of the whole demo path, offline/unreachable-Ollama runs, and a fresh-clone
-install check). Tagged `v1-demo` on branch `claude/determined-hawking-hdkb0z`.
+install check). Branch `claude/determined-hawking-hdkb0z`. **Tag `v1-demo`: this cloud session's git proxy
+rejects tag pushes (HTTP 403, policy), so please create it from your PC:**
+`git fetch origin && git tag -a v1-demo origin/claude/determined-hawking-hdkb0z -m "Quote Memory demo" && git push origin v1-demo`
+(or GitHub > Releases > "Draft a new release" > new tag `v1-demo` on that branch).
 
 **What works**
 - 7-stage flow with 2 human gates: intake (copy-only LLM + verbatim-quote check) → gaps/conflicts with ask/assume +
@@ -123,4 +126,4 @@ live-model extraction quality of qwen3:8b not yet verified on the demo PC (hence
 3. Build the slides from `docs/deck_outline.md` (use `docs/screens/` for demo stills; process maps in `docs/process_*.md`).
 4. Record the backup screen recording of `demo/demo_script.md`.
 5. Rehearse the demo 3× with a timer (Reset → F5 check before each run), and read `docs/qa.md`.
-6. Submit before 2:50 PM CT Thu.
+6. Create the `v1-demo` tag (command above), then submit before 2:50 PM CT Thu.
